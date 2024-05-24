@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     {% load static %}
-    <title>Online Auction Portal</title>
+    <title>Open Auction Portal</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -112,7 +112,7 @@
           <div class="row">
             <div class="col-md-6">
               <img src="{% static 'images/logo.png' %}" style="width:100px;height:50px">
-              <span style="font-size:20px;font-weight:bold;padding:2%"><span style="color:red">Online Auction</span> <span style="color:green">Portal</span></h4>
+              <span style="font-size:20px;font-weight:bold;padding:2%"><span style="color:red">Open Auction</span> <span style="color:green">Portal</span></h4>
             </div>
           </div>
         </div>
@@ -120,97 +120,81 @@
       <!-- Links -->
       <ul class="navbar-nav">
         {% if request.user.username %}
-        {% if error == "pat" %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}" style="color:black;margin-left:200px">
+                <ion-icon style="margin-right:4px" name="home-sharp"></ion-icon>
+                Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'view_auction' 0 %}" style="color:black">
+                <ion-icon style="margin-right:4px" name="eye"></ion-icon>
+                Auctions
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'bidding_status' %}" style="color:black">
+                <ion-icon style="margin-right:4px" name="eye"></ion-icon>
+                Bidding Status
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'feedback' %}" style="color:black">
+                <ion-icon style="margin-right:4px" name="aperture"></ion-icon>
+                Feedback
+              </a>
+            </li>
+        {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'home' %}" style="color:black;margin-left:200px">
-            <ion-icon style="margin-right:4px" name="home-sharp"></ion-icon>
-            HOME
+          <a class="nav-link" href="{% url 'home'  %}" style="color:black;margin-left:200px">
+            <ion-icon style="margin-right:2px" name="home-sharp"></ion-icon>
+            Home
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'view_auction' 0 %}" style="color:black">
             <ion-icon style="margin-right:4px" name="eye"></ion-icon>
-            Auction
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'bidding_status' %}" style="color:black">
-            <ion-icon style="margin-right:4px" name="eye"></ion-icon>
-            Bidding Status
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'feedback' %}" style="color:black">
-            <ion-icon style="margin-right:4px" name="aperture"></ion-icon>
-            Feedback
-          </a>
-        </li>
-        </div>
-        {% else %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'home' %}" style="color:black;margin-left:200px">
-            <ion-icon style="margin-right:2px" name="home-sharp"></ion-icon>
-            HOME
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'add_product' %}" style="color:black">
-            <ion-icon style="margin-right:2px" name="eye"></ion-icon>
-            Add Product
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'all_product' %}" style="color:black">
-            <ion-icon style="margin-right:2px" name="eye"></ion-icon>
-            All Product
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'bidding_status2' %}" style="color:black">
-            <ion-icon style="margin-right:2px" name="aperture"></ion-icon>
-            Bidding Status
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'feedback' %}" style="color:black">
-            <ion-icon style="margin-right:2px" name="send"></ion-icon>
-            Feedback
-          </a>
-        </li>
-        </div>
-        {% endif %}
-        {% else %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'home'  %}" style="color:black;margin-left:200px">
-            <ion-icon style="margin-right:2px" name="home-sharp"></ion-icon>
-            HOME
+            Auctions
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'about' %}" style="color:black">
             <ion-icon style="margin-right:2px" name="briefcase-sharp"></ion-icon>
-            ABOUT
+            About
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'contact' %}" style="color:black">
             <ion-icon style="margin-right:2px" name="phone-portrait-sharp"></ion-icon>
-            CONTACT
+            Contact
           </a>
         </li>
         {% endif %}
         {% if request.user.is_authenticated %}
         </li>
         {% if not request.user.is_staff %}
+        <li class="nav-item dropdown" style="margin-right:50px;color:white;margin-left:400px">
+          <a class="nav-link dropdown" style="margin-left:5%;" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true">
+            <i class="fa fa-bell">{{count}}</i>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size:12px">
+              <a class="dropdown-item" href="#">Notification</a><hr>
+            {% for i in msg %}
+              <a class="dropdown-item" href="">
+                  <a href="{% url 'product_detail2' i.id %}"><span><i class="fa fa-user-circle" style="font-size:17px"></i> ({{forloop.counter}}.) New :{{i.name}}</span>
+                </a>
+            {% endfor %}
+          </div>
+        </li>
         <div class="btn-group">
           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <ion-icon style="margin-right:4px;color:black" name="person-circle-sharp"></ion-icon>
             Welcome {{request.user.first_name}}
           </button>
           <div class="dropdown-menu">
-            <a class="dropdown-item" href="{% url 'profile1' %}">VIEW PROFILE</a>
-            <a class="dropdown-item" href="{% url 'edit_profile1' %}">EDIT PROFILE</a>
-            <a class="dropdown-item" href="{% url 'seller_dashboard' %}">SELLER DASHBOARD</a>
+            <a class="dropdown-item" href="{% url 'profile1' %}">View Profile</a>
+            <a class="dropdown-item" href="{% url 'edit_profile1' %}">Edit Profile</a>
+            <a class="dropdown-item" href="{% url 'seller_dashboard' %}">Seller Dashboard</a>
             <hr>
             <a class="dropdown-item" href="{% url 'logout' %}">LOGOUT</a>
           </div>
@@ -227,13 +211,13 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'login_user' %}" style="color:black;text-align:right">
             <ion-icon style="margin-right:2px" name="log-in-sharp"></ion-icon>
-            USER LOGIN
+            Login
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'login_admin' %}" style="color:black;text-align:right">
             <ion-icon style="margin-right:2px" name="log-in-sharp"></ion-icon>
-            ADMIN LOGIN
+            Admin Login
           </a>
         </li>
         {% endif %}

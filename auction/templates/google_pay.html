@@ -10,7 +10,7 @@
     <div class="col-md-6">
         <img src="{% static 'images/QR.jpg' %}" style="width:100%;height:400px">
     </div></div>
-    <h5 align="center" style="border:1px solid grey;padding:20px;font-weight:bold">Total : Rs. {{total.new_price}}.00/-</h5>
+    <h5 align="center" style="border:1px solid grey;padding:20px;font-weight:bold">Total : $ {{total.new_price}}.00/-</h5>
 <form action="" method="post">
     {% csrf_token %}
     <button type="submit" class="btn btn-primary" style="width">Submit</button>

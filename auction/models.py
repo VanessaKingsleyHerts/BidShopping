@@ -7,24 +7,13 @@ class Member_fee(models.Model):
     def __str__(self):
         return self.fee
 
-class Bidder(models.Model):
+class Member(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
     dob = models.DateField(null=True)
     address = models.CharField(max_length=100,null=True)
-    contact = models.CharField(max_length=10,null=True)
+    contact = models.CharField(max_length=20,null=True)
     image = models.FileField(null=True)
     membership = models.ForeignKey(Member_fee,on_delete=models.CASCADE,null=True)
-    def __str__(self):
-        return self.user.username
-
-class Auction_User(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
-    dob = models.DateField(null=True)
-    address = models.CharField(max_length=100,null=True)
-    contact = models.CharField(max_length=10,null=True)
-    image = models.FileField(null=True)
-    membership = models.ForeignKey(Member_fee,on_delete=models.CASCADE,null=True)
-
     def __str__(self):
         return self.user.username
 
@@ -64,12 +53,13 @@ class Product(models.Model):
     images = models.FileField(null=True)
     session = models.ForeignKey(Session_Time,on_delete=models.CASCADE,null=True)
     category = models.ForeignKey(Sub_Category,on_delete=models.CASCADE,null=True)
+    description = models.CharField(max_length=500,null=True)
     def __str__(self):
         return self.name
 
 class Aucted_Product(models.Model):
     winner = models.CharField(max_length=100,null=True)
-    user = models.ForeignKey(Auction_User,on_delete=models.CASCADE,null=True)
+    user = models.ForeignKey(Member,on_delete=models.CASCADE,null=True)
     product = models.ForeignKey(Product,on_delete=models.CASCADE,null=True)
 
     def __str__(self):
@@ -89,7 +79,7 @@ class Participant(models.Model):
     payment = models.ForeignKey(Payment,on_delete=models.CASCADE,null=True)
     new_price = models.IntegerField(null=True)
     result = models.ForeignKey(Result,on_delete=models.CASCADE,null=True)
-    user = models.ForeignKey(Bidder,on_delete=models.CASCADE,null=True)
+    user = models.ForeignKey(Member,on_delete=models.CASCADE,null=True)
     aucted_product = models.ForeignKey(Aucted_Product,on_delete=models.CASCADE,null=True)
     product = models.ForeignKey(Product,on_delete=models.CASCADE,null=True)
 

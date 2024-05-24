@@ -40,7 +40,7 @@
                      <span>Minium Price : </span>
                 </div>
                 <div class="col-md-6">
-                     <span style="font-weight:bold"> &#8377;{{pro.aucted_product.product.min_price}}.00 /-</span><hr>
+                     <span style="font-weight:bold"> &#x24;{{pro.aucted_product.product.min_price}}.00</span><hr>
                 </div>
             </div>
             <div class="col-md-12">
@@ -60,14 +60,16 @@
                 </form>
             </div></div></div></div>
             <div class="col-md-5 ex1">
-               <h5 align="center">All Bidder</h5>
+               <h5 align="center">All Participants</h5>
+               <div id="liveResults">
                 {% for i in pro2 %}
                 <div class="row">
                     <div class="col-md-3"><img src="{{i.user.image.url}}" style="height:60px;width:96%"></div>
                     <div class="col-md-9">{{i.user.user.username}}
-                    <h6>Current Price : &#8377; {{i.new_price}}.00 /-</h6></div>
+                    <h6>Current Bid : &#x24; {{i.new_price}}.00</h6></div>
                 </div><hr>
                 {% endfor %}
+                </div>
             </div>
     </div></div>
 {% if terror == "expire" %}
@@ -83,4 +85,88 @@
     window.location="{% url 'view_auction' 0 %}";
 </script>
 {% endif %}
+
+<script>
+    const refreshInterval = 1000;  // Update every 5 seconds (adjust as needed)
+    function updateAuctionTable() {
+        const pid = '{{ pid }}';
+        const url = `/get_latest_auctions/${pid}/`;
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+        const results = document.getElementById('liveResults')
+        results.innerHTML = ''; // This removes all rows
+        data.forEach(function(i) {
+            const row = document.createElement('div');
+            const imageDiv = document.createElement('div');
+            const image = document.createElement('img');
+            const username = document.createElement('div');
+            const price = document.createElement('h6');
+            const line = document.createElement('hr');
+
+            row.className = "row";
+            imageDiv.className = "col-md-3";
+            username.className = "col-md-9";
+            image.style["height"] = "60px";
+            image.style["width"] = "96%";
+            
+            image.src=i.image;
+            username.innerHTML = i.username;
+            price.innerHTML = "Current Bid: $" + i.price + ".00"
+
+            imageDiv.appendChild(image);
+            username.appendChild(price);
+
+            row.appendChild(imageDiv);
+            row.appendChild(username);
+            results.appendChild(row);
+            results.appendChild(line);
+        });
+        })
+        .catch(error => {
+            console.error('Error fetching auction data:', error);
+          });;
+    }
+
+    setInterval(updateAuctionTable, refreshInterval);
+
+    /**
+    var ws_url = 'ws://' + window.location.host + '/ws/ticks/';
+    var ticksSocket = new channels.WebSocket(ws_url);
+
+    ticksSocket.onmessage = function(event) {
+        var data = JSON.parse(event.data);
+        console.log('data', data);
+        
+        const results = document.getElementById('liveResults')
+        results.innerHTML = ''; // This removes all rows
+
+        data.forEach(function(i) {
+            const row = document.createElement('div');
+            const image = document.createElement('div');
+            const imageSrc = document.createElement('src');
+            const username = document.createElement('div');
+            const price = document.createElement('h6');
+            const line = document.createElement('hr');
+
+            row.className = "row";
+            image.className = "col-md-3";
+            username.className = "col-md-9";
+            image.style["height"] = "60px";
+            image.style["width"] = "96%";
+
+            image.src=i.user.image.url;
+            username.innerHTML = i.user.user.username;
+            price.innerHTML = "$" + i.new_price + ".00"
+
+            image.appendChild(imageSrc);
+            username.appendChild(price);
+
+            row.appendChild(image);
+            row.appendChild(username);
+            row.appendChild(line);
+        });
+    };
+    */
+</script>
 {% endblock %}

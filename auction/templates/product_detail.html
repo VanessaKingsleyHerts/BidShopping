@@ -23,6 +23,14 @@
                 <div class="col-md-6">
                     <span style="font-weight:bold"> {{pro.category}}</span><hr>
                 </div>
+
+                <div class="col-md-6">
+                    <span>Product Description : </span>
+               </div>
+               <div class="col-md-6">
+                   <span style="font-weight:bold"> {{pro.description}}</span><hr>
+               </div>
+
                 <div class="col-md-6">
                      <span>Product Seller : </span>
                 </div>
@@ -33,7 +41,7 @@
                      <span>Minium Price : </span>
                 </div>
                 <div class="col-md-6">
-                     <span style="font-weight:bold"> &#8377;{{pro.min_price}}.00 /-</span><hr>
+                     <span style="font-weight:bold"> &#x24;{{pro.min_price}}.00</span><hr>
                 </div>
             </div>
 x        <div align="center"><p style="color:blue">
@@ -67,7 +75,7 @@ x        <div align="center"><p style="color:blue">
 				{% csrf_token %}
 				<button type="submit" class="btn btn-primary" style="width:100%" onclick="return confirm('Are you sure?')">Participate</button>
 			</form>
-            {% else %}
+            {% elif request.user.username %}
             <div align="center" style="color:red">Already Participated</div>
             {% endif %}
         </div>
