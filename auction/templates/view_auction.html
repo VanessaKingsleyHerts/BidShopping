@@ -17,44 +17,50 @@
    	</h1>
    		<div class="row" style="margin-bottom:5%">
 			{% for j in pro %}
-            {% if j.status.status == "Accept" or j.status.status == "Done" %}
-				<div class="col-md-3">
-                    <div style="padding:px;width:80%;margin-bottom:5%;border-radius:3%;border:1px solid grey">
-					<center>
-                        <button class="btn btn-success" style="width:70%">
-                            <i style="color:yellow;font-size:20px" class="fa fa-clock-o"></i> {{j.session.time}}
-                        </button>
-                        <div>
-                            <img src="{{j.images.url}}" style="margin-top:1%;width:150px;height:150px;float:center">
-                        </div>
-                    </center>
-   						<div style="padding:10px">
-   						<h5 style="color:red;font-weight:bold"> {{j.name}} </h5>
-                            <div class="row">
-                            <div class="col-md-7"><span style="font-weight:bold;color:blue">&#x24; : {{j.min_price}}</span>
-                            </div><div class="col-md-5" align="right"><span style="font-weight:bold;color:grey">
-                                <a href="{% url 'product_detail' j.id %}"> <i class="fa fa-info"></i> Detail</a></span></div>
-                            </div></div>
+            {% if j.status.status == "Accept" or j.status.status == "Done"  or j.status.status == "Expired"  or j.status.status == "Cancelled" %}
+            <div class="col-md-3">
+                <div style="padding:px;width:80%;margin-bottom:5%;border-radius:3%;border:1px solid grey">
+                <center>
+                    <button class="btn btn-success" style="width:70%">
+                        <i style="color:yellow;font-size:20px" class="fa fa-clock-o"></i> {{j.session.time}}
+                    </button>
+                    <div>
+                        <img src="{{j.images.url}}" style="margin-top:1%;width:150px;height:150px;float:center">
+                    </div>
+                </center>
+                       <div style="padding:10px">
+                       <h5 style="color:red;font-weight:bold"> {{j.name}} </h5>
+                        <div class="row">
+                        <div class="col-md-7"><span style="font-weight:bold;color:blue">&#x24; : {{j.min_price}}</span>
+                        </div><div class="col-md-5" align="right"><span style="font-weight:bold;color:grey">
+                            <a href="{% url 'product_detail' j.id %}"> <i class="fa fa-info"></i> Detail</a></span></div>
+                        </div></div>
+                    {% if j.status.status == "Accept" or j.status.status == "Done" %}
                         {% if j.temp == 0 %}
                                 <form action="{% url 'view_auction' j.id %}" method="post">
-								{% csrf_token %}
-								<button type="submit" class="btn btn-primary" style="width:100%" onclick="return confirm('Are you sure?')">Participate</button>
-							</form>
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary" style="width:100%" onclick="return confirm('Are you sure?')">Participate</button>
+                            </form>
                         {% else %}
                         {% if j.temp == 2 %}
                         <a href="{% url 'start_auction' j.id %}" ><button type="submit" class="btn btn-danger" style="width:100%">Currently in Bid =</button></a>
                         {% else %}
-                         {% if j.temp == 3 %}
-                             <a href="{% url 'winner1' j.id %}" ><button type="submit" class="btn btn-danger" style="width:100%">
-                                 <i class="fa fa-user"></i> winner announced</button></a>
+                        {% if j.temp == 3 %}
+                            <a href="{% url 'winner1' j.id %}" ><button type="submit" class="btn btn-danger" style="width:100%">
+                                <i class="fa fa-user"></i> winner announced</button></a>
                         {% else %}
                         <div align="center">
-                 				<p style="color:red">Already Participated</p>
+                                <p style="color:red">Already Participated</p>
                         </div>
-{% endif %}
-{% endif %}
-{% endif %}
-   				</div></div>
+                        {% endif %}
+                        {% endif %}
+                        {% endif %}
+                    {% else %}
+                    <div align="center">
+                        <p style="color:grey">Auction cancelled/expired</p>
+                    </div>
+                    {% endif %}
+               </div></div>
             {% endif %}
 			{% endfor %}
 

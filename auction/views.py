@@ -54,6 +54,31 @@ def new():
     new_pro = Product.objects.filter(status=status)
     return new_pro
 
+def control():
+    status = Status.objects.get(status="pending")
+    products = Product.objects.filter(status=status)
+    d1 = datetime.date.today()
+    d2 = datetime.datetime.now()
+    expired = Status.objects.get(status="Expired")
+    for p in products:
+        a = p.session.date.date
+        li = a.split('-')
+        total_time = (int(li[0]) * 365) + (int(li[1]) * 30) + (int(li[2]))
+        c_time = d2.strftime("%H:%M")
+        y = d1.year
+        m = d1.month
+        d = d1.day
+        now_total = (int(y) * 365) + (int(m) * 30) + (int(d))
+        if total_time < now_total:
+            li2 = p.session.time.split(':')
+            li3 = c_time.split(':')
+            time1 = (int(li2[0]) * 60) + int(li2[1])
+            time2 = (int(li3[0]) * 60) + int(li3[1])
+            if time1 < time2:
+                if p.status == expired:
+                    p.status = expired
+                    p.save()
+
 
 def About(request):
     return render(request, 'about.html')
@@ -810,6 +835,7 @@ def Add_Product(request):
         c = request.POST['cat']
         s = request.POST['scat']
         p = request.POST['p_name']
+        des = request.POST['p_des']
         pr = request.POST['price']
         i = request.FILES['image']
         sett1 = request.POST['time']
@@ -820,7 +846,7 @@ def Add_Product(request):
             sub = Sub_Category.objects.get(id=s)
         ses = Session_Time.objects.get(id=sett1)
         sta = Status.objects.get(status="pending")
-        pro1=Product.objects.create(status=sta,session=ses,category=sub,name=p, min_price=pr, images=i)
+        pro1=Product.objects.create(status=sta,session=ses,category=sub,name=p,description=des,min_price=pr, images=i)
         auc=Aucted_Product.objects.create(product=pro1,user=sell)
         terror = True
     d = {'sed': sed,'sett':sett,'cat': cat,'scat':scat,'date1': date1,'terror':terror,'error':error}
@@ -936,6 +962,7 @@ def search_auctions(request, pid):
     return render(request,'view_auction.html',d)
 
 def view_auction(request,pid):
+    control()
     #if not request.user.is_authenticated:
     #    return redirect('login_user')
     error = ""
@@ -1016,6 +1043,14 @@ def view_auction(request,pid):
 
             i.temp = 3
             i.save()
+    #size=pro1.count()
+    #i = size / 2
+    #j = 0
+    #pro2 = []
+    #for p in pro1:
+     #   if j > i:
+      #      pro2.append(p)
+      #  j = j + 1
     d = {'pro':pro1,'error':error,'terror':terror,'message1':message1, 'pid': pid}
     return render(request,'view_auction.html',d)
 
@@ -1034,6 +1069,7 @@ def All_product(request):
 
     if data.membership.fee == "Unpaid":
         return redirect('Member_Payment_mode')
+    #pro = Product.objects.filter(user=data)
     pro = Aucted_Product.objects.filter(user=data)
     d = {'pro':pro,'error':error}
     return render(request,'All_prodcut.html',d)
@@ -1099,6 +1135,13 @@ def Bidding_Status(request):
     if data.membership.fee == "Unpaid":
         return redirect('Member_Payment_mode')
     pro = Participant.objects.filter(user=data)
+    #size=pro.count()
+    #j = 0
+    #pro2 = []
+    #for p in pro:
+     #   if j != 3 and j != 4 and j != 5:
+     #       pro2.append(p)
+     #   j = j + 1
     d = {'pro':pro,'error':error}
     return render(request,'bidding_status.html',d)
 

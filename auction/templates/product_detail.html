@@ -41,10 +41,10 @@
                      <span>Minium Price : </span>
                 </div>
                 <div class="col-md-6">
-                     <span style="font-weight:bold"> &#x24;{{pro.min_price}}.00</span><hr>
+                     <span style="font-weight:bold"> &#x24;{{pro.min_price}}</span><hr>
                 </div>
             </div>
-x        <div align="center"><p style="color:blue">
+        <div align="center"><p style="color:blue">
             <i class="fa fa-clock-o"></i> Auction Session info</p></div>
               <div class="row">
                 <div class="col-md-6">
@@ -75,8 +75,8 @@ x        <div align="center"><p style="color:blue">
 				{% csrf_token %}
 				<button type="submit" class="btn btn-primary" style="width:100%" onclick="return confirm('Are you sure?')">Participate</button>
 			</form>
-            {% elif request.user.username %}
-            <div align="center" style="color:red">Already Participated</div>
+            {% elif request.user.username and product.status.status == 'Accept' %}
+                <div align="center" style="color:red">Already Participated</div>
             {% endif %}
         </div>
     </div>

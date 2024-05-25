@@ -40,7 +40,7 @@
                      <span>Minium Price : </span>
                 </div>
                 <div class="col-md-6">
-                     <span style="font-weight:bold"> &#x24;{{pro.aucted_product.product.min_price}}.00</span><hr>
+                     <span style="font-weight:bold"> &#x24;{{pro.aucted_product.product.min_price}}</span><hr>
                 </div>
             </div>
             <div class="col-md-12">
@@ -66,7 +66,7 @@
                 <div class="row">
                     <div class="col-md-3"><img src="{{i.user.image.url}}" style="height:60px;width:96%"></div>
                     <div class="col-md-9">{{i.user.user.username}}
-                    <h6>Current Bid : &#x24; {{i.new_price}}.00</h6></div>
+                    <h6>Current Bid : &#x24; {{i.new_price}}</h6></div>
                 </div><hr>
                 {% endfor %}
                 </div>
@@ -112,7 +112,7 @@
             
             image.src=i.image;
             username.innerHTML = i.username;
-            price.innerHTML = "Current Bid: $" + i.price + ".00"
+            price.innerHTML = "Current Bid: $" + i.price
 
             imageDiv.appendChild(image);
             username.appendChild(price);
@@ -157,7 +157,7 @@
 
             image.src=i.user.image.url;
             username.innerHTML = i.user.user.username;
-            price.innerHTML = "$" + i.new_price + ".00"
+            price.innerHTML = "$" + i.new_price 
 
             image.appendChild(imageSrc);
             username.appendChild(price);

@@ -49,7 +49,7 @@ class Product(models.Model):
     temp = models.IntegerField(null=True)
     status  =models.ForeignKey(Status,on_delete=models.CASCADE,null=True)
     name = models.CharField(max_length=100,null=True)
-    min_price = models.IntegerField(null=True)
+    min_price = models.FloatField(null=True)
     images = models.FileField(null=True)
     session = models.ForeignKey(Session_Time,on_delete=models.CASCADE,null=True)
     category = models.ForeignKey(Sub_Category,on_delete=models.CASCADE,null=True)
@@ -77,7 +77,7 @@ class Payment(models.Model):
 
 class Participant(models.Model):
     payment = models.ForeignKey(Payment,on_delete=models.CASCADE,null=True)
-    new_price = models.IntegerField(null=True)
+    new_price = models.FloatField(null=True)
     result = models.ForeignKey(Result,on_delete=models.CASCADE,null=True)
     user = models.ForeignKey(Member,on_delete=models.CASCADE,null=True)
     aucted_product = models.ForeignKey(Aucted_Product,on_delete=models.CASCADE,null=True)

@@ -15,7 +15,7 @@
         <div class="col-md-6">
      <div class="form-group">
     <label for="exampleFormControlSelect1">Select Category</label>
-    <select class="form-control" id="programming" name="cat">
+    <select required class="form-control" id="programming" name="cat">
         <option value="">---select Category---</option>
             {% for i in cat %}
             <option value="{{i.id}}">{{i.name}}</option>
@@ -26,7 +26,7 @@
         <div class="col-md-6">
      <div class="form-group">
     <label for="exampleFormControlSelect1">Select Sub-Category</label>
-    <select class="form-control" id="courses" name="scat">
+    <select required class="form-control" id="courses" name="scat">
 
     </select>
      </div>
@@ -36,22 +36,23 @@
         <div class="form-row">
     <div class="form-group col-md-6">
     <label for="exampleInputPassword1">Product name</label>
-    <input type="text" class="form-control" placeholder="Enter product Name" id="exampleInputPassword1" name="p_name">
+    <input type="text" required class="form-control" placeholder="Enter product Name" id="exampleInputPassword1" name="p_name">
 </div>
             <div class="form-group col-md-6">
     <label for="exampleInputPassword1">Minimum Price $</label>
-    <input type="number" class="form-control" id="exampleInputPassword1" name="price">
+    <input type="number" required step="0.01" class="form-control" id="exampleInputPassword1" name="price">
 </div></div>
 
     <div class="form-row">
       <div class="form-group col-md-6">
         <label for="exampleInputPassword1">Description</label>
-        <textarea id="story" name="story" rows="5" cols="33" class="form-control" placeholder="Enter Description for product" id="exampleInputPassword1" name="p_des"/></textarea>
+        <textarea id="exampleInputPassword1" required rows="5" cols="33"
+         class="form-control" placeholder="Enter Description for product" id="exampleInputPassword1" name="p_des"></textarea>
       </div>
 
     <div class="form-group col-md-6" top:"50%">
     <label for="exampleInputPassword1">Product Image</label>
-    <input type="file" class="form-control" id="exampleInputPassword1" name="image">
+    <input type="file" required class="form-control" id="exampleInputPassword1" name="image">
 </div>
     </div>
 
@@ -60,7 +61,7 @@
         <div class="col-md-6">
      <div class="form-group">
     <label for="exampleFormControlSelect1">Select Session Date</label>
-    <select class="form-control" id="programming1" name="date">
+    <select required class="form-control" id="programming1" name="date">
         <option value="">---select Session Date---</option>
             {% for i in sed %}
             <option value="{{i.id}}">{{i.date}}</option>
@@ -70,7 +71,7 @@
         </div>
         <div class="col-md-6">
      <div class="form-group">
-    <label for="exampleFormControlSelect1">Session Time</label>
+    <label required for="exampleFormControlSelect1">Session Time</label>
     <select class="form-control" id="courses1" name="time">
 
     </select>
