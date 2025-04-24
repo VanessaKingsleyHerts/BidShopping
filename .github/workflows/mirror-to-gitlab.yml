@@ -3,18 +3,33 @@ name: Mirror to GitLab
 on:
   push:
     branches:
-      - main   # adjust if your default is 'master' or another branch
+      - main
 
 jobs:
   mirror:
     runs-on: ubuntu-latest
     steps:
+      # 1) Full clone so we get tags & branches
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0         # ← important for --mirror
+          tags: true
 
-      - name: Push to GitLab
-        env:
-          GITLAB_TOKEN: ${{ secrets.GITLAB_BidShopping_TOKEN }}
+      # 2) Verify that the PAT secret exists
+      - name: Verify GitLab token
         run: |
-          git remote add gitlab https://oauth2:${GITLAB_BidShopping_TOKEN}@gitlab.com/uhthesis/BidShopping.git
+          if [ -z "${{ secrets.GITLAB_BidShopping_TOKEN }}" ]; then
+            echo "ERROR: GITLAB_TOKEN is not set" && exit 1
+          fi
+
+      # 3) Add GitLab remote
+      - name: Add GitLab remote
+        run: |
+          git remote add gitlab \
+            https://oauth2:${{ secrets.GITLAB_BidShopping_TOKEN }}@gitlab.com/uhthesis/BidShopping.git
+
+      # 4) Push everything
+      - name: Push to GitLab
+        run: |
           git push --mirror gitlab
