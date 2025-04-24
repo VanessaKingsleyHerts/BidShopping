@@ -23,20 +23,19 @@ jobs:
             echo "GitLab token is set"
           fi
 
+      - name: Add GitLab remote
+        run: |
+          # remove any prior remote definition
+          git remote remove gitlab 2>/dev/null || true
+          git remote add gitlab \
+            https://oauth2:${{ secrets.GITLAB_BidShopping_TOKEN }}@gitlab.com/uhthesis/BidShopping.git
+
       - name: Show git remotes
         run: git remote -v
 
       - name: Test push permissions (dry-run)
         run: |
           GIT_TRACE=1 git push --mirror gitlab --dry-run
-
-      - name: Add GitLab remote
-        run: |
-          git remote add gitlab \
-            https://oauth2:${{ secrets.GITLAB_BidShopping_TOKEN }}@gitlab.com/uhthesis/BidShopping.git
-
-      - name: Confirm remotes after adding
-        run: git remote -v
 
       - name: Mirror push (verbose)
         env:
