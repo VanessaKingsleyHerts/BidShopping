@@ -19,25 +19,17 @@ jobs:
         run: |
           if [ -z "${{ secrets.GITLAB_BidShopping_TOKEN }}" ]; then
             echo "ERROR: GITLAB_BidShopping_TOKEN is not set" && exit 1
-          else
-            echo "GitLab token is set"
           fi
 
       - name: Add GitLab remote
         run: |
-          # remove any prior remote definition
           git remote remove gitlab 2>/dev/null || true
-          git remote add gitlab \
-            https://oauth2:${{ secrets.GITLAB_BidShopping_TOKEN }}@gitlab.com/uhthesis/BidShopping.git
+          git remote add gitlab https://oauth2:${{ secrets.GITLAB_BidShopping_TOKEN }}@gitlab.com/uhthesis/BidShopping.git
 
-      - name: Show git remotes
-        run: git remote -v
-
-      - name: Test push permissions (dry-run)
+      - name: Push branches to GitLab
         run: |
-          GIT_TRACE=1 git push --mirror gitlab --dry-run
+          git push --force gitlab 'refs/heads/*:refs/heads/*'
 
-      - name: Mirror push (verbose)
-        env:
-          GIT_TRACE: 1
-        run: git push --mirror gitlab
+      - name: Push tags to GitLab
+        run: |
+          git push --force gitlab 'refs/tags/*:refs/tags/*'
