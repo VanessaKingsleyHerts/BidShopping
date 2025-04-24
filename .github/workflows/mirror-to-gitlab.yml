@@ -9,12 +9,12 @@ jobs:
   mirror:
     runs-on: ubuntu-latest
     steps:
-      # 1) Full clone so we get tags & branches
+      # 1) Full clone with all branches & tags
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0         # ← important for --mirror
-          tags: true
+          fetch-depth: 0       # get full history
+          fetch-tags: true     # fetch all tags
 
       # 2) Verify that the PAT secret exists
       - name: Verify GitLab token
