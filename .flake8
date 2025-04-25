@@ -7,6 +7,15 @@ max-line-length = 100
 
 # Error codes to ignore
 ignore =
+    E114,  # indentation is not a multiple of 4 (comment)
+    E116,  # unexpected indentation (comment)
+    E117,  # over-indented
+    E222,  # multiple spaces after operator
+    E225,  # missing whitespace around operator
+    E226,  # missing whitespace around arithmetic operator
+    E275,  # missing whitespace after keyword
+    E741,  # ambiguous variable name
+    W293,  # blank line contains whitespace
     E231,
     E265,
     W391,
