@@ -61,15 +61,13 @@ test:
 
     # 5) Fetch matching Chromedriver
     - CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-    - wget -O /tmp/chromedriver.zip \
-        https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
+    - wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
     - unzip /tmp/chromedriver.zip -d /usr/local/bin/
     - chmod +x /usr/local/bin/chromedriver
 
-    # 6) Python virtualenv + deps
+    # 6) Python virtualenv & deps
     - python -m venv .venv && source .venv/bin/activate
-    - pip install --upgrade pip
-    - pip install -r requirements.txt selenium psycopg2-binary
+    - pip install selenium psycopg2-binary
 
   script:
     - mkdir -p $STATIC_ROOT
