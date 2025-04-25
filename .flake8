@@ -4,6 +4,7 @@
 
 max-line-length = 100
 
+# Error codes to ignore
 ignore =
     E114,
     E116,
@@ -11,24 +12,24 @@ ignore =
     E222,
     E225,
     E226,
-    E275,
-    E741,
-    W293,
     E231,
+    E251,
     E265,
-    W391,
+    E275,
     E302,
-    W292,
     E303,
+    E401,
     E501,
-    F811,
-    F405,
     E722,
-    F841
+    F403,
+    F405,
+    F811,
+    F841 
 
 exclude =
+    .venv/,
     venv/,
     migrations/,
-    .gitlab-ci.yml,
     __pycache__/,
-    static/
+    static/,
+    .gitlab-ci.yml
