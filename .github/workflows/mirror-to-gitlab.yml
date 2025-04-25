@@ -1,0 +1,35 @@
+name: Mirror to GitLab
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Verify GitLab token
+        run: |
+          if [ -z "${{ secrets.GITLAB_BidShopping_TOKEN }}" ]; then
+            echo "ERROR: GITLAB_BidShopping_TOKEN is not set" && exit 1
+          fi
+
+      - name: Add GitLab remote
+        run: |
+          git remote remove gitlab 2>/dev/null || true
+          git remote add gitlab https://oauth2:${{ secrets.GITLAB_BidShopping_TOKEN }}@gitlab.com/uhthesis/BidShopping.git
+
+      - name: Push branches to GitLab
+        run: |
+          git push --force gitlab 'refs/heads/*:refs/heads/*'
+
+      - name: Push tags to GitLab
+        run: |
+          git push --force gitlab 'refs/tags/*:refs/tags/*'
