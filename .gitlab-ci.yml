@@ -45,7 +45,7 @@ test:
     DATABASE_URL: postgres://postgres:@db:5432/bidshopping
     STATIC_ROOT: /tmp/static
 
-    before_script:
+  before_script:
     # 1) Install helper tools
     - apt-get update && apt-get install -y wget gnupg2 unzip
 
