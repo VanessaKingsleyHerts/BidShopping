@@ -32,25 +32,45 @@ lint:
 
 test:
   stage: test
+  image: python:3.10
+
   services:
     - name: postgres:13
       alias: db
-    - name: selenium/standalone-chrome:latest
-      alias: selenium
+
+  variables:
+    POSTGRES_DB: bidshopping
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: ""
+    DATABASE_URL: postgres://postgres:@db:5432/bidshopping
+    STATIC_ROOT: /tmp/static
 
   before_script:
-    - python -m venv .venv
-    - source .venv/bin/activate
+    # 1) Install Chrome & ChromeDriver
+    - apt-get update && apt-get install -y wget gnupg2 unzip
+    - wget -q -O - https://dl.google.com/linux/linux_signing_key.pub \
+        | apt-key add -
+    - echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" \
+        > /etc/apt/sources.list.d/google-chrome.list
+    - apt-get update && apt-get install -y google-chrome-stable
+    - CHROME_DRIVER_VERSION=$(curl -sS \
+        https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
+    - wget -O /tmp/chromedriver.zip \
+        https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
+    - unzip /tmp/chromedriver.zip -d /usr/local/bin/
+    - chmod +x /usr/local/bin/chromedriver
+
+    # 2) Python setup
+    - python -m venv .venv && source .venv/bin/activate
     - pip install --upgrade pip
-    - pip install -r requirements.txt
-    - pip install selenium psycopg2-binary
+    - pip install -r requirements.txt selenium psycopg2-binary
 
   script:
     - mkdir -p $STATIC_ROOT
     - python manage.py collectstatic --noinput
     - python manage.py migrate --noinput
-    # Run functional tests only, and expose Django live server
-    - python manage.py test functional_tests --liveserver=0.0.0.0:8081
+    # Now run _all_ tests (unit + functional), since Chrome is local
+    - python manage.py test
 
   artifacts:
     when: always

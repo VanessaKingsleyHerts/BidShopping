@@ -9,17 +9,16 @@ class TestHomePage(StaticLiveServerTestCase):
     # def setUp(self):
        # service = webdriver.ChromeService(executable_path='./functional_tests/chromedriver.exe')
        # self.browser = webdriver.Chrome(service=service)
-
+    
     def setUp(self):
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
+        # Configure ChromeOptions for headless CI
+        options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
 
-        self.browser = webdriver.Remote(
-            command_executor=os.environ["SELENIUM_REMOTE_URL"],
-            options=chrome_options
-        )
+        # Connect to the Selenium service instead of a local chromedriver.exe
+        self.browser = webdriver.Chrome(options=options)
 
     # def tearDown(self):
       #  self.browser.close()
