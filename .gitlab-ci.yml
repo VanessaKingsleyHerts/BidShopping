@@ -45,22 +45,28 @@ test:
     DATABASE_URL: postgres://postgres:@db:5432/bidshopping
     STATIC_ROOT: /tmp/static
 
-  before_script:
-    # 1) Install Chrome & ChromeDriver
+    before_script:
+    # 1) Install helper tools
     - apt-get update && apt-get install -y wget gnupg2 unzip
-    - wget -q -O - https://dl.google.com/linux/linux_signing_key.pub \
-        | apt-key add -
+
+    # 2) Add Google’s signing key
+    - wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+
+    # 3) Add the Chrome repo
     - echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" \
         > /etc/apt/sources.list.d/google-chrome.list
+
+    # 4) Install Chrome itself
     - apt-get update && apt-get install -y google-chrome-stable
-    - CHROME_DRIVER_VERSION=$(curl -sS \
-        https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
+
+    # 5) Fetch matching Chromedriver
+    - CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
     - wget -O /tmp/chromedriver.zip \
         https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
     - unzip /tmp/chromedriver.zip -d /usr/local/bin/
     - chmod +x /usr/local/bin/chromedriver
 
-    # 2) Python setup
+    # 6) Python virtualenv + deps
     - python -m venv .venv && source .venv/bin/activate
     - pip install --upgrade pip
     - pip install -r requirements.txt selenium psycopg2-binary
