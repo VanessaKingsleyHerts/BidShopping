@@ -6,19 +6,12 @@ import os
 
 class TestHomePage(StaticLiveServerTestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-
-        # Change this to the Python container's hostname from the perspective of the Selenium container
-        cls.live_server_url = 'http://localhost:8000'
-
     # def setUp(self):
        # service = webdriver.ChromeService(executable_path='./functional_tests/chromedriver.exe')
        # self.browser = webdriver.Chrome(service=service)
-    
+
     def setUp(self):
-        chrome_options = Options()
+        chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
