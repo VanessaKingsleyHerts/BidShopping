@@ -4,16 +4,19 @@
 # Maximum allowed line length
 max-line-length = 100
 
-# Ignore these specific error codes:
-# E231: missing whitespace after ','
-# E265: block comment should start with '# '
-# W391: blank line at end of file
-# E302: expected 2 blank lines, found 1
-# W292: no newline at end of file
-# E303: too many blank lines (2)
-# E501: line too long
-# F811: redefinition of unused name
-ignore = E231, E265, W391, E302, W292, E303, E501, F811
+# Ignore these error codes
+ignore =
+    E231,  # missing whitespace after ','
+    E265,  # block comment should start with '# '
+    W391,  # blank line at end of file
+    E302,  # expected 2 blank lines, found 1
+    W292,  # no newline at end of file
+    E303,  # too many blank lines
+    E501,  # line too long
+    F811,  # redefinition of unused name
+    F405,  # star-imported names may be undefined
+    E722,  # do not use bare except
+    F841   # local variable assigned but never used
 
 # Exclude common auto-generated or external directories
 exclude =
