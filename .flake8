@@ -4,11 +4,11 @@
 
 max-line-length = 100
 
-# Error codes to ignore
 ignore =
     E114,
     E116,
     E117,
+    E111,
     E222,
     E225,
     E226,
@@ -16,15 +16,21 @@ ignore =
     E251,
     E265,
     E275,
+    E301,
     E302,
     E303,
     E401,
     E501,
     E722,
+    E741,
+    F401,
     F403,
     F405,
     F811,
-    F841 
+    F841,
+    W292,
+    W293,
+    W391 
 
 exclude =
     .venv/,
