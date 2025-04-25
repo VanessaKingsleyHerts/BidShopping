@@ -1,14 +1,14 @@
 # .flake8
 
 [flake8]
-
 max-line-length = 100
 
 ignore =
+    E111,
     E114,
     E116,
     E117,
-    E111,
+    E221,
     E222,
     E225,
     E226,
@@ -30,7 +30,7 @@ ignore =
     F841,
     W292,
     W293,
-    W391 
+    W391
 
 exclude =
     .venv/,
