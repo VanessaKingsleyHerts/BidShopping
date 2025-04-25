@@ -6,24 +6,26 @@ import os
 
 class TestHomePage(StaticLiveServerTestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # Change this to the Python container's hostname from the perspective of the Selenium container
+        cls.live_server_url = 'http://localhost:8000'
+
     # def setUp(self):
        # service = webdriver.ChromeService(executable_path='./functional_tests/chromedriver.exe')
        # self.browser = webdriver.Chrome(service=service)
     
     def setUp(self):
-        # Read the remote URL from env (defaults to localhost if not set)
-        remote_url = os.environ.get('SELENIUM_REMOTE_URL', 'http://localhost:4444/wd/hub')
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
 
-        # Configure ChromeOptions for headless CI
-        options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-
-        # Connect to the Selenium service instead of a local chromedriver.exe
         self.browser = webdriver.Remote(
-            command_executor=remote_url,
-            options=options
+            command_executor=os.environ["SELENIUM_REMOTE_URL"],
+            options=chrome_options
         )
 
     # def tearDown(self):
