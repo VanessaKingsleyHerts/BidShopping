@@ -1,0 +1,23 @@
+# .flake8
+[flake8]
+# increase max line length
+max-line-length = 100
+
+# ignore specific error codes you don’t want to fail on
+ignore =
+    E231,  # missing whitespace after ','
+    E265,  # block comment should start with '# '
+    W391,  # blank line at end of file
+    E302,  # expected 2 blank lines, found 1
+    W292,  # no newline at end of file
+    E303,  # too many blank lines
+    E501,  # line too long
+    F811   # redefinition of unused name
+
+# optionally exclude auto-generated or third-party directories
+exclude =
+    venv/,
+    migrations/,
+    .gitlab-ci.yml,
+    __pycache__/,
+    static/
