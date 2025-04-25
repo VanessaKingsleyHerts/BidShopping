@@ -10,7 +10,7 @@ class TestHomePage(StaticLiveServerTestCase):
        # service = webdriver.ChromeService(executable_path='./functional_tests/chromedriver.exe')
        # self.browser = webdriver.Chrome(service=service)
     
-     def setUp(self):
+    def setUp(self):
         # Read the remote URL from env (defaults to localhost if not set)
         remote_url = os.environ.get('SELENIUM_REMOTE_URL', 'http://localhost:4444/wd/hub')
 
@@ -26,7 +26,7 @@ class TestHomePage(StaticLiveServerTestCase):
             options=options
         )
 
-   # def tearDown(self):
+    # def tearDown(self):
       #  self.browser.close()
 
     def tearDown(self):
@@ -55,3 +55,4 @@ class TestHomePage(StaticLiveServerTestCase):
         url = self.live_server_url + reverse('contact')
         self.browser.get(url)
         time.sleep(2)
+        
