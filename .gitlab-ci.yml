@@ -24,44 +24,55 @@ before_script:
   - apk add --no-cache python3 py3-pip gcc musl-dev postgresql-dev
 
 stages:
-  - build
   - lint
   - test
 
-build:
-  stage: build
-  script:
-    - docker build -t django-test-app .
-  artifacts:
-    paths:
-      - .
+variables:
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONUNBUFFERED: "1"
+  POSTGRES_DB: "bidshopping"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "postgres"  # Set something non-empty!
+  DATABASE_URL: "postgres://postgres:postgres@db:5432/bidshopping"
+  STATIC_ROOT: "/tmp/static"
+  SELENIUM_REMOTE_URL: "http://selenium:4444/wd/hub"
+
+cache:
+  paths:
+    - .cache/pip
+
+services:
+  - name: postgres:13
+    alias: db
+  - name: selenium/standalone-chrome:latest
+    alias: selenium
+
+before_script:
+  - python -m venv .venv
+  - source .venv/bin/activate
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
+  - pip install coverage selenium psycopg2-binary
 
 lint:
   stage: lint
   script:
+    - source .venv/bin/activate
     - pip install flake8
     - flake8 .
 
 test:
   stage: test
-  services:
-    - name: django-test-app
-      alias: django
-    - name: selenium/standalone-chrome
-      alias: selenium
-    - name: postgres:13
-      alias: db
-
-  before_script:
-    # install python deps
-    - apk add --no-cache python3 py3-pip gcc musl-dev postgresql-dev
-    - pip install -r requirements.txt
-    - pip install coverage selenium psycopg2-binary
-
   script:
+    - source .venv/bin/activate
+    - mkdir -p "$STATIC_ROOT"
+    - python manage.py collectstatic --noinput
     - python manage.py migrate --noinput
+    # Run normal tests in parallel
     - coverage run --source=. manage.py test --parallel --exclude-tag=functional
+    # Run functional tests separately (no parallel)
     - coverage run --append --source=. manage.py test --tag=functional
+    # Generate coverage reports
     - coverage xml -o coverage.xml
     - coverage html -d htmlcov
 
