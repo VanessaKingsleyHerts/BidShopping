@@ -52,7 +52,6 @@ test:
     - python manage.py migrate --noinput
     - coverage run --source=. manage.py test --parallel --exclude-tag=functional
     - python manage.py runserver 0.0.0.0:8000 &
-    - sleep 5
     - coverage run --append --source=. manage.py test --tag=functional
     - coverage report
 
