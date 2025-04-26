@@ -37,31 +37,31 @@ class TestHomePage(StaticLiveServerTestCase):
         super().tearDownClass()
 
     def test_home(self):
-        self.browser.get(self.remote_server_url )
+        self.browser.get(self.remote_server_url)
         time.sleep(1)
 
     def test_user_login(self):
-        url = self.remote_server_url  + reverse('login_user')
+        url = self.remote_server_url + reverse('login_user')
         self.browser.get(url)
         time.sleep(1)
 
     def test_admin_login(self):
-        url = self.remote_server_url  + reverse('login_admin')
+        url = self.remote_server_url + reverse('login_admin')
         self.browser.get(url)
         time.sleep(1)
 
     def test_about(self):
-        url = self.remote_server_url  + reverse('about')
+        url = self.remote_server_url + reverse('about')
         self.browser.get(url)
         time.sleep(1)
 
     def test_contact(self):
-        url = self.remote_server_url  + reverse('contact')
+        url = self.remote_server_url + reverse('contact')
         self.browser.get(url)
         time.sleep(1)
 
     def test_file_upload(self):
-        self.browser.get(self.remote_server_url  + reverse('upload_view'))
+        self.browser.get(self.remote_server_url + reverse('upload_view'))
         upload_input = self.browser.find_element_by_name('file_field')
         # ensure you have a sample file in your repo
         upload_input.send_keys(os.path.join(os.getcwd(), 'functional_tests', 'fixtures', 'sample.pdf'))
@@ -71,7 +71,7 @@ class TestHomePage(StaticLiveServerTestCase):
         self.assertIn('uploaded', success.text.lower())
 
     def test_file_download_link(self):
-        self.browser.get(self.remote_server_url  + reverse('download_view'))
+        self.browser.get(self.remote_server_url + reverse('download_view'))
         link = self.browser.find_element_by_tag_name('a')
         href = link.get_attribute('href')
         # you could issue a direct HTTP GET here to validate headers:
