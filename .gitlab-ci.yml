@@ -5,6 +5,7 @@ stages:
   - test
 
 variables:
+  CI: "true"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED:      "1"
   POSTGRES_DB:           bidshopping
