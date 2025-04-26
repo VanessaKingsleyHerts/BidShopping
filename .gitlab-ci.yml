@@ -36,6 +36,7 @@ variables:
   DATABASE_URL: "postgres://postgres:postgres@db:5432/bidshopping"
   STATIC_ROOT: "/tmp/static"
   SELENIUM_REMOTE_URL: "http://selenium:4444/wd/hub"
+  DJANGO_LIVE_TEST_SERVER_ADDRESS: "0.0.0.0:8000"
 
 cache:
   paths:
