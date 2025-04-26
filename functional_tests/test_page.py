@@ -20,8 +20,8 @@ class TestHomePage(StaticLiveServerTestCase):
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         cls.browser = webdriver.Remote(
-           command_executor=os.environ['SELENIUM_REMOTE_URL'],
-           options=options,
+            command_executor=os.environ['SELENIUM_REMOTE_URL'],
+            options=options,
         )
 
     @classmethod
