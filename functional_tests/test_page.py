@@ -2,6 +2,7 @@ import os
 import traceback
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import tag
+from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import WebDriverException
 from django.urls import reverse
