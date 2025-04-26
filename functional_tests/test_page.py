@@ -27,7 +27,7 @@ class TestHomePage(StaticLiveServerTestCase):
 
         # Important: Use container address instead of localhost
         if os.getenv('CI'):  # In GitLab CI environment
-            cls.remote_server_url = 'http://web:8000'
+            cls.remote_server_url = 'http://127.0.0.1:8000'
         else:
             cls.remote_server_url = cls.live_server_url
 
