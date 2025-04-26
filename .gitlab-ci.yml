@@ -6,13 +6,13 @@ stages:
 
 variables:
   PYTHONDONTWRITEBYTECODE: "1"
-  PYTHONUNBUFFERED:      "1"
-  POSTGRES_DB:           bidshopping
-  POSTGRES_USER:         postgres
-  POSTGRES_PASSWORD:     ""
-  DATABASE_URL:          "postgres://postgres:@db:5432/bidshopping"
-  STATIC_ROOT:           "/tmp/static"
-  SELENIUM_REMOTE_URL:   "http://selenium:4444/wd/hub"
+  PYTHONUNBUFFERED: "1"
+  POSTGRES_DB: "bidshopping"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: ""
+  DATABASE_URL: "postgres://postgres:@db:5432/bidshopping"
+  STATIC_ROOT: "/tmp/static"
+  SELENIUM_REMOTE_URL: "http://selenium:4444/wd/hub"
 
 cache:
   paths:
@@ -29,6 +29,7 @@ lint:
 
 test:
   stage: test
+
   services:
     - name: postgres:13
       alias: db
@@ -36,27 +37,27 @@ test:
       alias: selenium
 
   before_script:
-    - python -m venv .venv && source .venv/bin/activate
+    - python -m venv .venv
+    - source .venv/bin/activate
     - pip install --upgrade pip
     - pip install -r requirements.txt
-    - pip install coverage selenium requests psycopg2-binary unittest-xml-reporting
+    - pip install coverage selenium requests psycopg2-binary
 
   script:
     - mkdir -p "$STATIC_ROOT"
     - python manage.py collectstatic --noinput
     - python manage.py migrate --noinput
-    - coverage run --source=. manage.py test --parallel \
-        --testrunner=xmlrunner.extra.djangotestrunner.XMLTestRunner \
-        --output-file=report.xml
+    - coverage run --source=. manage.py test --parallel
     - coverage xml -o coverage.xml
     - coverage html -d htmlcov
 
+  coverage: '/TOTAL\s+\d+\s+\d+\s+(\d+%)/'
+
   artifacts:
     when: always
-    reports:
-      junit: report.xml
+    coverage: '/TOTAL\s+\d+\s+\d+\s+(\d+%)/'
     paths:
       - htmlcov/
-      - functional_tests/screenshots/
       - coverage.xml
+      - functional_tests/screenshots/
     expire_in: 1 week
