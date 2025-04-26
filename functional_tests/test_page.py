@@ -17,11 +17,15 @@ class TestHomePage(StaticLiveServerTestCase):
         super().setUpClass()
         options = webdriver.ChromeOptions()
         options.add_argument('--headless')
-        # point to remote Selenium if needed:
-        cls.browser = webdriver.Remote(
-            command_executor=cls.live_server_url.replace('http://', 'http://selenium:4444/wd/hub'),
-            options=options
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+
+        # connect to the selenium/standalone-chrome service
+        self.browser = webdriver.Remote(
+            command_executor=os.environ["SELENIUM_REMOTE_URL"],
+            options=options,
         )
+
 
     @classmethod
     def tearDownClass(cls):
