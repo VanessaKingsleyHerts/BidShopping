@@ -43,17 +43,18 @@ lint:
 test:
   stage: test
   script:
+    - python3 -m venv .venv
     - source .venv/bin/activate
+    - pip install -r requirements.txt
+    - pip install coverage selenium psycopg2-binary
     - mkdir -p "$STATIC_ROOT"
     - python manage.py collectstatic --noinput
     - python manage.py migrate --noinput
-    # Run normal tests in parallel
     - coverage run --source=. manage.py test --parallel --exclude-tag=functional
-    # Run functional tests separately (no parallel)
+    - python manage.py runserver 0.0.0.0:8000 &
+    - sleep 5
     - coverage run --append --source=. manage.py test --tag=functional
-    # Generate coverage reports
-    - coverage xml -o coverage.xml
-    - coverage html -d htmlcov
+    - coverage report
 
   artifacts:
     when: always
