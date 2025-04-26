@@ -29,7 +29,6 @@ lint:
 
 test:
   stage: test
-
   services:
     - name: postgres:13
       alias: db
@@ -37,25 +36,27 @@ test:
       alias: selenium
 
   before_script:
-    - python -m venv .venv
-    - source .venv/bin/activate
+    - python -m venv .venv && source .venv/bin/activate
     - pip install --upgrade pip
     - pip install -r requirements.txt
-    - pip install coverage selenium requests psycopg2-binary
+    - pip install coverage selenium requests psycopg2-binary unittest-xml-reporting
 
   script:
     - mkdir -p "$STATIC_ROOT"
     - python manage.py collectstatic --noinput
     - python manage.py migrate --noinput
-    - coverage run --source=. manage.py test --parallel
+    - coverage run --source=. manage.py test --parallel \
+        --testrunner=xmlrunner.extra.djangotestrunner.XMLTestRunner \
+        --output-file=report.xml
     - coverage xml -o coverage.xml
     - coverage html -d htmlcov
 
   artifacts:
     when: always
     reports:
-      cobertura: coverage.xml
+      junit: report.xml
     paths:
       - htmlcov/
       - functional_tests/screenshots/
+      - coverage.xml
     expire_in: 1 week
