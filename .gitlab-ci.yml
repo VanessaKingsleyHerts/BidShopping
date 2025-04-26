@@ -51,11 +51,10 @@ test:
     - coverage xml -o coverage.xml
     - coverage html -d htmlcov
 
-  coverage: '/TOTAL\s+\d+\s+\d+\s+(\d+%)/'
+  coverage: '/TOTAL\s+\d+\s+\d+\s+(\d+%)/'   # <--- this goes here
 
   artifacts:
     when: always
-    coverage: '/TOTAL\s+\d+\s+\d+\s+(\d+%)/'
     paths:
       - htmlcov/
       - coverage.xml
