@@ -16,16 +16,11 @@ class TestHomePage(StaticLiveServerTestCase):
     def setUpClass(cls):
         super().setUpClass()
         options = webdriver.ChromeOptions()
-        # run headless in CI
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
-        cls.browser = webdriver.Remote(
-            command_executor=os.getenv('SELENIUM_REMOTE_URL', 'http://localhost:4444/wd/hub'),
-            options=options,
-        )
-
-        cls.remote_server_url = cls.live_server_url  # dynamic server address!
+        cls.browser = webdriver.Chrome(options=options)
+        cls.remote_server_url = cls.live_server_url
 
     @classmethod
     def tearDownClass(cls):
@@ -58,21 +53,17 @@ class TestHomePage(StaticLiveServerTestCase):
 
     def test_file_upload(self):
         self.browser.get(self.remote_server_url + reverse('upload_view'))
-        upload_input = self.browser.find_element_by_name('file_field')
-        # ensure you have a sample file in your repo
+        upload_input = self.browser.find_element("name", "file_field")
         upload_input.send_keys(os.path.join(os.getcwd(), 'functional_tests', 'fixtures', 'sample.pdf'))
-        self.browser.find_element_by_css_selector('button[type=submit]').click()
-        # assert the success message or download link appears
-        success = self.browser.find_element_by_id('upload-success')
+        self.browser.find_element("css selector", 'button[type=submit]').click()
+        success = self.browser.find_element("id", "upload-success")
         self.assertIn('uploaded', success.text.lower())
 
     def test_file_download_link(self):
         self.browser.get(self.remote_server_url + reverse('download_view'))
-        link = self.browser.find_element_by_tag_name('a')
+        link = self.browser.find_element("tag name", "a")
         href = link.get_attribute('href')
-        # you could issue a direct HTTP GET here to validate headers:
         import requests
         r = requests.get(href)
         self.assertEqual(r.headers['Content-Type'], 'application/pdf')
         self.assertGreater(len(r.content), 0)
-
