@@ -1,15 +1,16 @@
 import os
 import traceback
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.test import tag
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from django.urls import reverse
 import time
 
-
 SCREENSHOT_DIR = os.path.join(os.getcwd(), 'functional_tests', 'screenshots')
 os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
++ @tag('functional')
 class TestHomePage(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
