@@ -10,7 +10,7 @@ import time
 SCREENSHOT_DIR = os.path.join(os.getcwd(), 'functional_tests', 'screenshots')
 os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
-+ @tag('functional')
+@tag('functional')
 class TestHomePage(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
