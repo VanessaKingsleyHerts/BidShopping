@@ -15,35 +15,22 @@ class TestHomePage(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
+        # point tests at the live Django server URL
+        cls.server_url = cls.live_server_url
 
-        # connect to the selenium/standalone-chrome service
-        cls.browser = webdriver.Remote(
-            command_executor=os.environ["SELENIUM_REMOTE_URL"],
-            options=options,
-        )
-        cls.remote_server_url = cls.live_server_url
+        # configure ChromeOptions for headless CI
+        options = Options()
+        options.add_argument("--headless=new")    # or "--headless"
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
 
+        # launch the local ChromeDriver (must be in PATH)
+        cls.browser = webdriver.Chrome(options=options)
 
     @classmethod
     def tearDownClass(cls):
         cls.browser.quit()
         super().tearDownClass()
-
-    def tearDown(self):
-        # if the test just errored, save screenshot
-        for method, error in self._outcome.errors:
-            if error:
-                name = self._testMethodName
-                path = os.path.join(SCREENSHOT_DIR, f'{name}.png')
-                try:
-                    self.browser.save_screenshot(path)
-                except WebDriverException:
-                    pass
-        super().tearDown()
 
     def test_home(self):
         self.browser.get(self.remote_server_url)
