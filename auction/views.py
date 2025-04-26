@@ -9,6 +9,18 @@ import json
 
 # Create your views here.
 
+def upload_view(request):
+    # just render a “upload” page (or return a simple HttpResponse)
+    return HttpResponse("🤖 upload page placeholder")
+
+def download_view(request):
+    # serve a dummy file, or just return a placeholder too
+    # if you want to actually test a real download, point to a real file under STATIC_ROOT or MEDIA_ROOT
+    dummy = os.path.join(settings.STATIC_ROOT, 'some-file.txt')
+    if os.path.exists(dummy):
+        return FileResponse(open(dummy, 'rb'), as_attachment=True, filename='some-file.txt')
+    return HttpResponse("🤖 download page placeholder")
+
 def Home(request):
     data = 0
     error = ""
