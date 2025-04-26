@@ -5,6 +5,7 @@ from django.test import tag
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.common.exceptions import WebDriverException
 from django.urls import reverse
 import time
@@ -15,19 +16,12 @@ os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 @tag('functional')
 class TestHomePage(StaticLiveServerTestCase):
     @classmethod
-    @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.server_url = cls.live_server_url
-
-        options = Options()
-        options.add_argument("--headless=new")      # headless in Chrome-95+
-        options.add_argument("--no-sandbox")        # required in Docker
-        options.add_argument("--disable-dev-shm-usage")
-
-        # point at our manually installed driver
-        service = ChromeService(executable_path="/usr/local/bin/chromedriver")
-        cls.browser = webdriver.Chrome(service=service, options=options)
+        cls.browser = webdriver.Remote(
+            command_executor=os.environ['SELENIUM_REMOTE_URL'],
+            desired_capabilities=DesiredCapabilities.CHROME
+        )
 
     @classmethod
     def tearDownClass(cls):
@@ -35,26 +29,26 @@ class TestHomePage(StaticLiveServerTestCase):
         super().tearDownClass()
 
     def test_home(self):
-        self.browser.get(self.remote_server_url)
+        self.browser.get(self.live_server_url)
         time.sleep(1)
 
     def test_user_login(self):
-        url = self.remote_server_url + reverse("login_user")
+        url = self.live_server_url + reverse('login_user')
         self.browser.get(url)
         time.sleep(1)
 
     def test_admin_login(self):
-        url = self.remote_server_url + reverse("login_admin")
+        url = self.live_server_url + reverse('login_admin')
         self.browser.get(url)
         time.sleep(1)
 
     def test_about(self):
-        url = self.remote_server_url + reverse("about")
+        url = self.live_server_url + reverse('about')
         self.browser.get(url)
         time.sleep(1)
 
     def test_contact(self):
-        url = self.remote_server_url + reverse("contact")
+        url = self.live_server_url + reverse('contact')
         self.browser.get(url)
         time.sleep(1)
 
