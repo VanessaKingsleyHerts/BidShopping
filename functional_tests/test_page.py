@@ -3,10 +3,6 @@ import traceback
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import tag
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.common.exceptions import WebDriverException
 from django.urls import reverse
 import time
 
@@ -15,12 +11,17 @@ os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
 @tag('functional')
 class TestHomePage(StaticLiveServerTestCase):
-    @classmethod
+   @classmethod
     def setUpClass(cls):
-        super().setUpClass()
+       super().setUpClass()
+        options = webdriver.ChromeOptions()
+        # run headless in CI
+        options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
         cls.browser = webdriver.Remote(
-            command_executor=os.environ['SELENIUM_REMOTE_URL'],
-            desired_capabilities=DesiredCapabilities.CHROME
+           command_executor=os.environ['SELENIUM_REMOTE_URL'],
+           options=options,
         )
 
     @classmethod
