@@ -1,27 +1,5 @@
-image: docker:latest
-
-services:
-  - docker:dind
-  - name: postgres:13
-    alias: db
-  - name: selenium/standalone-chrome
-    alias: selenium
-
-variables:
-  DOCKER_DRIVER: overlay2
-  POSTGRES_DB: bidshopping
-  POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: ""
-  DATABASE_URL: postgres://postgres:@db:5432/bidshopping
-  STATIC_ROOT: /tmp/static
-  SELENIUM_REMOTE_URL: http://selenium:4444/wd/hub
-  PYTHONDONTWRITEBYTECODE: "1"
-  DJANGO_LIVE_TEST_SERVER_ADDRESS: "0.0.0.0:8000"
-  PYTHONUNBUFFERED: "1"
-
-before_script:
-  # Install deps to build your Django image
-  - apk add --no-cache python3 py3-pip gcc musl-dev postgresql-dev
+# Use a proper Python image!
+image: python:3.10
 
 stages:
   - lint
