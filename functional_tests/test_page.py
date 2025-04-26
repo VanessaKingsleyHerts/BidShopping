@@ -14,19 +14,19 @@ os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 @tag('functional')
 class TestHomePage(StaticLiveServerTestCase):
     @classmethod
+    @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # point tests at the live Django server URL
         cls.server_url = cls.live_server_url
 
-        # configure ChromeOptions for headless CI
         options = Options()
-        options.add_argument("--headless=new")    # or "--headless"
-        options.add_argument("--no-sandbox")
+        options.add_argument("--headless=new")      # headless in Chrome-95+
+        options.add_argument("--no-sandbox")        # required in Docker
         options.add_argument("--disable-dev-shm-usage")
 
-        # launch the local ChromeDriver (must be in PATH)
-        cls.browser = webdriver.Chrome(options=options)
+        # point at our manually installed driver
+        service = ChromeService(executable_path="/usr/local/bin/chromedriver")
+        cls.browser = webdriver.Chrome(service=service, options=options)
 
     @classmethod
     def tearDownClass(cls):
