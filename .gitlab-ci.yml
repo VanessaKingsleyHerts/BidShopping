@@ -37,39 +37,17 @@ test:
       alias: selenium
 
   before_script:
-    # 1) Create & activate venv
     - python -m venv .venv
     - source .venv/bin/activate
-
-    # 2) Install your deps + test tools
     - pip install --upgrade pip
     - pip install -r requirements.txt
     - pip install coverage selenium requests psycopg2-binary
 
-    # 3) (Optional) Install Chrome & chromedriver locally, if you prefer not using selenium/standalone-chrome
-    # - apt-get update && apt-get install -y wget gnupg2 unzip
-    # - wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
-    # - echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" \
-    #     > /etc/apt/sources.list.d/google-chrome.list
-    # - apt-get update && apt-get install -y google-chrome-stable
-    # - CHROME_MAJOR=$(google-chrome --version | cut -d' ' -f3 | cut -d. -f1)
-    # - DRIVER_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAJOR")
-    # - wget -qO /usr/local/bin/chromedriver \
-    #     "https://chromedriver.storage.googleapis.com/$DRIVER_VERSION/chromedriver_linux64.zip"
-    # - chmod +x /usr/local/bin/chromedriver
-
   script:
-    # collect static files (if needed)
     - mkdir -p "$STATIC_ROOT"
     - python manage.py collectstatic --noinput
-
-    # prepare the database
     - python manage.py migrate --noinput
-
-    # 1) Run tests under coverage, in parallel
     - coverage run --source=. manage.py test --parallel
-
-    # 2) Emit reports
     - coverage xml -o coverage.xml
     - coverage html -d htmlcov
 
