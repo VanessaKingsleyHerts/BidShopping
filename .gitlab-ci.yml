@@ -1,61 +1,66 @@
-image: python:3.10
+image: docker:latest
+
+services:
+  - docker:dind
+  - name: postgres:13
+    alias: db
+  - name: selenium/standalone-chrome
+    alias: selenium
+
+variables:
+  DOCKER_DRIVER: overlay2
+  POSTGRES_DB: bidshopping
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: ""
+  DATABASE_URL: postgres://postgres:@db:5432/bidshopping
+  STATIC_ROOT: /tmp/static
+  SELENIUM_REMOTE_URL: http://selenium:4444/wd/hub
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONUNBUFFERED: "1"
+
+before_script:
+  # Install deps to build your Django image
+  - apk add --no-cache python3 py3-pip gcc musl-dev postgresql-dev
 
 stages:
+  - build
   - lint
   - test
 
-variables:
-  CI: "true"
-  PYTHONDONTWRITEBYTECODE: "1"
-  PYTHONUNBUFFERED:      "1"
-  POSTGRES_DB:           bidshopping
-  POSTGRES_USER:         postgres
-  POSTGRES_PASSWORD:     ""
-  DATABASE_URL:          "postgres://postgres:@db:5432/bidshopping"
-  STATIC_ROOT:           "/tmp/static"
-  SELENIUM_REMOTE_URL:   "http://selenium:4444/wd/hub"
-
-cache:
-  paths:
-    - .cache/pip
+build:
+  stage: build
+  script:
+    - docker build -t django-test-app .
+  artifacts:
+    paths:
+      - .
 
 lint:
   stage: lint
-  before_script:
-    - python -m venv .venv
-    - source .venv/bin/activate
-    - pip install flake8
   script:
+    - pip install flake8
     - flake8 .
 
 test:
   stage: test
-
   services:
+    - name: django-test-app
+      alias: django
+    - name: selenium/standalone-chrome
+      alias: selenium
     - name: postgres:13
       alias: db
-    - name: selenium/standalone-chrome:latest
-      alias: selenium
 
   before_script:
-    # 1) venv + deps
-    - python -m venv .venv && source .venv/bin/activate
-    - pip install --upgrade pip
-    - pip install -r requirements.txt selenium psycopg2-binary coverage
-
-    # 2) static & migrations
-    - mkdir -p "$STATIC_ROOT"
-    - python manage.py collectstatic --noinput
-    - python manage.py migrate --noinput
+    # install python deps
+    - apk add --no-cache python3 py3-pip gcc musl-dev postgresql-dev
+    - pip install -r requirements.txt
+    - pip install coverage selenium psycopg2-binary
 
   script:
-    # 3) Unit tests in parallel
+    - python manage.py migrate --noinput
     - coverage run --source=. manage.py test --parallel --exclude-tag=functional
-
-    # 4) Functional tests against the Selenium container
     - coverage run --append --source=. manage.py test --tag=functional
-
-    # 5) Reports
     - coverage xml -o coverage.xml
     - coverage html -d htmlcov
 
