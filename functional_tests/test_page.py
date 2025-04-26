@@ -25,6 +25,7 @@ class TestHomePage(StaticLiveServerTestCase):
             command_executor=os.environ["SELENIUM_REMOTE_URL"],
             options=options,
         )
+        cls.remote_server_url = cls.live_server_url
 
 
     @classmethod
