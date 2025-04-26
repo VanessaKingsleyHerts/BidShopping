@@ -37,8 +37,12 @@ build:
 
 lint:
   stage: lint
-  script:
+  before_script:
+    - python -m venv .venv
+    - source .venv/bin/activate
+    - pip install --upgrade pip
     - pip install flake8
+  script:
     - flake8 .
 
 test:
