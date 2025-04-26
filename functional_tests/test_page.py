@@ -1,3 +1,4 @@
+from unittest import skip
 import os
 import traceback
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -50,3 +51,23 @@ class TestHomePage(StaticLiveServerTestCase):
         url = self.remote_server_url + reverse('contact')
         self.browser.get(url)
         time.sleep(1)
+
+    @skip
+    def test_file_upload(self):
+        self.browser.get(self.remote_server_url + reverse('upload_view'))
+        upload_input = self.browser.find_element("name", "file_field")
+        upload_input.send_keys(os.path.join(os.getcwd(), 'functional_tests', 'fixtures', 'sample.pdf'))
+        self.browser.find_element("css selector", 'button[type=submit]').click()
+        success = self.browser.find_element("id", "upload-success")
+        self.assertIn('uploaded', success.text.lower())
+
+@   skip
+    def test_file_download_link(self):
+        self.browser.get(self.remote_server_url + reverse('download_view'))
+        time.sleep(2)
+        link = self.browser.find_element("tag name", "a")
+        href = link.get_attribute('href')
+        import requests
+        r = requests.get(href)
+        self.assertEqual(r.headers['Content-Type'], 'application/pdf')
+        self.assertGreater(len(r.content), 0)
