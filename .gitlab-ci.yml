@@ -2,71 +2,35 @@ image: python:3.10
 
 variables:
   PYTHONDONTWRITEBYTECODE: "1"
-  PYTHONUNBUFFERED: "1"
-  POSTGRES_DB: bidshopping
-  POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: ""
-  DATABASE_URL: postgres://postgres:@db:5432/bidshopping
-  STATIC_ROOT: /tmp/static
-  SELENIUM_REMOTE_URL: "http://selenium:4444/wd/hub"
+  PYTHONUNBUFFERED:      "1"
+  POSTGRES_DB:           bidshopping
+  POSTGRES_USER:         postgres
+  POSTGRES_PASSWORD:     ""
+  DATABASE_URL:          postgres://postgres:@db:5432/bidshopping
+  STATIC_ROOT:           /tmp/static
+  SELENIUM_REMOTE_URL:   "http://selenium:4444/wd/hub"
 
 stages:
   - lint
   - test
 
-cache:
-  paths:
-    - .cache/pip
-
-before_script:
-  - python -m venv .venv
-  - source .venv/bin/activate
-  - pip install --upgrade pip
-  - pip install -r requirements.txt
-
 lint:
   stage: lint
-  script:
+  before_script:
+    - python -m venv .venv && source .venv/bin/activate
     - pip install flake8
+  script:
     - flake8 .
 
 test:
   stage: test
-  image: python:3.10
-
   services:
     - name: postgres:13
       alias: db
-
-  variables:
-    POSTGRES_DB: bidshopping
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: ""
-    DATABASE_URL: postgres://postgres:@db:5432/bidshopping
-    STATIC_ROOT: /tmp/static
+    - name: selenium/standalone-chrome:latest
+      alias: selenium
 
   before_script:
-    # 1) Install helper tools
-    - apt-get update && apt-get install -y wget gnupg2 unzip
-
-    # 2) Add Google’s signing key
-    - wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
-
-    # 3) Add the Chrome repo
-    - echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" \
-        > /etc/apt/sources.list.d/google-chrome.list
-
-    # 4) Install Chrome itself
-    - apt-get update && apt-get install -y google-chrome-stable
-
-    # 5) Fetch your Chrome major version, ask for the latest Chromedriver for that major
-    - CHROME_MAJOR=$(google-chrome --version | awk '{print $3}' | cut -d. -f1)
-    - DRIVER_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MAJOR}")
-    - wget -qO /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
-    - unzip /tmp/chromedriver.zip -d /usr/local/bin/
-    - chmod +x /usr/local/bin/chromedriver
-
-   # 6) Python virtualenv & deps
     - python -m venv .venv && source .venv/bin/activate
     - pip install --upgrade pip
     - pip install -r requirements.txt selenium psycopg2-binary
@@ -75,13 +39,10 @@ test:
     - mkdir -p $STATIC_ROOT
     - python manage.py collectstatic --noinput
     - python manage.py migrate --noinput
-    # Now run _all_ tests (unit + functional), since Chrome is local
     - python manage.py test
 
   artifacts:
     when: always
-    reports:
-      junit: report.xml
     paths:
       - htmlcov
     expire_in: 1 week

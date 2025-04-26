@@ -126,3 +126,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_ROOT = os.environ.get('STATIC_ROOT', BASE_DIR / 'staticfiles')
+# where the live server will bind
+LIVE_SERVER_HOST = "0.0.0.0"
