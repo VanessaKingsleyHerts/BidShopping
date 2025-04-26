@@ -11,9 +11,9 @@ os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
 @tag('functional')
 class TestHomePage(StaticLiveServerTestCase):
-   @classmethod
+    @classmethod
     def setUpClass(cls):
-       super().setUpClass()
+        super().setUpClass()
         options = webdriver.ChromeOptions()
         # run headless in CI
         options.add_argument('--headless')
