@@ -17,8 +17,11 @@ class TestHomePage(StaticLiveServerTestCase):
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
 
-        # Connect to the Selenium service instead of a local chromedriver.exe
-        self.browser = webdriver.Chrome(options=options)
+        # connect to the selenium/standalone-chrome service
+        self.browser = webdriver.Remote(
+            command_executor=os.environ["SELENIUM_REMOTE_URL"],
+            options=options,
+        )
 
     # def tearDown(self):
       #  self.browser.close()
