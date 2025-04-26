@@ -1,42 +1,40 @@
-import os, socket
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+import os
+import traceback
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.urls import reverse
-import time
+from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
+
+SCREENSHOT_DIR = os.path.join(os.getcwd(), 'functional_tests', 'screenshots')
+os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
 class TestHomePage(StaticLiveServerTestCase):
-    # ensure Django binds 0.0.0.0
-    host = "0.0.0.0"
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-
-        # figure out this container's IP on the Docker network
-        hostname = socket.gethostname()
-        ip = socket.gethostbyname(hostname)
-
-        # point tests at that IP+port instead of "localhost"
-        cls.remote_server_url = f"http://{ip}:{cls.server_thread.port}"
-
-        # configure headless Chrome
-        opts = Options()
-        opts.add_argument("--headless")
-        opts.add_argument("--no-sandbox")
-        opts.add_argument("--disable-dev-shm-usage")
-
-        # point at the Selenium service
-        self_url = os.environ["SELENIUM_REMOTE_URL"]
+        options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        # point to remote Selenium if needed:
         cls.browser = webdriver.Remote(
-            command_executor=self_url,
-            options=opts
+            command_executor=cls.live_server_url.replace('http://', 'http://selenium:4444/wd/hub'),
+            options=options
         )
 
     @classmethod
     def tearDownClass(cls):
         cls.browser.quit()
         super().tearDownClass()
+
+    def tearDown(self):
+        # if the test just errored, save screenshot
+        for method, error in self._outcome.errors:
+            if error:
+                name = self._testMethodName
+                path = os.path.join(SCREENSHOT_DIR, f'{name}.png')
+                try:
+                    self.browser.save_screenshot(path)
+                except WebDriverException:
+                    pass
+        super().tearDown()
 
     def test_home(self):
         self.browser.get(self.remote_server_url)
@@ -61,3 +59,24 @@ class TestHomePage(StaticLiveServerTestCase):
         url = self.remote_server_url + reverse("contact")
         self.browser.get(url)
         time.sleep(1)
+
+    def test_file_upload(self):
+        self.browser.get(self.live_server_url + reverse('upload_view'))
+        upload_input = self.browser.find_element_by_name('file_field')
+        # ensure you have a sample file in your repo
+        upload_input.send_keys(os.path.join(os.getcwd(), 'functional_tests', 'fixtures', 'sample.pdf'))
+        self.browser.find_element_by_css_selector('button[type=submit]').click()
+        # assert the success message or download link appears
+        success = self.browser.find_element_by_id('upload-success')
+        self.assertIn('uploaded', success.text.lower())
+
+    def test_file_download_link(self):
+        self.browser.get(self.live_server_url + reverse('download_view'))
+        link = self.browser.find_element_by_tag_name('a')
+        href = link.get_attribute('href')
+        # you could issue a direct HTTP GET here to validate headers:
+        import requests
+        r = requests.get(href)
+        self.assertEqual(r.headers['Content-Type'], 'application/pdf')
+        self.assertGreater(len(r.content), 0)
+
