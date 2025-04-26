@@ -59,8 +59,9 @@ test:
     # 4) Install Chrome itself
     - apt-get update && apt-get install -y google-chrome-stable
 
-    # 5) Fetch matching Chromedriver
-    - CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
+    # 5) Fetch the Chrome major version and grab that matching Chromedriver
+    - CHROME_MAJOR=$(google-chrome --version | cut -d' ' -f3 | cut -d. -f1)
+    - CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAJOR)
     - wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
     - unzip /tmp/chromedriver.zip -d /usr/local/bin/
     - chmod +x /usr/local/bin/chromedriver
