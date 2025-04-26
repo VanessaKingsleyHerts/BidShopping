@@ -7,7 +7,7 @@ import time
 
 class TestHomePage(StaticLiveServerTestCase):
     # ensure Django binds 0.0.0.0
-    host = "0.0.0.0"  
+    host = "0.0.0.0"
 
     @classmethod
     def setUpClass(cls):
