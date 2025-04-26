@@ -21,12 +21,13 @@ class TestHomePage(StaticLiveServerTestCase):
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         cls.browser = webdriver.Remote(
-            command_executor=os.environ['SELENIUM_REMOTE_URL'],
+            command_executor=os.getenv('SELENIUM_REMOTE_URL', 'http://localhost:4444/wd/hub'),
             options=options,
         )
-        # Fix hostname inside CI
-        if "CI" in os.environ:
-            cls.remote_server_url = cls.live_server_url.replace("localhost", "django")
+
+        # Important: Use container address instead of localhost
+        if os.getenv('CI'):  # In GitLab CI environment
+            cls.remote_server_url = f'http://web:8000'
         else:
             cls.remote_server_url = cls.live_server_url
 

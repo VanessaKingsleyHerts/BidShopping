@@ -16,6 +16,7 @@ variables:
   STATIC_ROOT: /tmp/static
   SELENIUM_REMOTE_URL: http://selenium:4444/wd/hub
   PYTHONDONTWRITEBYTECODE: "1"
+  DJANGO_LIVE_TEST_SERVER_ADDRESS: "0.0.0.0:8000"
   PYTHONUNBUFFERED: "1"
 
 before_script:
