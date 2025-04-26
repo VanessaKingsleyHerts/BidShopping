@@ -1,50 +1,75 @@
 image: python:3.10
 
+stages:
+  - lint
+  - test
+
 variables:
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED:      "1"
   POSTGRES_DB:           bidshopping
   POSTGRES_USER:         postgres
   POSTGRES_PASSWORD:     ""
-  DATABASE_URL:          postgres://postgres:@db:5432/bidshopping
-  STATIC_ROOT:           /tmp/static
+  DATABASE_URL:          "postgres://postgres:@db:5432/bidshopping"
+  STATIC_ROOT:           "/tmp/static"
   SELENIUM_REMOTE_URL:   "http://selenium:4444/wd/hub"
 
-stages:
-  - lint
-  - test
+cache:
+  paths:
+    - .cache/pip
 
 lint:
   stage: lint
   before_script:
-    - python -m venv .venv && source .venv/bin/activate
+    - python -m venv .venv
+    - source .venv/bin/activate
     - pip install flake8
   script:
     - flake8 .
 
 test:
   stage: test
+
   services:
     - name: postgres:13
       alias: db
     - name: selenium/standalone-chrome:latest
       alias: selenium
 
-  variables:
-    DATABASE_URL: postgres://postgres:@db:5432/bidshopping
-    STATIC_ROOT: /tmp/static
-    SELENIUM_REMOTE_URL: http://selenium:4444/wd/hub
-
   before_script:
-    - python -m venv .venv && source .venv/bin/activate
+    # 1) Create & activate venv
+    - python -m venv .venv
+    - source .venv/bin/activate
+
+    # 2) Install your deps + test tools
     - pip install --upgrade pip
-    - pip install -r requirements.txt coverage selenium requests psycopg2-binary
+    - pip install -r requirements.txt
+    - pip install coverage selenium requests psycopg2-binary
+
+    # 3) (Optional) Install Chrome & chromedriver locally, if you prefer not using selenium/standalone-chrome
+    # - apt-get update && apt-get install -y wget gnupg2 unzip
+    # - wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+    # - echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" \
+    #     > /etc/apt/sources.list.d/google-chrome.list
+    # - apt-get update && apt-get install -y google-chrome-stable
+    # - CHROME_MAJOR=$(google-chrome --version | cut -d' ' -f3 | cut -d. -f1)
+    # - DRIVER_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAJOR")
+    # - wget -qO /usr/local/bin/chromedriver \
+    #     "https://chromedriver.storage.googleapis.com/$DRIVER_VERSION/chromedriver_linux64.zip"
+    # - chmod +x /usr/local/bin/chromedriver
 
   script:
-    - mkdir -p $STATIC_ROOT
+    # collect static files (if needed)
+    - mkdir -p "$STATIC_ROOT"
     - python manage.py collectstatic --noinput
+
+    # prepare the database
     - python manage.py migrate --noinput
+
+    # 1) Run tests under coverage, in parallel
     - coverage run --source=. manage.py test --parallel
+
+    # 2) Emit reports
     - coverage xml -o coverage.xml
     - coverage html -d htmlcov
 
