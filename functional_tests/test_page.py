@@ -21,7 +21,7 @@ class TestHomePage(StaticLiveServerTestCase):
         options.add_argument('--disable-dev-shm-usage')
 
         # connect to the selenium/standalone-chrome service
-        self.browser = webdriver.Remote(
+        cls.browser = webdriver.Remote(
             command_executor=os.environ["SELENIUM_REMOTE_URL"],
             options=options,
         )
