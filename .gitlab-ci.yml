@@ -1,4 +1,3 @@
-# Use your own built image!
 image: bidshopping:dev
 
 stages:
@@ -23,7 +22,6 @@ services:
     alias: db
 
 before_script:
-  # Notice: NO venv, pip install is needed because it's already installed inside bidshopping:dev
   - mkdir -p "$STATIC_ROOT"
 
 lint:
@@ -37,10 +35,8 @@ test:
     - python manage.py collectstatic --noinput
     - python manage.py migrate --noinput
     - coverage run --source=. manage.py test --parallel --exclude-tag=functional
-    - # 🆕 run Django server in background (using built-in runserver)
     - python manage.py runserver 0.0.0.0:8000 &
-    - sleep 5  # wait for server to boot up
-    - # 🆕 then run functional tests (they need the server running)
+    - sleep 5
     - coverage run --append --source=. manage.py test --tag=functional
     - coverage report
   artifacts:
