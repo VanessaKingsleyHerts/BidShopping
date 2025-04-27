@@ -1,23 +1,21 @@
-FROM python:3.10-slim
+FROM python:3.10
 
-# Install system deps
-RUN apt-get update && apt-get install -y libpq-dev gcc
-
-# Set workdir
+# Set working directory
 WORKDIR /app
 
-# Copy code
-COPY . /app/
+# Copy your code
+COPY . .
 
-# Install Python deps
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# Install dependencies
+RUN pip install --upgrade pip \
+    && pip install -r requirements.txt \
+    && pip install coverage selenium psycopg2-binary
 
-# Collect static files
-RUN mkdir -p /tmp/static && python manage.py collectstatic --noinput
+# Add flake8 (✅ Add this during build!)
+RUN pip install flake8
 
-# Expose the Django dev server port
+# Optional: expose the port
 EXPOSE 8000
 
-# Command to run the server
+# Default command (optional)
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

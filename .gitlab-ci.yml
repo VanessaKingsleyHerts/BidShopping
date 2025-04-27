@@ -1,5 +1,5 @@
-# Use an official Python image
-image: python:3.10
+# Use your own built image!
+image: bidshopping:dev
 
 stages:
   - lint
@@ -23,28 +23,24 @@ services:
     alias: db
 
 before_script:
-  - python3 -m venv .venv
-  - source .venv/bin/activate
-  - pip install --upgrade pip
-  - pip install -r requirements.txt
-  - pip install coverage selenium psycopg2-binary
-  - apt-get update && apt-get install -y chromium-driver
+  # Notice: NO venv, pip install is needed because it's already installed inside bidshopping:dev
+  - mkdir -p "$STATIC_ROOT"
 
 lint:
   stage: lint
   script:
-    - source .venv/bin/activate
-    - pip install flake8
     - flake8 .
 
 test:
   stage: test
   script:
-    - source .venv/bin/activate
-    - mkdir -p "$STATIC_ROOT"
     - python manage.py collectstatic --noinput
     - python manage.py migrate --noinput
     - coverage run --source=. manage.py test --parallel --exclude-tag=functional
+    - # 🆕 run Django server in background (using built-in runserver)
+    - python manage.py runserver 0.0.0.0:8000 &
+    - sleep 5  # wait for server to boot up
+    - # 🆕 then run functional tests (they need the server running)
     - coverage run --append --source=. manage.py test --tag=functional
     - coverage report
   artifacts:
