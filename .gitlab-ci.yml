@@ -1,59 +1,60 @@
-image: registry.gitlab.com/uhthesis/bidshopping/bidshopping:dev
-
 stages:
+  - build
   - lint
   - test
 
 variables:
   PYTHONDONTWRITEBYTECODE: "1"
-  PYTHONUNBUFFERED:     "1"
-  POSTGRES_DB:          "bidshopping"
-  POSTGRES_USER:        "postgres"
-  POSTGRES_PASSWORD:    "postgres"
-  DATABASE_URL:         "postgres://postgres:postgres@db:5432/bidshopping"
-  STATIC_ROOT:          "/tmp/static"
-  # ensure the Django LiveServer binds to 0.0.0.0 so the selenium container can reach it
-  DJANGO_LIVE_TEST_SERVER_ADDRESS: "0.0.0.0:8000"
-  SELENIUM_REMOTE_URL:  "http://selenium:4444/wd/hub"
+  PYTHONUNBUFFERED: "1"
+  POSTGRES_DB: "bidshopping"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "postgres"
+  DATABASE_URL: "postgres://postgres:postgres@db:5432/bidshopping"
+  STATIC_ROOT: "/tmp/static"
+  DOCKER_TLS_CERTDIR: ""
+
+# Build the Docker image and push to GitLab registry
+build-image:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker build -t "$CI_REGISTRY_IMAGE/bidshopping:dev" .
+    - docker push "$CI_REGISTRY_IMAGE/bidshopping:dev"
+  only:
+    - main
+
+# Use the built image for subsequent jobs
+image: "$CI_REGISTRY_IMAGE/bidshopping:dev"
 
 services:
   - name: postgres:13
     alias: db
-  - name: selenium/standalone-chrome:latest
-    alias: selenium
 
 cache:
   paths:
     - .cache/pip
 
 before_script:
-  # create & activate venv, install everything you need
-  - python3 -m venv .venv
-  - source .venv/bin/activate
-  - pip install --upgrade pip
-  - pip install -r requirements.txt
-  - pip install coverage selenium psycopg2-binary
+  - mkdir -p "$STATIC_ROOT"
 
 lint:
   stage: lint
   script:
-    - source .venv/bin/activate
-    - pip install flake8
     - flake8 .
 
 test:
   stage: test
   script:
-    - source .venv/bin/activate
-    - mkdir -p "$STATIC_ROOT"
     - python manage.py collectstatic --noinput
     - python manage.py migrate --noinput
-    # run the fast unit tests first
     - coverage run --source=. manage.py test --parallel --exclude-tag=functional
-    # then the functional (selenium) tests
+    - python manage.py runserver 0.0.0.0:8000 &
+    - sleep 5
     - coverage run --append --source=. manage.py test --tag=functional
     - coverage report
-
   artifacts:
     when: always
     reports:
