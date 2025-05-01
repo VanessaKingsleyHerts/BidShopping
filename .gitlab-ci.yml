@@ -1,5 +1,4 @@
-# Use your pre-built image from GitLab Registry!
-image: registry.gitlab.com/YOUR_NAMESPACE/YOUR_PROJECT/bidshopping:dev
+image: registry.gitlab.com/uhthesis/bidshopping/bidshopping:dev
 
 stages:
   - lint

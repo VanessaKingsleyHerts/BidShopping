@@ -1,21 +1,26 @@
-FROM python:3.10
+# Dockerfile
+FROM python:3.10-slim
+
+# Install system packages (if needed)
+RUN apt-get update && apt-get install -y gcc libpq-dev curl chromium-driver
 
 # Set working directory
 WORKDIR /app
 
-# Copy your code
+# Copy project files
 COPY . .
 
-# Install dependencies
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt \
-    && pip install coverage selenium psycopg2-binary
+# Install Python dependencies
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+RUN pip install coverage flake8
 
-# Add flake8 (✅ Add this during build!)
-RUN pip install flake8
+# Collect static files (optional at build)
+RUN mkdir -p /tmp/static
+RUN python manage.py collectstatic --noinput
 
-# Optional: expose the port
+# Expose the app port
 EXPOSE 8000
 
-# Default command (optional)
+# Default command (overwritten in CI)
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
