@@ -1,40 +1,63 @@
-# Use your pre-built image from GitLab Registry!
-image: registry.gitlab.com/YOUR_NAMESPACE/YOUR_PROJECT/bidshopping:dev
+image: python:3.10
 
 stages:
   - lint
   - test
 
 variables:
-  POSTGRES_DB: "bidshopping"
-  POSTGRES_USER: "postgres"
-  POSTGRES_PASSWORD: "postgres"
-  DATABASE_URL: "postgres://postgres:postgres@db:5432/bidshopping"
-  STATIC_ROOT: "/tmp/static"
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONUNBUFFERED:     "1"
+  POSTGRES_DB:          "bidshopping"
+  POSTGRES_USER:        "postgres"
+  POSTGRES_PASSWORD:    "postgres"
+  DATABASE_URL:         "postgres://postgres:postgres@db:5432/bidshopping"
+  STATIC_ROOT:          "/tmp/static"
+  # ensure the Django LiveServer binds to 0.0.0.0 so the selenium container can reach it
+  DJANGO_LIVE_TEST_SERVER_ADDRESS: "0.0.0.0:8000"
+  SELENIUM_REMOTE_URL:  "http://selenium:4444/wd/hub"
 
 services:
   - name: postgres:13
     alias: db
+  - name: selenium/standalone-chrome:latest
+    alias: selenium
+
+cache:
+  paths:
+    - .cache/pip
 
 before_script:
-  - mkdir -p "$STATIC_ROOT"
+  # create & activate venv, install everything you need
+  - python3 -m venv .venv
+  - source .venv/bin/activate
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
+  - pip install coverage selenium psycopg2-binary
 
 lint:
   stage: lint
   script:
+    - source .venv/bin/activate
+    - pip install flake8
     - flake8 .
 
 test:
   stage: test
   script:
+    - source .venv/bin/activate
+    - mkdir -p "$STATIC_ROOT"
+    - python manage.py collectstatic --noinput
     - python manage.py migrate --noinput
+    # run the fast unit tests first
     - coverage run --source=. manage.py test --parallel --exclude-tag=functional
-    - python manage.py runserver 0.0.0.0:8000 &
-    - sleep 5
+    # then the functional (selenium) tests
     - coverage run --append --source=. manage.py test --tag=functional
     - coverage report
+
   artifacts:
     when: always
+    reports:
+      junit: report.xml
     paths:
       - htmlcov/
       - functional_tests/screenshots/
