@@ -52,7 +52,6 @@ class TestHomePage(StaticLiveServerTestCase):
         self.browser.get(url)
         time.sleep(1)
 
-    @skip
     def test_file_upload(self):
         self.browser.get(self.remote_server_url + reverse('upload_view'))
         upload_input = self.browser.find_element("name", "file_field")
