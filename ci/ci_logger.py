@@ -1,61 +1,68 @@
-# ci/ci_logger.py
-
 import csv
-import os
 import shlex
 import subprocess
 import sys
 import time
+from datetime import datetime
 
-import psutil  # add to your requirements.txt
+import psutil
 
-def measure_and_log(cmd, csv_path="logs/ci_logs.csv"):
-    # ensure logs folder exists
-    os.makedirs(os.path.dirname(csv_path), exist_ok=True)
 
-    # record start
-    start_ts = time.time()
+def run_and_log(command_str, csv_path="logs/ci_logs.csv"):
+    """
+    Run the given shell command, measure duration, exit code, CPU and memory usage,
+    and append a row to a CSV log.
+    """
+    # Prepare the CSV file and header if not exists
+    header = [
+        "timestamp",
+        "command",
+        "duration_s",
+        "exit_code",
+        "cpu_pct",
+        "mem_kb",
+    ]
+    try:
+        with open(csv_path, "r") as f:
+            pass
+    except FileNotFoundError:
+        with open(csv_path, "w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(header)
 
-    # run the command
-    proc = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = proc.communicate()
-    retcode = proc.returncode
+    args = shlex.split(command_str)
+    start = time.time()
+    proc = subprocess.Popen(args, stdout=sys.stdout, stderr=sys.stderr)
 
-    # record end + metrics
-    end_ts = time.time()
-    duration = end_ts - start_ts
+    # Record resource usage while running
+    try:
+        while proc.poll() is None:
+            proc_cpu = psutil.cpu_percent(interval=0.5)
+            proc_mem = psutil.Process(proc.pid).memory_info().rss / 1024
+    except psutil.NoSuchProcess:
+        proc_cpu = 0.0
+        proc_mem = 0.0
 
-    # snapshot resource usage of this process
-    p = psutil.Process(proc.pid)
-    with p.oneshot():
-        cpu = p.cpu_percent(interval=None)
-        mem = p.memory_info().rss // 1024  # in KB
+    end = time.time()
+    duration = round(end - start, 2)
+    exit_code = proc.returncode
 
-    # prepare line
-    headers = ["timestamp","command","duration_s","exit_code","cpu_pct","mem_kb"]
-    row = [time.strftime("%Y-%m-%d %H:%M:%S"),
-           cmd,
-           f"{duration:.2f}",
-           str(retcode),
-           f"{cpu:.1f}",
-           str(mem)]
-
-    # write header if needed + append row
-    write_header = not os.path.exists(csv_path)
+    # Write the results
     with open(csv_path, "a", newline="") as f:
         writer = csv.writer(f)
-        if write_header:
-            writer.writerow(headers)
-        writer.writerow(row)
+        writer.writerow([
+            datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+            command_str,
+            duration,
+            exit_code,
+            proc_cpu,
+            int(proc_mem),
+        ])
 
-    # emit stdout/stderr for CI logs
-    sys.stdout.buffer.write(stdout)
-    sys.stderr.buffer.write(stderr)
-    return retcode
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python ci/ci_logger.py \"<command>\"")
+    if len(sys.argv) != 2:
+        print("Usage: python ci/ci_logger.py '<command>'")
         sys.exit(1)
-    cmd = sys.argv[1]
-    exit(sys.measure_and_log(cmd))
+
+    run_and_log(sys.argv[1])
