@@ -1,7 +1,6 @@
-import pytest
+from django.test import SimpleTestCase
 
-def test_forced_failure():
-    """
-    This test always fails—used to generate a failure log for our CI anomaly detector.
-    """
-    assert False, "💥 Simulated CI failure for logging"
+class SimulatedFailureTest(SimpleTestCase):
+    def test_forced_failure(self):
+        """Always fails – used to generate a failure log for our CI anomaly detector."""
+        self.fail("💥 Simulated CI failure for logging")
