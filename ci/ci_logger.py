@@ -6,7 +6,10 @@ import time
 from datetime import datetime
 
 import psutil
+import os
 
+# ensure logs/ folder exists
+os.makedirs("logs", exist_ok=True)
 
 def run_and_log(command_str, csv_path="logs/ci_logs.csv"):
     """
