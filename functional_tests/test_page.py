@@ -60,7 +60,6 @@ class TestHomePage(StaticLiveServerTestCase):
         success = self.browser.find_element("id", "upload-success")
         self.assertIn('uploaded', success.text.lower())
 
-    @skip
     def test_file_download_link(self):
         self.browser.get(self.remote_server_url + reverse('download_view'))
         time.sleep(2)
