@@ -48,10 +48,10 @@ test:
     - mkdir -p "$STATIC_ROOT"
     - python manage.py collectstatic --noinput
     - python manage.py migrate --noinput
-    # run the fast unit tests first
-    - coverage run --source=. manage.py test --parallel --exclude-tag=functional
-    # then the functional (selenium) tests
-    - coverage run --append --source=. manage.py test --tag=functional
+    # wrap the parallel non-functional tests
+    - python ci/ci_logger.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional"
+    # wrap the functional tests
+    - python ci/ci_logger.py "coverage run --append --source=. manage.py test --tag=functional"
     - coverage report
 
   artifacts:
