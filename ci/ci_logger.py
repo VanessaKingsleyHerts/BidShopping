@@ -72,6 +72,7 @@ def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None):
 
     sys.exit(exit_code)  # Important for CI systems
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run a command and log performance.")
     parser.add_argument("command", help="Shell command to execute (quoted)")
