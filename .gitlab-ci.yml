@@ -59,10 +59,13 @@ test:
     - python ci/ci_logger.py "coverage run --append --source=. manage.py test --tag=functional"
     - coverage report
   artifacts:
+    # Save even on failure
     when: always
     reports:
       junit: report.xml
     paths:
       - htmlcov/
       - functional_tests/screenshots/
+       # Save the logs from ci_logger.py
+      - logs/ci_logs.csv
     expire_in: 1 week
