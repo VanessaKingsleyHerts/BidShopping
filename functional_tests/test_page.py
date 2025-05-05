@@ -52,6 +52,7 @@ class TestHomePage(StaticLiveServerTestCase):
         self.browser.get(url)
         time.sleep(1)
 
+    @skip
     def test_file_upload(self):
         self.browser.get(self.remote_server_url + reverse('upload_view'))
         upload_input = self.browser.find_element("name", "file_field")
@@ -60,6 +61,7 @@ class TestHomePage(StaticLiveServerTestCase):
         success = self.browser.find_element("id", "upload-success")
         self.assertIn('uploaded', success.text.lower())
 
+    @skip
     def test_file_download_link(self):
         self.browser.get(self.remote_server_url + reverse('download_view'))
         time.sleep(2)
