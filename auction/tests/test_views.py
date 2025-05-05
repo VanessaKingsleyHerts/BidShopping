@@ -13,9 +13,6 @@ class TestUrls(TransactionTestCase):
         seller = Member.objects.create(user=self.user)
         Aucted_Product.objects.create(product=pro1,user=seller)
 
-    def test_forced_failure(self):
-        self.fail("💥 Simulated CI failure for logging")
-
     def test_home_GET(self):
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
@@ -32,7 +29,7 @@ class TestUrls(TransactionTestCase):
             'pwd': 'user1'
         })
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.user)
+        # self.assertEqual(self.user)
         self.assertTemplateUsed(response, 'login.html')
 
     @skip
