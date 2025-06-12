@@ -2,6 +2,7 @@ stages:
   - build
   - lint
   - test
+  - collect_logs
 
 variables:
   PYTHONDONTWRITEBYTECODE: "1"
@@ -69,3 +70,17 @@ test:
        # Save the logs from ci_logger.py
       - logs/ci_logs.csv
     expire_in: 1 week
+
+collect-logs:
+  stage: collect_logs
+  image: python:3.10-slim
+  variables:
+    # ensure our script writes into this path
+    TARGET_DIR: "data/raw"
+  before_script:
+    - pip install --no-cache-dir requests
+  script:
+    # ensure data/raw exists
+    - mkdir -p $TARGET_DIR
+    # download all ci_logs.csv into data/raw/
+    - python scripts/download_logs.py

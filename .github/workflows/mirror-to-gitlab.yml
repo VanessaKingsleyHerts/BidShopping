@@ -33,26 +33,3 @@ jobs:
       - name: Push tags to GitLab
         run: |
           git push --force gitlab 'refs/tags/*:refs/tags/*'
-
-  download-logs:
-    needs: mirror
-    runs-on: ubuntu-latest
-    env:
-      GITLAB_PAT_DOWNLOAD_LOGS: ${{ secrets.GITLAB_PAT_DOWNLOAD_LOGS  }}
-      PROJECT_ID: "69272346"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-
-      - name: Install dependencies
-        run: |
-          pip install requests pandas
-
-      - name: Download CI logs from GitLab
-        run: |
-          python scripts/download_logs.py
