@@ -23,7 +23,8 @@ def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None):
         "exit_code",
         "cpu_pct_avg",
         "mem_kb_max",
-        "tag"
+        "tag",
+        "label"
     ]
 
     # Initialize CSV if it doesn't exist
@@ -56,6 +57,7 @@ def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None):
     duration = round(end - start, 2)
     exit_code = proc.returncode
     avg_cpu = round(sum(cpu_samples) / len(cpu_samples), 2) if cpu_samples else 0.0
+    label = "success" if exit_code == 0 else "failure"
 
     # Write the results
     with open(csv_path, "a", newline="") as f:
@@ -67,7 +69,8 @@ def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None):
             exit_code,
             avg_cpu,
             int(mem_max),
-            tag or ""
+            tag or "",
+            label
         ])
 
     sys.exit(exit_code)  # Important for CI systems

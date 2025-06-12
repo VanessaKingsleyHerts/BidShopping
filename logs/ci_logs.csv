@@ -1,0 +1,2 @@
+timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag
+2025-06-12 21:52:01,echo Hello World,0.61,,8.1,0,
