@@ -38,7 +38,7 @@ jobs:
     needs: mirror
     runs-on: ubuntu-latest
     env:
-      GITLAB_PAT: ${{ secrets.GITLAB_PAT }}
+      GITLAB_PAT_DOWNLOAD_LOGS: ${{ secrets.GITLAB_PAT_DOWNLOAD_LOGS  }}
       PROJECT_ID: "69272346"
     steps:
       - name: Checkout code
