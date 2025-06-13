@@ -19,8 +19,6 @@ variables:
 collect-logs:
   stage: collect_logs
   image: python:3.10
-  variables:
-    PROJECT_ID: "69272346"     # your GitLab project ID
   before_script:
     - pip install requests pandas
   script:
