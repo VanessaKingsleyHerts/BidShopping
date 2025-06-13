@@ -75,6 +75,7 @@ collect-logs:
   image: python:3.10
   variables:
     PROJECT_ID: "69272346"
+    TEST_SECRET: "injected-test-value"
   before_script:
     - pip install requests pandas
   script:
