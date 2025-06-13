@@ -74,6 +74,9 @@ test:
 collect-logs:
   stage: collect_logs
   image: python:3.10
+  env:
+    GITLAB_PAT_DOWNLOAD_LOGS: ${{ secrets.GITLAB_PAT_DOWNLOAD_LOGS }}
+    PROJECT_ID: "69272346"
   before_script:
     - pip install requests pandas
   script:
