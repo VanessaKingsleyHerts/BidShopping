@@ -3,48 +3,24 @@
 import pandas as pd
 import glob
 
-# Define the exact columns we expect (including label)
-COLUMNS = [
-    "timestamp",
-    "command",
-    "duration_s",
-    "exit_code",
-    "cpu_pct_avg",
-    "mem_kb_max",
-    "tag",
-    "label",
-]
-
 files = glob.glob("data/raw/*.csv")
 dfs = []
 skipped = []
 
 for f in files:
     try:
-        # Read raw lines
-        with open(f, "r") as fh:
-            lines = fh.readlines()
-
-        # Filter out any header lines (7 or 8 fields)
-        data_lines = []
-        for line in lines:
-            parts = line.strip().split(",")
-            if parts[:7] == COLUMNS[:7]:
-                # This is a header row — skip
-                continue
-            data_lines.append(line)
-
-        # Parse the filtered data
+        # Use the Python engine and skip any bad lines
         df = pd.read_csv(
-            pd.compat.StringIO("".join(data_lines)),
-            names=COLUMNS,
-            header=None,
+            f,
+            engine="python",
+            on_bad_lines="skip",  # skips rows that don't parse
         )
 
-        # If the original file had no 'label' column, Pandas will have 'label' NaN
-        df["label"] = df["label"].fillna(
-            df["exit_code"].apply(lambda x: "success" if int(x) == 0 else "failure")
-        )
+        # Ensure we always have a 'label' column
+        if "label" not in df.columns:
+            df["label"] = df["exit_code"].apply(
+                lambda x: "success" if x == 0 else "failure"
+            )
 
         dfs.append(df)
     except Exception as e:
