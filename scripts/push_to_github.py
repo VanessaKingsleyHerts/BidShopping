@@ -16,6 +16,11 @@ with open(FILE_PATH, "rb") as f:
 # Get the SHA of the existing file (if any)
 url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{FILE_PATH}"
 headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+if GITHUB_TOKEN.startswith(("ghp_", "github_pat_")):
+    headers = {"Authorization": f"Bearer {GITHUB_TOKEN}"}
+else:
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+print("Using header:", headers)
 r = requests.get(url, headers=headers, params={"ref": BRANCH})
 if r.status_code == 200:
     sha = r.json()["sha"]
