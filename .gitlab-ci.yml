@@ -73,14 +73,30 @@ test:
 
 collect-logs:
   stage: collect_logs
-  image: python:3.10-slim
-  variables:
-    # ensure our script writes into this path
-    TARGET_DIR: "data/raw"
+  image: python:3.10
   before_script:
-    - pip install --no-cache-dir requests
+    - pip install requests pandas
   script:
-    # ensure data/raw exists
-    - mkdir -p $TARGET_DIR
-    # download all ci_logs.csv into data/raw/
+    - echo ">>> Downloading logs"
     - python scripts/download_logs.py
+    - echo ">>> Merging logs"
+    - python scripts/merge_ci_logs.py
+
+    # Git config
+    - echo ">>> Committing back to GitHub"
+    - git config --global user.name "VanessaKingsleyHerts"
+    - git config --global user.email "vk23abn@herts.ac.uk"
+
+    # Add GitHub as a remote using your token
+    - git remote add github https://VanessaKingsleyHerts:${GITHUB_PAT_LOG_PUSH}@github.com/VanessaKingsleyHerts/BidShopping.git
+
+    # Switch to the branch you want to push to
+    - git checkout main
+    - git pull github main
+
+    # Add & commit the new all_logs.csv
+    - git add data/all_logs.csv
+    - git commit -m "ci: update merged CI log dataset [skip ci]" || echo "No changes to commit"
+    - git push github main
+  only:
+    - main
