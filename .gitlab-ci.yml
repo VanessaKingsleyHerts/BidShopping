@@ -81,7 +81,7 @@ collect-logs:
   script:
     - python scripts/download_logs.py
     - python scripts/merge_ci_logs.py
-    - echo ">>> Pushing merged CSV via GitHub API"
+    - echo ">>>> Pushing merged CSV via GitHub API"
     - pip install requests
     - python scripts/push_to_github.py
   only:
