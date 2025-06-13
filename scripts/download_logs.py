@@ -1,16 +1,10 @@
 #!/usr/bin/env python3
-import os
-import sys
-import io
-import zipfile
-import requests
+import os, sys, io, zipfile, requests
 
-# ─── CONFIG ───────────────────────────────────────────────────────────────────
 GITLAB_API_URL = "https://gitlab.com/api/v4"
-PROJECT_ID     = os.environ.get("CI_PROJECT_ID")
+PROJECT_ID     = os.environ["CI_PROJECT_ID"]
 PRIVATE_TOKEN  = os.environ.get("GITLAB_PAT_DOWNLOAD_LOGS")
 TARGET_DIR     = "data/raw"
-# ────────────────────────────────────────────────────────────────────────────────
 
 if not PRIVATE_TOKEN:
     print("❌ ERROR: GITLAB_PAT_DOWNLOAD_LOGS not set")
@@ -19,32 +13,27 @@ if not PRIVATE_TOKEN:
 HEADERS = {"PRIVATE-TOKEN": PRIVATE_TOKEN}
 
 def fetch_pipelines(page=1):
-    resp = requests.get(
+    r = requests.get(
         f"{GITLAB_API_URL}/projects/{PROJECT_ID}/pipelines",
         params={"per_page": 100, "page": page},
         headers=HEADERS
     )
-    resp.raise_for_status()
-    data = resp.json()
+    r.raise_for_status()
+    data = r.json()
     return data if isinstance(data, list) else []
 
 def fetch_jobs(pid):
-    resp = requests.get(
-        f"{GITLAB_API_URL}/projects/{PROJECT_ID}/pipelines/{pid}/jobs",
-        headers=HEADERS
-    )
-    resp.raise_for_status()
-    return resp.json()
+    r = requests.get(f"{GITLAB_API_URL}/projects/{PROJECT_ID}/pipelines/{pid}/jobs", headers=HEADERS)
+    r.raise_for_status()
+    return r.json()
 
 def download_artifacts_zip(job_id):
-    """Download the full artifact zip for a job."""
-    resp = requests.get(
+    r = requests.get(
         f"{GITLAB_API_URL}/projects/{PROJECT_ID}/jobs/{job_id}/artifacts",
-        headers=HEADERS,
-        stream=True
+        headers=HEADERS, stream=True
     )
-    if resp.status_code == 200:
-        return io.BytesIO(resp.content)
+    if r.status_code == 200:
+        return io.BytesIO(r.content)
     return None
 
 def main():
@@ -54,35 +43,31 @@ def main():
 
     while True:
         pipelines = fetch_pipelines(page)
+        if page == 1:
+            print(f"[DEBUG] First page pipelines (IDs): {[p['id'] for p in pipelines[:10]]}")
         if not pipelines:
             break
 
         for p in pipelines:
             pid = p["id"]
+            print(f"\n[DEBUG] Inspecting Pipeline {pid} (status={p['status']}, ref={p['ref']})")
             jobs = fetch_jobs(pid)
+            print(f"[DEBUG]  Jobs found: {[j['name']+'('+str(j.get('artifacts_file') is not None)+')' for j in jobs]}")
             for j in jobs:
                 if j.get("artifacts_file"):
                     buf = download_artifacts_zip(j["id"])
                     if not buf:
-                        print(f"[!] Could not fetch artifacts ZIP for job {j['id']}")
+                        print(f"[!] Could not fetch ZIP for job {j['id']}")
                         continue
 
                     with zipfile.ZipFile(buf) as z:
                         namelist = z.namelist()
-                        print(f"[DEBUG] Artifact contents for job {j['id']}: {namelist}")
+                        print(f"[DEBUG]  ZIP contents: {namelist}")
 
-                        # Try known candidate paths
-                        candidates = [
-                            "logs/ci_logs.csv",
-                            "bidshopping/logs/ci_logs.csv",
-                            f"{PROJECT_ID}/logs/ci_logs.csv",
-                        ]
-                        for candidate in candidates:
-                            if candidate in namelist:
-                                data = z.read(candidate)
-                                break
+                        if "logs/ci_logs.csv" in namelist:
+                            data = z.read("logs/ci_logs.csv")
                         else:
-                            print(f"[!] ci_logs.csv not found in ZIP; skipping pipeline {pid}")
+                            print(f"[!]  No logs/ci_logs.csv in this ZIP")
                             continue
 
                     out_path = os.path.join(TARGET_DIR, f"{pid}.csv")
@@ -96,9 +81,9 @@ def main():
 
         page += 1
 
-    print(f"\n🎉 Done—downloaded {downloaded} log files into {TARGET_DIR}")
+    print(f"\n🎉 Done—downloaded {downloaded} log files.")
     if skipped:
-        print(f"[!] Skipped {len(skipped)} pipelines with no artifacts: {skipped}")
+        print(f"[!] Pipelines with no artifacts: {skipped[:10]}… (total {len(skipped)})")
 
 if __name__ == "__main__":
     main()
