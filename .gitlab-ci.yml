@@ -6,15 +6,64 @@ stages:
 
 variables:
   PYTHONDONTWRITEBYTECODE: "1"
-  PYTHONUNBUFFERED:    "1"
-  POSTGRES_DB:         "bidshopping"
-  POSTGRES_USER:       "postgres"
-  POSTGRES_PASSWORD:   "postgres"
-  DATABASE_URL:        "postgres://postgres:postgres@db:5432/bidshopping"
-  STATIC_ROOT:         "/tmp/static"
-  DOCKER_TLS_CERTDIR:  ""
+  PYTHONUNBUFFERED:       "1"
+  POSTGRES_DB:            "bidshopping"
+  POSTGRES_USER:          "postgres"
+  POSTGRES_PASSWORD:      "postgres"
+  DATABASE_URL:           "postgres://postgres:postgres@db:5432/bidshopping"
+  STATIC_ROOT:            "/tmp/static"
+  DOCKER_TLS_CERTDIR:     ""
 
-# … build-image, lint, test jobs as before …
+# ──────────────────────────────────────────────────────────────────────────────
+build-image:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker build -t "$CI_REGISTRY_IMAGE/bidshopping:dev" .
+    - docker push "$CI_REGISTRY_IMAGE/bidshopping:dev"
+  only:
+    - main
+
+image: "$CI_REGISTRY_IMAGE/bidshopping:dev"
+services:
+  - name: postgres:13
+    alias: db
+
+cache:
+  paths:
+    - .cache/pip
+
+before_script:
+  - mkdir -p "$STATIC_ROOT"
+# ──────────────────────────────────────────────────────────────────────────────
+
+lint:
+  stage: lint
+  script:
+    - flake8 .
+
+test:
+  stage: test
+  script:
+    - python manage.py collectstatic --noinput
+    - python manage.py migrate --noinput
+    - python ci/ci_logger.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional"
+    - python manage.py runserver 0.0.0.0:8000 &
+    - sleep 5
+    - python ci/ci_logger.py "coverage run --append --source=. manage.py test --tag=functional"
+    - coverage report
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
+    paths:
+      - htmlcov/
+      - functional_tests/screenshots/
+      - logs/ci_logs.csv
+    expire_in: 1 week
 
 collect-logs:
   stage: collect_logs
