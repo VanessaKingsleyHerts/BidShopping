@@ -64,30 +64,30 @@ def main():
             print(f"\n[DEBUG] Inspecting Pipeline {pid} (status={p['status']}, ref={p['ref']})")
             jobs = fetch_jobs(pid)
             jobs_info = [f"{j['name']}({j.get('artifacts_file') is not None})" for j in jobs]
-            print(f"[DEBUG]  Jobs found: {jobs_info}")
+            print("[DEBUG]  Jobs found:", jobs_info)
 
             for j in jobs:
                 if j.get("artifacts_file"):
                     buf = download_artifacts_zip(j["id"])
                     if not buf:
-                        print(f"[!] Could not fetch artifacts ZIP for job {j['id']}")
+                        print("[!] Could not fetch artifacts ZIP for job", j["id"])
                         continue
 
                     with zipfile.ZipFile(buf) as z:
                         namelist = z.namelist()
-                        print(f"[DEBUG]  Artifact contents: {namelist}")
+                        print("[DEBUG]  Artifact contents:", namelist)
 
-                        # Check for exactly where ci_logs.csv lives
+                        # Attempt to read the expected path
                         if "logs/ci_logs.csv" in namelist:
                             data = z.read("logs/ci_logs.csv")
                         else:
-                            print(f"[!]  ci_logs.csv not found in this ZIP")
+                            print("[!]  ci_logs.csv not found in this ZIP")
                             continue
 
                     out_path = os.path.join(TARGET_DIR, f"{pid}.csv")
                     with open(out_path, "wb") as f:
                         f.write(data)
-                    print(f"✅ Saved: {out_path}")
+                    print("✅ Saved:", out_path)
                     downloaded += 1
                     break
             else:
@@ -97,7 +97,7 @@ def main():
 
     print(f"\n🎉 Done—downloaded {downloaded} log files into {TARGET_DIR}")
     if skipped:
-        print(f"[!] Skipped {len(skipped)} pipelines with no artifacts: {skipped[:10]}…")
+        print("[!] Skipped", len(skipped), "pipelines with no artifacts:", skipped[:10], "...")
 
 if __name__ == "__main__":
     main()
