@@ -85,7 +85,7 @@ collect-logs:
     - echo ">>> Committing back to GitHub"
     - git config --global user.name "VanessaKingsleyHerts"
     - git config --global user.email "vk23abn@herts.ac.uk"
-    - echo "GITHUB_PAT_LOG_PUSH is set to: '${GITHUB_PAT_LOG_PUSH:0:4}****'"
+    - echo GITHUB_PAT_LOG_PUSH begins with "${GITHUB_PAT_LOG_PUSH:0:4}****"
     - git remote add github https://x-access-token:${GITHUB_PAT_LOG_PUSH}@github.com/VanessaKingsleyHerts/BidShopping.git
     - git checkout main
     - git pull github main
