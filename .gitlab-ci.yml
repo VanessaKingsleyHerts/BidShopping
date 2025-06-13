@@ -88,7 +88,7 @@ collect-logs:
     - git checkout main
     - git pull github main
     - git add data/all_logs.csv
-    - git commit -m "ci: update merged CI log dataset [skip ci]" || echo "No changes to commit"
+    - 'git commit -m "ci: update merged CI log dataset [skip ci]" || echo "No changes to commit"'
     - git push github main
   only:
     - main
