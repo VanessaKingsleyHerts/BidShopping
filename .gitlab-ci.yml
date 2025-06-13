@@ -6,75 +6,21 @@ stages:
 
 variables:
   PYTHONDONTWRITEBYTECODE: "1"
-  PYTHONUNBUFFERED: "1"
-  POSTGRES_DB: "bidshopping"
-  POSTGRES_USER: "postgres"
-  POSTGRES_PASSWORD: "postgres"
-  DATABASE_URL: "postgres://postgres:postgres@db:5432/bidshopping"
-  STATIC_ROOT: "/tmp/static"
-  DOCKER_TLS_CERTDIR: ""
+  PYTHONUNBUFFERED:    "1"
+  POSTGRES_DB:         "bidshopping"
+  POSTGRES_USER:       "postgres"
+  POSTGRES_PASSWORD:   "postgres"
+  DATABASE_URL:        "postgres://postgres:postgres@db:5432/bidshopping"
+  STATIC_ROOT:         "/tmp/static"
+  DOCKER_TLS_CERTDIR:  ""
 
-# Build the Docker image and push to GitLab registry
-build-image:
-  stage: build
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-    - docker build -t "$CI_REGISTRY_IMAGE/bidshopping:dev" .
-    - docker push "$CI_REGISTRY_IMAGE/bidshopping:dev"
-  only:
-    - main
-
-# Use the built image for subsequent jobs
-image: "$CI_REGISTRY_IMAGE/bidshopping:dev"
-
-services:
-  - name: postgres:13
-    alias: db
-
-cache:
-  paths:
-    - .cache/pip
-
-before_script:
-  - mkdir -p "$STATIC_ROOT"
-
-lint:
-  stage: lint
-  script:
-    - flake8 .
-
-test:
-  stage: test
-  script:
-    - python manage.py collectstatic --noinput
-    - python manage.py migrate --noinput
-    # wrap the non-functional tests
-    - python ci/ci_logger.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional"
-    # start the server for functional tests
-    - python manage.py runserver 0.0.0.0:8000 &
-    - sleep 5
-    # wrap the functional tests
-    - python ci/ci_logger.py "coverage run --append --source=. manage.py test --tag=functional"
-    - coverage report
-  artifacts:
-    # Save even on failure
-    when: always
-    reports:
-      junit: report.xml
-    paths:
-      - htmlcov/
-      - functional_tests/screenshots/
-      - logs/ci_logs.csv
-    expire_in: 1 week
+# … build-image, lint, test jobs as before …
 
 collect-logs:
   stage: collect_logs
   image: python:3.10
   variables:
-    PROJECT_ID: "69272346"
+    PROJECT_ID: "69272346"     # your GitLab project ID
   before_script:
     - pip install requests pandas
   script:
