@@ -89,6 +89,7 @@ collect-logs:
     - echo TEST_SECRET is "${TEST_SECRET}"
     - echo GITHUB_PAT_LOG_PUSH begins with "${GITHUB_PAT_LOG_PUSH:0:4}*****"
     - eval "$(ssh-agent -s)"
+    - chmod 600 "$SSH_PRIVATE_KEY"
     - ssh-add "$SSH_PRIVATE_KEY"
     - mkdir -p ~/.ssh
     - ssh-keyscan github.com >> ~/.ssh/known_hosts
