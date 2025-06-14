@@ -23,9 +23,9 @@ build-image:
   services:
     - docker:dind
   script:
-    - python ci/ci_logger.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" || true
-    - python ci/ci_logger.py "docker build -t \"$CI_REGISTRY_IMAGE/bidshopping:dev\" ."  || true
-    - python ci/ci_logger.py "docker push \"$CI_REGISTRY_IMAGE/bidshopping:dev\""       || true
+    - python ci/ci_logger.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\""
+    - python ci/ci_logger.py "docker build -t \"$CI_REGISTRY_IMAGE/bidshopping:dev\" ."
+    - python ci/ci_logger.py "docker push \"$CI_REGISTRY_IMAGE/bidshopping:dev\""
   artifacts:
     when: always
     paths:
@@ -49,7 +49,7 @@ before_script:
 lint:
   stage: lint
   script:
-    - python ci/ci_logger.py "flake8 ." || true
+    - python ci/ci_logger.py "flake8 ."
   artifacts:
     when: always
     paths:
@@ -59,19 +59,19 @@ test:
   stage: test
   script:
     # 1) collectstatic & migrate
-    - python ci/ci_logger.py "python manage.py collectstatic --noinput" || echo "collectstatic failed"
-    - python ci/ci_logger.py "python manage.py migrate --noinput"    || echo "migrate failed"
+    - python ci/ci_logger.py "python manage.py collectstatic --noinput"
+    - python ci/ci_logger.py "python manage.py migrate --noinput"
 
     # 2) unit tests
-    - python ci/ci_logger.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional" || echo "unit tests failed"
+    - python ci/ci_logger.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional"
 
     # 3) functional tests
     - python manage.py runserver 0.0.0.0:8000 &
     - sleep 5
-    - python ci/ci_logger.py "coverage run --append --source=. manage.py test --tag=functional" || echo "functional tests failed"
+    - python ci/ci_logger.py "coverage run --append --source=. manage.py test --tag=functional"
 
     # 4) coverage report
-    - coverage report || true
+    - coverage report
   artifacts:
     when: always
     paths:
