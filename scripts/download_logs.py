@@ -7,7 +7,7 @@ import requests
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 GITLAB_API_URL = "https://gitlab.com/api/v4"
-PROJECT_ID     = os.environ.get("CI_PROJECT_ID")
+PROJECT_ID     = os.environ.get("PROJECT_ID")
 PRIVATE_TOKEN  = os.environ.get("GITLAB_PAT_DOWNLOAD_LOGS")
 TARGET_DIR     = "data/raw"
 # ────────────────────────────────────────────────────────────────────────────────
