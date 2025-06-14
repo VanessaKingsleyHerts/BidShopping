@@ -9,6 +9,9 @@ raw_path    = f"data/raw/{pipe_id}.csv"
 master_path = "data/all_logs.csv"
 # ────────────────────────────────────────────────────────────────────────────────
 
+print("🔍 [merge] First few rows of today's raw log:")
+print(today.head(5).to_string(index=False))
+
 # 1) Read today's log
 print(f"[DEBUG][merge] Reading today's log: {raw_path}")
 try:
@@ -56,3 +59,6 @@ if before_hash == after_hash:
     print("⚠️ [merge] No actual content change in all_logs.csv")
 else:
     print("✅ [merge] all_logs.csv content changed — new rows added.")
+
+print("🔍 [merge] Sample of final saved file:")
+print(combined.tail(5).to_string(index=False))
