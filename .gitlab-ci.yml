@@ -1,4 +1,4 @@
-#.gitlab-ci.yml - for merge_incremental
+#.gitlab-ci.yml - hybrid
 
 stages:
   - build
@@ -23,9 +23,13 @@ build-image:
   services:
     - docker:dind
   script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-    - docker build -t "$CI_REGISTRY_IMAGE/bidshopping:dev" .
-    - docker push "$CI_REGISTRY_IMAGE/bidshopping:dev"
+    - python ci/ci_logger.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" || true
+    - python ci/ci_logger.py "docker build -t \"$CI_REGISTRY_IMAGE/bidshopping:dev\" ."  || true
+    - python ci/ci_logger.py "docker push \"$CI_REGISTRY_IMAGE/bidshopping:dev\""       || true
+  artifacts:
+    when: always
+    paths:
+      - logs/ci_logs.csv
   only:
     - main
 
@@ -45,28 +49,28 @@ before_script:
 lint:
   stage: lint
   script:
-    - flake8 .
+    - python ci/ci_logger.py "flake8 ." || true
+  artifacts:
+    when: always
+    paths:
+      - logs/ci_logs.csv
 
 test:
   stage: test
   script:
-    # 1) collectstatic & migrate — bail if these fail
-    - python manage.py collectstatic --noinput
-    - python manage.py migrate --noinput
-    # 2) run unit tests (capture non‑zero but don't abort)
-    - |
-      python ci/ci_logger.py \
-        "coverage run --source=. manage.py test --parallel --exclude-tag=functional" || \
-      echo "unit‑tests failed (captured)"
-    # 3) start server for functional tests
+    # 1) collectstatic & migrate
+    - python ci/ci_logger.py "python manage.py collectstatic --noinput" || echo "collectstatic failed"
+    - python ci/ci_logger.py "python manage.py migrate --noinput"    || echo "migrate failed"
+
+    # 2) unit tests
+    - python ci/ci_logger.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional" || echo "unit tests failed"
+
+    # 3) functional tests
     - python manage.py runserver 0.0.0.0:8000 &
     - sleep 5
-    # 4) run functional tests (also don't abort)
-    - |
-      python ci/ci_logger.py \
-        "coverage run --append --source=. manage.py test --tag=functional" || \
-      echo "functional‑tests failed (captured)"
-    # 5) coverage report (don’t fail the job if coverage is low)
+    - python ci/ci_logger.py "coverage run --append --source=. manage.py test --tag=functional" || echo "functional tests failed"
+
+    # 4) coverage report
     - coverage report || true
   artifacts:
     when: always

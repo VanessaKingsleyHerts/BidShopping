@@ -8,6 +8,9 @@ django = "*"
 channels = "*"
 
 [dev-packages]
+jupyter = "*"
+pandas = "*"
+matplotlib = "*"
 
 [requires]
 python_version = "3.12"
