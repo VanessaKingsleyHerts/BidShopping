@@ -22,6 +22,9 @@ build-image:
   image: python:3.10-slim    # has Python3 built‑in
   services:
     - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
   before_script:
     # Install Docker CLI + psutil
     - apt-get update && apt-get install -y docker.io
