@@ -1,7 +1,9 @@
 timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,pipeline_id
-2025-06-14 19:02:01,coverage run --source=. manage.py test --parallel --exclude-tag=functional,4.01,0,53.59,58860,success,1870104408.0
-2025-06-14 19:02:16,coverage run --append --source=. manage.py test --tag=functional,10.02,0,31.95,59396,success,1870104408.0
-2025-06-14 20:09:44,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,60.02,58840,success,1870138532.0
-2025-06-14 20:09:57,coverage run --append --source=. manage.py test --tag=functional,8.52,0,25.03,59216,success,1870138532.0
-2025-06-14 20:24:56,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,60.07,58972,success,
-2025-06-14 20:25:10,coverage run --append --source=. manage.py test --tag=functional,9.02,0,25.46,59568,success,
+2025-06-14 19:02:01,coverage run --source=. manage.py test --parallel --exclude-tag=functional,4.01,0,53.59,58860,success,1870104408
+2025-06-14 19:02:16,coverage run --append --source=. manage.py test --tag=functional,10.02,0,31.95,59396,success,1870104408
+2025-06-14 20:09:44,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,60.02,58840,success,1870138532
+2025-06-14 20:09:57,coverage run --append --source=. manage.py test --tag=functional,8.52,0,25.03,59216,success,1870138532
+2025-06-14 20:24:56,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,60.07,58972,success,1870145275
+2025-06-14 20:25:10,coverage run --append --source=. manage.py test --tag=functional,9.02,0,25.46,59568,success,1870145275
+2025-06-14 20:33:25,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,60.58,58820,success,1870148123
+2025-06-14 20:33:38,coverage run --append --source=. manage.py test --tag=functional,8.52,0,25.29,59108,success,1870148123
