@@ -4,7 +4,7 @@ stages:
   - build
   - lint
   - test
-  - collect_logs
+  - post_logs
 
 variables:
   PYTHONDONTWRITEBYTECODE: "1"
@@ -90,9 +90,20 @@ test:
 
 # 📥 Download and merge incrementally
 update-logs:
-  stage: collect_logs
+  stage: post_logs
   image: python:3.10
-  needs: [test]
+  needs:
+    - job: build-image
+      artifacts: true
+      optional: true
+    - job: lint
+      artifacts: true
+      optional: true
+    - job: test
+      artifacts: true
+      optional: true
+  when: always
+  allow_failure: false
   before_script:
     - pip install pandas requests
   script:
@@ -111,7 +122,7 @@ update-logs:
 
 # 🧼 Full refresh from all raw logs — used for scheduled jobs
 collect-logs:
-  stage: collect_logs
+  stage: post_logs
   image: python:3.10
   before_script:
     - pip install requests pandas
@@ -123,3 +134,5 @@ collect-logs:
     - python scripts/push_to_github.py
   only:
     - schedules
+  when: always
+  allow_failure: false
