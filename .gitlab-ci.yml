@@ -2,7 +2,7 @@ stages:
   - build
   - lint
   - test
-  - collect_logs
+  - update_logs
 
 variables:
   PYTHONDONTWRITEBYTECODE: "1"
@@ -74,7 +74,7 @@ test:
       - logs/ci_logs.csv
     expire_in: 1 week
 
-update-logs:
+update_logs:
   stage: collect_logs
   image: python:3.10
   needs: [test]
