@@ -85,21 +85,6 @@ update-logs:
     - mkdir -p data/raw
     - cp logs/ci_logs.csv data/raw/${CI_PIPELINE_ID}.csv
     # 2) Merge it into data/all_logs.csv
-    - |
-      python - << 'PYCODE'
-      import pandas as pd, glob
-      # read the existing master or create empty
-      try:
-          master = pd.read_csv("data/all_logs.csv")
-      except FileNotFoundError:
-          master = pd.DataFrame()
-      # read today's log
-      today = pd.read_csv("data/raw/{CI_PIPELINE_ID}.csv")
-      # append if not already in master (by timestamp+command combo or exit_code+tag)
-      combined = pd.concat([master, today], ignore_index=True).drop_duplicates()
-      combined.to_csv("data/all_logs.csv", index=False)
-      print(f"✅ Merged {len(today)} rows; master now has {len(combined)} rows")
-      PYCODE
     # 3) Push back to GitHub via your existing push_to_github.py
     - echo ">>>> Pushing updated all_logs.csv to GitHub"
     - python scripts/push_to_github.py
