@@ -88,3 +88,5 @@ timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,pipeline_id,la
 2025-06-14 02:22:39,coverage run --append --source=. manage.py test --tag=functional,9.02,0,27.27,59076,,1869591171.0,success
 2025-06-14 17:06:34,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,59.67,58852,,,success
 2025-06-14 17:06:48,coverage run --append --source=. manage.py test --tag=functional,8.52,0,25.25,59064,,,success
+2025-06-14 19:02:01,coverage run --source=. manage.py test --parallel --exclude-tag=functional,4.01,0,53.59,58860,success,,
+2025-06-14 19:02:16,coverage run --append --source=. manage.py test --tag=functional,10.02,0,31.95,59396,success,,
