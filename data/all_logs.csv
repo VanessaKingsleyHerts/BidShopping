@@ -17,3 +17,8 @@ timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,pipeline_id
 2025-06-14 21:52:12,python manage.py migrate --noinput,0.5,0,33.7,0,success,
 2025-06-14 21:52:15,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,59.1,58896,success,
 2025-06-14 21:52:28,coverage run --append --source=. manage.py test --tag=functional,8.52,0,25.79,58788,success,
+2025-06-14 22:09:42,flake8 .,1.0,0,48.15,22504,success,
+2025-06-14 22:10:38,python manage.py collectstatic --noinput,0.5,0,33.7,0,success,
+2025-06-14 22:10:38,python manage.py migrate --noinput,0.5,0,33.3,0,success,
+2025-06-14 22:10:41,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,59.42,58984,failure,
+2025-06-14 22:10:55,coverage run --append --source=. manage.py test --tag=functional,8.52,0,24.97,59152,success,
