@@ -19,10 +19,14 @@ variables:
 # ──────────────────────────────────────────────────────────────────────────────
 build-image:
   stage: build
-  image: docker:latest
+  image: python:3.10-slim    # has Python3 built‑in
   services:
     - docker:dind
+  before_script:
+     # Install Docker CLI
+    - apt-get update && apt-get install -y docker.io
   script:
+    # Run ci_logger’d Docker commands:
     - python ci/ci_logger.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\""
     - python ci/ci_logger.py "docker build -t \"$CI_REGISTRY_IMAGE/bidshopping:dev\" ."
     - python ci/ci_logger.py "docker push \"$CI_REGISTRY_IMAGE/bidshopping:dev\""
