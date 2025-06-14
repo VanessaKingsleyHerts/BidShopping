@@ -1,4 +1,4 @@
-#.gitlab-ci.yml - for merge_incremental
+#.gitlab-ci.yml - for merge_full
 
 stages:
   - build
@@ -76,28 +76,6 @@ test:
       - logs/ci_logs.csv
     expire_in: 1 week
 
-# 📥 Download and merge incrementally
-update_logs:
-  stage: update_logs
-  image: python:3.10
-  needs: [test]
-  before_script:
-    - pip install pandas requests
-  script:
-    # 1) Copy this pipeline's log into data/raw/
-    - mkdir -p data/raw
-    - cp logs/ci_logs.csv data/raw/${CI_PIPELINE_ID}.csv
-    # 2) Merge it into data/all_logs.csv
-    - python scripts/merge_incremental.py
-    # 3) Push back to GitHub via your existing push_to_github.py
-    - echo ">>>> Pushing updated all_logs.csv to GitHub"
-    - python scripts/push_to_github.py
-  only:
-    - main
-  except:
-    - schedules
-
-# 🧼 Full refresh from all raw logs — used for scheduled jobs
 collect-logs:
   stage: collect_logs
   image: python:3.10
