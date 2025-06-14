@@ -13,9 +13,9 @@ print(f"[DEBUG][merge] Reading today's log: {raw_path}")
 try:
     today = pd.read_csv(raw_path)
 except FileNotFoundError:
-    print(f"⚠️ [merge] No raw log found at {raw_path}")
+    print("⚠️ [merge] No raw log found at", raw_path)
     exit(1)
-print(f"[DEBUG][merge] Today has {len(today)} rows, columns: {today.columns.tolist()}")
+print(f"[DEBUG][merge] Today has {len(today)} rows, columns: {list(today.columns)}")
 
 # 2) Read or initialize master
 if os.path.exists(master_path):
@@ -23,7 +23,7 @@ if os.path.exists(master_path):
     master = pd.read_csv(master_path)
     print(f"[DEBUG][merge] Master before merge has {len(master)} rows")
 else:
-    print(f"[DEBUG][merge] No existing master found, starting fresh")
+    print("[DEBUG][merge] No existing master found, starting fresh")
     master = pd.DataFrame()
 
 # 3) Concatenate and de-duplicate
