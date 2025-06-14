@@ -77,8 +77,8 @@ test:
     expire_in: 1 week
 
 # 📥 Download and merge incrementally
-update_logs:
-  stage: update_logs
+update-logs:
+  stage: collect_logs
   image: python:3.10
   needs: [test]
   before_script:
