@@ -12,6 +12,7 @@ jupyter = "*"
 pandas = "*"
 matplotlib = "*"
 scikit-learn = "*"
+seaborn = "*"
 
 [requires]
 python_version = "3.12"

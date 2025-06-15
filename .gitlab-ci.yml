@@ -102,7 +102,7 @@ update-logs:
     - job: test
       artifacts: true
       optional: true
-  when: manual
+  when: always
   allow_failure: false
   before_script:
     - pip install pandas requests
@@ -134,5 +134,5 @@ collect-logs:
     - python scripts/push_to_github.py
   only:
     - schedules
-  when: manual
+  when: always
   allow_failure: false
