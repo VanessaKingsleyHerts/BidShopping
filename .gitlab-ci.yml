@@ -31,8 +31,8 @@ build-image:
     - python3 -m pip install --no-cache-dir psutil
   script:
     # Run ci_logger’d Docker commands:
-    - python ci/ci_logger.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" --tag build --label docker-login
-    - python ci/ci_logger.py "docker build -t \"$CI_REGISTRY_IMAGEE/bidshopping:dev\" ." --tag build --label docker-build
+    - python ci/ci_logger.py "docker login -u \"$CI_REGISTRY_USERR\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" --tag build --label docker-login
+    - python ci/ci_logger.py "docker build -t \"$CI_REGISTRY_IMAGE/bidshopping:dev\" ." --tag build --label docker-build
     - python ci/ci_logger.py "docker push \"$CI_REGISTRY_IMAGE/bidshopping:dev\"" --tag build --label docker-push
   artifacts:
     when: always
@@ -135,4 +135,4 @@ collect-logs:
   only:
     - schedules
   when: manual
-  allow_failure: false
+  allow_failure: false# manual test
