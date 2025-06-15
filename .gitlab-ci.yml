@@ -135,4 +135,4 @@ collect-logs:
   only:
     - schedules
   when: manual
-  allow_failure: false# manual test
+  allow_failure: false
