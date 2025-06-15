@@ -1,0 +1,8 @@
+timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,status
+2025-06-15 07:17:52,"docker login -u ""gitlab-ci-token"" -p ""glcbt-eyJraWQiOiIxVHRMOTJuWlJnVHNqSVVvWDJPWVZMVU9KMWJXbUdFYmwtZkFuS3NZVWhRIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXJzaW9uIjoiMC4xLjAiLCJvIjoiMSIsInUiOiJnYzlzbCIsInAiOiIxNThxdnUiLCJnIjoiMXJiNGNsIiwianRpIjoiNzczNmM3NTMtMjMwYi00MTI2LWE5ODctZDZlODVjMWZlZTg2IiwiYXVkIjoiZ2l0bGFiLWF1dGh6LXRva2VuIiwic3ViIjoiZ2lkOi8vZ2l0bGFiL0NpOjpCdWlsZC8xMDM1MzgxMzUzMSIsImlzcyI6ImdpdGxhYi5jb20iLCJpYXQiOjE3NDk5NzE4MDksIm5iZiI6MTc0OTk3MTgwNCwiZXhwIjoxNzQ5OTc1NzA5fQ.Sz1hWKLyGfitRIjAV2Gvtsw-TuSZUVm2TXZElNYeScu4Wd_gIObFo3T-dZL6eZelmJd4PrDUI7QKhYhfF5S_Cy-TaMfTs5F79QQjAF_vexxr5GUQshbikgSUAtFDp5U8svg05iCaQocbDXytBKJgCv_TMIM0l3RrmF43_jKRgrFUx07m5Kg4alM0IsGqNfQkvoA1z-5Hqnp34QsYHJKy_3KpXXzMcFtfW_sOOHF5AQABvTQ4t5xumBbZEZzChBeZYY8E3VgmCeGI5ZybRhp0Y8m4urSZTibyoieYLxVjpdMk4kX0wLh1bzfe-V4YeD4SwvdqKGU_h6LdoJBqoq5owQ"" ""registry.gitlab.com""",0.5,0,6.1,0,unknown,pass
+2025-06-15 07:19:14,"docker build -t ""registry.gitlab.com/uhthesis/bidshopping/bidshopping:dev"" .",82.14,0,40.59,46396,unknown,pass
+2025-06-15 07:20:06,"docker push ""registry.gitlab.com/uhthesis/bidshopping/bidshopping:dev""",51.59,0,55.48,37844,unknown,pass
+2025-06-15 07:21:05,flake8 .,1.0,0,48.15,22600,unknown,pass
+2025-06-15 07:22:02,python manage.py collectstatic --noinput,0.5,0,35.4,0,unknown,pass
+2025-06-15 07:22:02,python manage.py migrate --noinput,0.5,0,44.4,0,unknown,pass
+2025-06-15 07:22:06,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,53.96,58920,unknown,fail
