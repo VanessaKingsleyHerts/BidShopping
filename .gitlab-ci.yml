@@ -31,9 +31,9 @@ build-image:
     - python3 -m pip install --no-cache-dir psutil
   script:
     # Run ci_logger’d Docker commands:
-    - python ci/ci_logger.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\""
-    - python ci/ci_logger.py "docker build -t \"$CI_REGISTRY_IMAGE/bidshopping:dev\" ."
-    - python ci/ci_logger.py "docker push \"$CI_REGISTRY_IMAGE/bidshopping:dev\""
+    - python ci/ci_logger.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" --tag build
+    - python ci/ci_logger.py "docker build -t \"$CI_REGISTRY_IMAGE/bidshopping:dev\" ." --tag build
+    - python ci/ci_logger.py "docker push \"$CI_REGISTRY_IMAGE/bidshopping:dev\"" --tag build
   artifacts:
     when: always
     paths:
@@ -57,7 +57,7 @@ before_script:
 lint:
   stage: lint
   script:
-    - python ci/ci_logger.py "flake8 ."
+    - python ci/ci_logger.py "flake8 ." --tag lint
   artifacts:
     when: always
     paths:
@@ -67,16 +67,16 @@ test:
   stage: test
   script:
     # 1) collectstatic & migrate
-    - python ci/ci_logger.py "python manage.py collectstatic --noinput"
-    - python ci/ci_logger.py "python manage.py migrate --noinput"
+    - python ci/ci_logger.py "python manage.py collectstatic --noinput" --tag test
+    - python ci/ci_logger.py "python manage.py migrate --noinput" --tag test
 
     # 2) unit tests
-    - python ci/ci_logger.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional"
+    - python ci/ci_logger.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional" --tag test
 
     # 3) functional tests
     - python manage.py runserver 0.0.0.0:8000 &
     - sleep 5
-    - python ci/ci_logger.py "coverage run --append --source=. manage.py test --tag=functional"
+    - python ci/ci_logger.py "coverage run --append --source=. manage.py test --tag=functional" --tag test
 
     # 4) coverage report
     - coverage report
