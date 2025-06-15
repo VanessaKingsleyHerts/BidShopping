@@ -43,3 +43,11 @@ timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,status,pipelin
 2025-06-15 08:26:30,python manage.py migrate --noinput,0.5,0,37.0,0,test,pass,1870528042.0
 2025-06-15 08:26:33,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,59.73,58504,test,pass,1870528042.0
 2025-06-15 08:26:47,coverage run --append --source=. manage.py test --tag=functional,8.52,0,24.84,59396,test,pass,1870528042.0
+2025-06-15 08:32:16,"docker login -u ""gitlab-ci-token"" -p ""glcbt-eyJraWQiOiIxVHRMOTJuWlJnVHNqSVVvWDJPWVZMVU9KMWJXbUdFYmwtZkFuS3NZVWhRIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXJzaW9uIjoiMC4xLjAiLCJvIjoiMSIsInUiOiJnYzlzbCIsInAiOiIxNThxdnUiLCJnIjoiMXJiNGNsIiwianRpIjoiODBmNDhlNzUtOTJjZC00NDRiLTg0YjgtYmQxZDMzMmVjNWYzIiwiYXVkIjoiZ2l0bGFiLWF1dGh6LXRva2VuIiwic3ViIjoiZ2lkOi8vZ2l0bGFiL0NpOjpCdWlsZC8xMDM1Mzk1MDQ3NSIsImlzcyI6ImdpdGxhYi5jb20iLCJpYXQiOjE3NDk5NzYyNzIsIm5iZiI6MTc0OTk3NjI2NywiZXhwIjoxNzQ5OTgwMTcyfQ.C0IFmTGelrhvQnzgii5CXBLL44zAkMh-4mg5v-_MpYr3QGtT_V267b4xXmGQNI5FCXjMCVQXI8GP27TBuw3jbdwTrRLF_-GhnxhsWWeWf3CifOZp3sfATcPrKaA8559pNaFHmAuQ-HyuMTlJb6DLB3N22QrbFt75T0Sdv9BKy7Pc_EMbbvNmBR4cs_lylr31AuSwE3MTMCIquVv-fW8KN7fCvHOcG8y53JN55AxcyBiKrTb-SyfZKYP7V39Eo5Tujc6FFVt5wqWTzk-LiR8egxo1_U5LFaOEnjEwGogXloGVOweKzE-g8V6sQYJbFxXp4mFAlODUkPAMzl_E1k5CeQ"" ""registry.gitlab.com""",0.5,0,9.8,0,build,pass,
+2025-06-15 08:33:44,"docker build -t ""registry.gitlab.com/uhthesis/bidshopping/bidshopping:dev"" .",87.66,0,40.52,46048,build,pass,
+2025-06-15 08:34:36,"docker push ""registry.gitlab.com/uhthesis/bidshopping/bidshopping:dev""",51.59,0,55.67,38084,build,pass,
+2025-06-15 08:35:35,flake8 .,1.0,0,51.4,22504,lint,pass,
+2025-06-15 08:36:33,python manage.py collectstatic --noinput,0.5,0,35.0,0,test,pass,
+2025-06-15 08:36:33,python manage.py migrate --noinput,0.5,0,37.0,0,test,pass,
+2025-06-15 08:36:37,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,53.29,59032,test,pass,
+2025-06-15 08:36:51,coverage run --append --source=. manage.py test --tag=functional,9.02,0,26.11,59248,test,pass,
