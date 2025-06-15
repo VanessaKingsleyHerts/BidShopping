@@ -1,3 +1,0 @@
-timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag
-2025-06-14 19:02:01,coverage run --source=. manage.py test --parallel --exclude-tag=functional,4.01,0,53.59,58860,success
-2025-06-14 19:02:16,coverage run --append --source=. manage.py test --tag=functional,10.02,0,31.95,59396,success
