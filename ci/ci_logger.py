@@ -13,7 +13,7 @@ import argparse
 # Ensure logs/ folder exists
 os.makedirs("logs", exist_ok=True)
 
-def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None):
+def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None, label=None):
     """
     Run the given shell command, measure duration, exit code, CPU and memory usage,
     and append a row to a CSV log with both a stage tag and a status.
@@ -68,13 +68,14 @@ def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None):
     exit_code = proc.returncode
     avg_cpu = round(sum(cpu_samples) / len(cpu_samples), 2) if cpu_samples else 0.0
     status = "pass" if exit_code == 0 else "fail"
+    command = label if label else command_str
 
     # Write the results
     with open(csv_path, "a", newline="") as f:
         writer = csv.writer(f)
         writer.writerow([
             datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
-            command_str,
+            command,
             duration,
             exit_code,
             avg_cpu,
@@ -91,6 +92,7 @@ if __name__ == "__main__":
     parser.add_argument("command", help="Shell command to execute (quoted)")
     parser.add_argument("--tag", help="Stage tag for this run (e.g., build, lint, test)", required=False)
     parser.add_argument("--csv", help="Path to CSV log file", default="logs/ci_logs.csv")
+    parser.add_argument("--label", help="Optional short name for command", required=False)
 
     args = parser.parse_args()
     run_and_log(args.command, args.csv, args.tag)
