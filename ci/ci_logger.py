@@ -69,9 +69,6 @@ def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None):
     avg_cpu = round(sum(cpu_samples) / len(cpu_samples), 2) if cpu_samples else 0.0
     status = "pass" if exit_code == 0 else "fail"
 
-    # Use provided tag (stage); if not provided, record as 'unknown'
-    stage_tag = tag if tag is not None else "unknown"
-
     # Write the results
     with open(csv_path, "a", newline="") as f:
         writer = csv.writer(f)
@@ -82,7 +79,7 @@ def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None):
             exit_code,
             avg_cpu,
             int(mem_max),
-            stage_tag,
+            tag,
             status
         ])
 
