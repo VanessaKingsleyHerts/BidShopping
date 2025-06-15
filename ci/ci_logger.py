@@ -95,4 +95,4 @@ if __name__ == "__main__":
     parser.add_argument("--label", help="Optional short name for command", required=False)
 
     args = parser.parse_args()
-    run_and_log(args.command, args.csv, args.tag)
+    run_and_log(args.command, args.csv, args.tag, args.label)
