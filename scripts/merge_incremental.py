@@ -19,6 +19,8 @@ except FileNotFoundError:
     print(f"⚠️ [merge] No raw log found at {raw_path}")
     exit(1)
 
+today["pipeline_id"] = pipe_id
+
 print(f"[DEBUG][merge] Today has {len(today)} rows, columns: {list(today.columns)}")
 
 # 2) Read or initialize master
