@@ -81,7 +81,7 @@ test:
     # 4) coverage report
     - coverage report
   artifacts:
-    when: always
+    when: manual
     paths:
       - htmlcov/
       - functional_tests/screenshots/
