@@ -81,7 +81,7 @@ test:
     # 4) coverage report
     - coverage report
   artifacts:
-    when: manual
+    when: always
     paths:
       - htmlcov/
       - functional_tests/screenshots/
@@ -102,7 +102,7 @@ update-logs:
     - job: test
       artifacts: true
       optional: true
-  when: always
+  when: manual
   allow_failure: false
   before_script:
     - pip install pandas requests
