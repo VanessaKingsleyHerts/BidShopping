@@ -344,6 +344,9 @@ timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,status,pipelin
 2025-06-24 15:43:42,python manage.py migrate --noinput,0.5,0,40.6,0,test,pass,1886996200.0,
 2025-06-24 15:43:50,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,54.03,59068,test,pass,1886996200.0,
 2025-06-24 15:44:10,coverage run --append --source=. manage.py test --tag=functional,10.52,0,22.02,60120,test,pass,1886996200.0,
-2025-06-24 15:57:43,docker-login,0.5,0,7.1,0,build,pass,1887046168,baseline
-2025-06-24 16:02:25,docker-build,278.53,0,29.42,45500,build,pass,1887046168,baseline
-2025-06-24 16:06:00,docker-push,207.88,0,60.01,38872,build,pass,1887046168,baseline
+2025-06-24 15:57:43,docker-login,0.5,0,7.1,0,build,pass,1887046168.0,baseline
+2025-06-24 16:02:25,docker-build,278.53,0,29.42,45500,build,pass,1887046168.0,baseline
+2025-06-24 16:06:00,docker-push,207.88,0,60.01,38872,build,pass,1887046168.0,baseline
+2025-06-24 16:20:05,docker-login,0.5,0,12.1,0,build,pass,1887089637.0,baseline
+2025-06-24 16:25:43,docker-build,332.73,0,33.34,47188,build,pass,1887089637.0,baseline
+2025-06-24 16:29:44,docker-push,229.98,0,62.24,38824,build,pass,1887089637.0,baseline
