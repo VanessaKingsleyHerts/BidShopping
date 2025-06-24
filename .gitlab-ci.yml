@@ -17,6 +17,19 @@ variables:
   STATIC_ROOT:              "/tmp/static"
   DOCKER_TLS_CERTDIR:       ""
 
+
+# ─── Global setup for all jobs ────────────────────────────────────────────────
+before_script:
+  # Update pip & install all Python deps once
+  - python3 -m pip install --upgrade pip
+  - python3 -m pip install --no-cache-dir psutil joblib pandas tensorflow keras
+  # For build-image only, we still need docker client:
+  - if [ "$CI_JOB_STAGE" = "build" ]; then apt-get update && apt-get install -y docker.io; fi
+  # Create logs directory
+  - mkdir -p logs
+
+# ─── Per-job definitions ─────────────────────────────────────────────────────
+
 # ──────────────────────────────────────────────────────────────────────────────
 build-image:
   stage: build
@@ -26,10 +39,6 @@ build-image:
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
-  before_script:
-    # Install Docker CLI + psutil
-    - apt-get update && apt-get install -y docker.io
-    - python3 -m pip install --no-cache-dir psutil
   script:
     # Run predict_and_heal on Docker commands:
     - python ci/predict_and_heal.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" --tag build --label docker-login
