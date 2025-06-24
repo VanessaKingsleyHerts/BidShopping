@@ -140,7 +140,6 @@ collect-logs:
     - python scripts/download_logs.py
     - python scripts/merge_full.py
     - echo ">>> Pushing merged CSV via GitHub API"
-    - pip install requests
     - python scripts/push_to_github.py
   only:
     - schedules
