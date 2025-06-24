@@ -20,13 +20,14 @@ variables:
 
 # ─── Global setup for all jobs ────────────────────────────────────────────────
 before_script:
-  # Update pip & install all Python deps once
+  # 1) Make logs folder and static root
+  - mkdir -p logs
+  - mkdir -p "$STATIC_ROOT"
+  # 2) Update pip & install Python deps
   - python3 -m pip install --upgrade pip
   - python3 -m pip install --no-cache-dir psutil joblib pandas tensorflow keras
-  # For build-image only, we still need docker client:
+  # 3) Only in build stage: install Docker CLI
   - if [ "$CI_JOB_STAGE" = "build" ]; then apt-get update && apt-get install -y docker.io; fi
-  # Create logs directory
-  - mkdir -p logs
 
 # ─── Per-job definitions ─────────────────────────────────────────────────────
 
@@ -59,10 +60,6 @@ services:
 cache:
   paths:
     - .cache/pip
-
-before_script:
-  - mkdir -p "$STATIC_ROOT"
-# ──────────────────────────────────────────────────────────────────────────────
 
 lint:
   stage: lint
