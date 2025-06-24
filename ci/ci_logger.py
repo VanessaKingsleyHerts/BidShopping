@@ -81,7 +81,9 @@ def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None, label=None):
             avg_cpu,
             int(mem_max),
             tag,
-            status
+            status,
+            os.environ.get("CI_PIPELINE_ID", "unknown"),
+            os.environ.get("HEAL_MODE", "baseline")
         ])
 
     sys.exit(exit_code)  # Important for CI systems

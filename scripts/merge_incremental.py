@@ -9,7 +9,6 @@ import hashlib
 pipe_id     = os.environ["CI_PIPELINE_ID"]
 raw_path    = f"data/raw/{pipe_id}.csv"
 master_path = "data/all_logs.csv"
-mode = os.environ.get("HEAL_MODE", "ml")
 # ────────────────────────────────────────────────────────────────────────────────
 
 # 1) Read today's log
@@ -20,8 +19,6 @@ except FileNotFoundError:
     print(f"⚠️ [merge] No raw log found at {raw_path}")
     exit(1)
 
-today["pipeline_id"] = pipe_id
-today["mode"] = mode
 
 print(f"[DEBUG][merge] Today has {len(today)} rows, columns: {list(today.columns)}")
 
