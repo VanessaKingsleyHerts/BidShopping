@@ -7,14 +7,15 @@ stages:
   - post_logs
 
 variables:
-  PYTHONDONTWRITEBYTECODE: "1"
-  PYTHONUNBUFFERED:       "1"
-  POSTGRES_DB:            "bidshopping"
-  POSTGRES_USER:          "postgres"
-  POSTGRES_PASSWORD:      "postgres"
-  DATABASE_URL:           "postgres://postgres:postgres@db:5432/bidshopping"
-  STATIC_ROOT:            "/tmp/static"
-  DOCKER_TLS_CERTDIR:     ""
+  HEAL_MODE:                "baseline"  # or "ml"
+  PYTHONDONTWRITEBYTECODE:  "1"
+  PYTHONUNBUFFERED:         "1"
+  POSTGRES_DB:              "bidshopping"
+  POSTGRES_USER:            "postgres"
+  POSTGRES_PASSWORD:        "postgres"
+  DATABASE_URL:             "postgres://postgres:postgres@db:5432/bidshopping"
+  STATIC_ROOT:              "/tmp/static"
+  DOCKER_TLS_CERTDIR:       ""
 
 # ──────────────────────────────────────────────────────────────────────────────
 build-image:
@@ -30,10 +31,10 @@ build-image:
     - apt-get update && apt-get install -y docker.io
     - python3 -m pip install --no-cache-dir psutil
   script:
-    # Run ci_logger’d Docker commands:
-    - python ci/ci_logger.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" --tag build --label docker-login
-    - python ci/ci_logger.py "docker build -t \"$CI_REGISTRY_IMAGE/bidshopping:dev\" ." --tag build --label docker-build
-    - python ci/ci_logger.py "docker push \"$CI_REGISTRY_IMAGE/bidshopping:dev\"" --tag build --label docker-push
+    # Run predict_and_heal on Docker commands:
+    - python ci/predict_and_heal.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" --tag build --label docker-login
+    - python ci/predict_and_heal.py "docker build -t \"$CI_REGISTRY_IMAGE/bidshopping:dev\" ." --tag build --label docker-build
+    - python ci/predict_and_heal.py "docker push \"$CI_REGISTRY_IMAGE/bidshopping:dev\"" --tag build --label docker-push
   artifacts:
     when: always
     paths:
@@ -57,7 +58,7 @@ before_script:
 lint:
   stage: lint
   script:
-    - python ci/ci_logger.py "flake8 ." --tag lint
+    - python ci/predict_and_heal.py "flake8 ." --tag lint
   artifacts:
     when: always
     paths:
@@ -67,16 +68,16 @@ test:
   stage: test
   script:
     # 1) collectstatic & migrate
-    - python ci/ci_logger.py "python manage.py collectstatic --noinput" --tag test
-    - python ci/ci_logger.py "python manage.py migrate --noinput" --tag test
+    - python ci/predict_and_heal.py "python manage.py collectstatic --noinput" --tag test
+    - python ci/predict_and_heal.py "python manage.py migrate --noinput" --tag test
 
     # 2) unit tests
-    - python ci/ci_logger.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional" --tag test
+    - python ci/predict_and_heal.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional" --tag test
 
     # 3) functional tests
     - python manage.py runserver 0.0.0.0:8000 &
     - sleep 5
-    - python ci/ci_logger.py "coverage run --append --source=. manage.py test --tag=functional" --tag test
+    - python ci/predict_and_heal.py "coverage run --append --source=. manage.py test --tag=functional" --tag test
 
     # 4) coverage report
     - coverage report
