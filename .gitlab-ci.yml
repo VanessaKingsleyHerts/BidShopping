@@ -58,8 +58,10 @@ services:
     alias: db
 
 cache:
+  key: "$CI_PIPELINE_ID"
   paths:
     - .cache/pip
+    - logs/ci_logs.cs
 
 lint:
   stage: lint
@@ -93,22 +95,22 @@ test:
       - htmlcov/
       - functional_tests/screenshots/
       - logs/ci_logs.csv
-    expire_in: 1 week
+    # expire_in: 1 week
 
 # 📥 Download and merge incrementally
 update-logs:
   stage: post_logs
   image: python:3.10
-  needs:
-    - job: build-image
-      artifacts: true
-      optional: true
-    - job: lint
-      artifacts: true
-      optional: true
-    - job: test
-      artifacts: true
-      optional: true
+  # needs:
+    # - job: build-image
+      # artifacts: true
+      # optional: true
+    # - job: lint
+      # artifacts: true
+      # optional: true
+    # - job: test
+      # artifacts: true
+      # optional: true
   when: always
   allow_failure: false
   before_script:
