@@ -1,3 +1,5 @@
+#predict_and_heal
+
 #!/usr/bin/env python3
 import os, sys, csv, joblib, subprocess, argparse
 import numpy as np
@@ -82,36 +84,41 @@ def predict_lstm(pipeline_id):
     return int(prob > 0.5)  # 1=pass, 0=fail
 
 
+def run_logged(command, tag, label=None):
+    log_cmd = f'python ci/ci_logger.py "{command}" --tag {tag}'
+    if label:
+        log_cmd += f' --label {label}'
+    return subprocess.call(log_cmd, shell=True)
+
+
 def run_and_heal(command, tag, label=None):
     ensure_header()
 
-    # 1) Run the job & log via ci_logger.py with optional label
-    cmd = f'python ci/ci_logger.py "{command}" --tag {tag}'
-    if label:
-        cmd += f' --label {label}'
-    code = subprocess.call(cmd, shell=True)
+    # 🔁 1. Log initial attempt
+    code = run_logged(command, tag, label)
 
-    # 🧪 Optional Failure Injection for A/B testing
+    # 🧪 2. Optional A/B failure injection
     if os.environ.get("INJECT_FAIL", "false").lower() == "true" and tag == "lint":
         print("[Injected Failure] Forcing lint stage to fail for experiment")
-        code = 1  # treat as failure so healing logic triggers
+        code = 1
 
-    # 2) Healing behavior
+    # 🤖 3. Healing logic (Baseline or ML)
     if MODE == "baseline":
         if code != 0:
             print("[Baseline] Job failed—retrying once")
-            code = subprocess.call(command, shell=True)
+            code = run_logged(command, tag, label)
     else:
         rf_pred = predict_rf()
         if rf_pred == 0:
             print("[RF] Anomaly detected—retrying job once")
-            code = subprocess.call(command, shell=True)
+            code = run_logged(command, tag, label)
         if tag == "lint":
             pipe_id = os.environ.get("CI_PIPELINE_ID", "0")
             lstm_pred = predict_lstm(pipe_id)
             if lstm_pred == 0:
                 print("[LSTM] Pipeline predicted to fail—aborting before test")
                 sys.exit(0)
+
     return code
 
 
