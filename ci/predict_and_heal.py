@@ -46,22 +46,22 @@ def load_latest_log():
 
 
 def extract_rf_features(row):
-    # 1) Create a dict of raw feature values
-    raw = {
-        "log_duration":    np.log1p(float(row["duration_s"])),
-        "cpu_pct_avg":     float(row["cpu_pct_avg"]),
-        "mem_mb":          float(row["mem_kb_max"]) / 1024,
-        "hour":            pd.to_datetime(row["timestamp"]).hour,
-        "dayofweek":       pd.to_datetime(row["timestamp"]).dayofweek,
-        "tag_code":        int(row["tag_code"])
-    }
-    # 2) Turn it into a 1-row DataFrame
-    feat = pd.DataFrame(raw, index=[0])
-    # 3) Load the scaler
+    df_row = pd.DataFrame([row])
+    # Map tag to encoded code matching training
+    tag_map = {"build": 0, "lint": 1, "test": 2}
+    # Create feature DataFrame with correct columns
+    feat = pd.DataFrame({
+        "log_duration": np.log1p(df_row["duration_s"].astype(float)),
+        "cpu_pct_avg": df_row["cpu_pct_avg"].astype(float),
+        "mem_mb": df_row["mem_kb_max"].astype(float) / 1024,
+        "hour": pd.to_datetime(df_row["timestamp"]).dt.hour,
+        "dayofweek": pd.to_datetime(df_row["timestamp"]).dt.dayofweek,
+        "tag_code": df_row["tag"].map(tag_map).astype(int)
+    })
+    # Load scaler and enforce feature order
     scaler = joblib.load(RF_SCALER)
-    # 4) Reindex the DataFrame to the scaler’s feature order
     feat = feat[scaler.feature_names_in_]
-    # 5) Transform
+    # Transform and return
     return scaler.transform(feat)
 
 
