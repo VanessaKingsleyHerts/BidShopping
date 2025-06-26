@@ -67,7 +67,7 @@ def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None, label=None):
     duration = round(end - start, 2)
     exit_code = proc.returncode
     avg_cpu = round(sum(cpu_samples) / len(cpu_samples), 2) if cpu_samples else 0.0
-    status = "pass" if exit_code == 0 else "fail"
+    status = args.force_status if args.force_status else ("pass" if exit_code == 0 else "fail")
     command = label if label else command_str
 
     # Write the results
@@ -95,6 +95,7 @@ if __name__ == "__main__":
     parser.add_argument("--tag", help="Stage tag for this run (e.g., build, lint, test)", required=False)
     parser.add_argument("--csv", help="Path to CSV log file", default="logs/ci_logs.csv")
     parser.add_argument("--label", help="Optional short name for command", required=False)
+    parser.add_argument("--force-status", help="Override pass/fail status explicitly", default=None)
 
     args = parser.parse_args()
     run_and_log(args.command, args.csv, args.tag, args.label)
