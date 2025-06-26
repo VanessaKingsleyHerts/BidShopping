@@ -375,3 +375,13 @@ timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,status,pipelin
 2025-06-26 10:26:40,python manage.py migrate --noinput,0.5,0,40.2,0,test,pass,1890828514.0,baseline
 2025-06-26 10:26:48,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,54.43,59084,test,fail,1890828514.0,baseline
 2025-06-26 10:26:51,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,53.51,59280,test,fail,1890828514.0,baseline
+2025-06-26 11:06:12,docker-login,0.5,0,4.0,0,build,pass,1890930758.0,baseline
+2025-06-26 11:10:57,docker-build,1.5,0,45.37,42852,build,pass,1890930758.0,baseline
+2025-06-26 11:14:36,docker-push,1.0,0,8.1,35992,build,pass,1890930758.0,baseline
+2025-06-26 11:17:38,flake8 .,1.0,0,53.9,22572,lint,pass,1890930758.0,baseline
+2025-06-26 11:17:40,flake8 .,1.0,0,55.1,22624,lint,fail,1890930758.0,baseline
+2025-06-26 11:17:42,flake8 .,1.0,0,54.0,22724,lint,pass,1890930758.0,baseline
+2025-06-26 11:20:07,python manage.py collectstatic --noinput,0.5,0,29.3,0,test,pass,1890930758.0,baseline
+2025-06-26 11:20:13,python manage.py migrate --noinput,0.5,0,37.4,0,test,pass,1890930758.0,baseline
+2025-06-26 11:20:27,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,53.6,59280,test,fail,1890930758.0,baseline
+2025-06-26 11:20:37,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,53.63,59204,test,fail,1890930758.0,baseline
