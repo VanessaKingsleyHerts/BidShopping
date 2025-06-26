@@ -358,3 +358,11 @@ timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,status,pipelin
 2025-06-26 07:04:09,python manage.py migrate --noinput,0.5,0,39.0,0,test,pass,1890437184.0,baseline
 2025-06-26 07:04:16,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,53.31,59092,test,pass,1890437184.0,baseline
 2025-06-26 07:04:35,coverage run --append --source=. manage.py test --tag=functional,9.52,0,24.01,59496,test,pass,1890437184.0,baseline
+2025-06-26 09:15:39,docker-login,0.5,0,6.1,0,build,pass,1890700505.0,baseline
+2025-06-26 09:20:34,docker-build,292.05,0,28.44,45932,build,pass,1890700505.0,baseline
+2025-06-26 09:24:08,docker-push,205.37,0,61.25,38656,build,pass,1890700505.0,baseline
+2025-06-26 09:26:37,flake8 .,1.0,0,51.5,22580,lint,pass,1890700505.0,baseline
+2025-06-26 09:29:07,python manage.py collectstatic --noinput,0.5,0,35.6,0,test,pass,1890700505.0,baseline
+2025-06-26 09:29:12,python manage.py migrate --noinput,0.5,0,38.0,0,test,pass,1890700505.0,baseline
+2025-06-26 09:29:20,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,53.51,59252,test,pass,1890700505.0,baseline
+2025-06-26 09:29:40,coverage run --append --source=. manage.py test --tag=functional,10.52,0,22.15,60080,test,pass,1890700505.0,baseline
