@@ -61,7 +61,7 @@ cache:
   key: "$CI_PIPELINE_ID"
   paths:
     - .cache/pip
-    - logs/ci_logs.cs
+    - logs/ci_logs.csv
 
 lint:
   stage: lint
