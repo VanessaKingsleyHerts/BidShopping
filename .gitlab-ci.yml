@@ -7,7 +7,7 @@ stages:
   - post_logs
 
 variables:
-  HEAL_MODE:                "baseline"  # or "ml"
+  HEAL_MODE:                "ml" #"baseline"  # or "ml"
   PYTHONDONTWRITEBYTECODE:  "1"
   PYTHONUNBUFFERED:         "1"
   POSTGRES_DB:              "bidshopping"
