@@ -13,7 +13,7 @@ import argparse
 # Ensure logs/ folder exists
 os.makedirs("logs", exist_ok=True)
 
-def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None, label=None):
+def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None, label=None, force_status=None):
     """
     Run the given shell command, measure duration, exit code, CPU and memory usage,
     and append a row to a CSV log with both a stage tag and a status.
@@ -67,7 +67,7 @@ def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None, label=None):
     duration = round(end - start, 2)
     exit_code = proc.returncode
     avg_cpu = round(sum(cpu_samples) / len(cpu_samples), 2) if cpu_samples else 0.0
-    status = args.force_status if args.force_status else ("pass" if exit_code == 0 else "fail")
+    status = force_status if force_status else ("pass" if exit_code == 0 else "fail")
     command = label if label else command_str
 
     # Write the results
@@ -98,4 +98,4 @@ if __name__ == "__main__":
     parser.add_argument("--force-status", help="Override pass/fail status explicitly", default=None)
 
     args = parser.parse_args()
-    run_and_log(args.command, args.csv, args.tag, args.label)
+    run_and_log(args.command, args.csv, args.tag, args.label, args.force_status)
