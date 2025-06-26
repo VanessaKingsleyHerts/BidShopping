@@ -73,20 +73,30 @@ def predict_rf():
 
 
 def predict_lstm(pipeline_id):
-    df = pd.read_csv("logs/ci_logs.csv")
-    seq = df[df["pipeline_id"] == str(pipeline_id)].sort_values("timestamp")
-    Xs = seq[FEATURES].copy()
-    Xs["log_duration"] = np.log1p(seq["duration_s"])
-    Xs["mem_mb"] = seq["mem_kb_max"] / 1024
-    arr = Xs.values
+    # Read raw logs and filter for this pipeline
+    df_logs = pd.read_csv("logs/ci_logs.csv")
+    seq = df_logs[df_logs["pipeline_id"] == str(pipeline_id)].sort_values("timestamp")
+    if seq.empty:
+        return 1  # no data, assume pass
+    # Recompute features for each row
+    tag_map = {"build":0, "lint":1, "test":2}
+    feat_df = pd.DataFrame({
+        "log_duration": np.log1p(seq["duration_s"].astype(float)),
+        "cpu_pct_avg": seq["cpu_pct_avg"].astype(float),
+        "mem_mb": seq["mem_kb_max"].astype(float)/1024,
+        "tag_code": seq["tag"].map(tag_map).astype(int)
+    })
+    # Use only the first SEQ_LEN entries (pad if needed)
+    arr = feat_df.values
     if arr.shape[0] < SEQ_LEN:
         pad = np.zeros((SEQ_LEN - arr.shape[0], arr.shape[1]))
         arr = np.vstack([arr, pad])
     else:
         arr = arr[:SEQ_LEN]
+    # Reshape into (1, seq_len, n_features)
     arr = arr.reshape((1, SEQ_LEN, arr.shape[1]))
     lstm = load_model(LSTM_MODEL)
-    prob = lstm.predict(arr, verbose=0)[0, 0]
+    prob = lstm.predict(arr, verbose=0)[0,0]
     return int(prob > 0.5)  # 1=pass, 0=fail
 
 
