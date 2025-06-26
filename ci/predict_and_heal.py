@@ -17,13 +17,19 @@ FEATURES = ["log_duration","cpu_pct_avg","mem_mb","tag_code"]
 MODE = os.environ.get("HEAL_MODE", "ml")  # default to ml
 
 # Ensure logs header includes mode column
-LOG_HEADER = []
+LOG_HEADER: list[str] = []
+
 def ensure_header(csv_path="logs/ci_logs.csv"):
     global LOG_HEADER
     if not os.path.exists(csv_path):
+        os.makedirs(os.path.dirname(csv_path), exist_ok=True)
         with open(csv_path, "w", newline="") as f:
             writer = csv.writer(f)
-            LOG_HEADER = ["timestamp","command","duration_s","exit_code","cpu_pct_avg","mem_kb_max","tag","status","pipeline_id","mode"]
+            LOG_HEADER = [
+                "timestamp","command","duration_s","exit_code",
+                "cpu_pct_avg","mem_kb_max","tag","status",
+                "pipeline_id","mode"
+            ]
             writer.writerow(LOG_HEADER)
     else:
         with open(csv_path) as f:
@@ -60,35 +66,40 @@ def predict_rf():
 
 def predict_lstm(pipeline_id):
     df = pd.read_csv("logs/ci_logs.csv")
-    seq = df[df["pipeline_id"]==str(pipeline_id)].sort_values("timestamp")
+    seq = df[df["pipeline_id"] == str(pipeline_id)].sort_values("timestamp")
     Xs = seq[FEATURES].copy()
     Xs["log_duration"] = np.log1p(seq["duration_s"])
-    Xs["mem_mb"] = seq["mem_kb_max"]/1024
+    Xs["mem_mb"] = seq["mem_kb_max"] / 1024
     arr = Xs.values
     if arr.shape[0] < SEQ_LEN:
-        pad = np.zeros((SEQ_LEN-arr.shape[0], arr.shape[1]))
+        pad = np.zeros((SEQ_LEN - arr.shape[0], arr.shape[1]))
         arr = np.vstack([arr, pad])
     else:
         arr = arr[:SEQ_LEN]
     arr = arr.reshape((1, SEQ_LEN, arr.shape[1]))
     lstm = load_model(LSTM_MODEL)
-    prob = lstm.predict(arr)[0,0]
-    return int(prob > 0.5)
+    prob = lstm.predict(arr, verbose=0)[0, 0]
+    return int(prob > 0.5)  # 1=pass, 0=fail
 
 
 def run_and_heal(command, tag, label=None):
     ensure_header()
 
-    # 1) Run the job & log via ci_logger.py with label
+    # 1) Run the job & log via ci_logger.py with optional label
     cmd = f'python ci/ci_logger.py "{command}" --tag {tag}'
     if label:
         cmd += f' --label {label}'
     code = subprocess.call(cmd, shell=True)
 
+    # 🧪 Optional Failure Injection for A/B testing
+    if os.environ.get("INJECT_FAIL", "false").lower() == "true" and tag == "lint":
+        print("[Injected Failure] Forcing lint stage to fail for experiment")
+        code = 1  # treat as failure so healing logic triggers
+
     # 2) Healing behavior
     if MODE == "baseline":
         if code != 0:
-            print("[Baseline] job failed—retrying once")
+            print("[Baseline] Job failed—retrying once")
             code = subprocess.call(command, shell=True)
     else:
         rf_pred = predict_rf()
@@ -96,18 +107,19 @@ def run_and_heal(command, tag, label=None):
             print("[RF] Anomaly detected—retrying job once")
             code = subprocess.call(command, shell=True)
         if tag == "lint":
-            pipe_id = os.environ.get("CI_PIPELINE_ID")
+            pipe_id = os.environ.get("CI_PIPELINE_ID", "0")
             lstm_pred = predict_lstm(pipe_id)
             if lstm_pred == 0:
                 print("[LSTM] Pipeline predicted to fail—aborting before test")
                 sys.exit(0)
     return code
 
+
 if __name__ == "__main__":
-    p = argparse.ArgumentParser()
-    p.add_argument("command", help="Shell command to execute")
-    p.add_argument("--tag", required=True, help="Stage tag (build, lint, test)")
-    p.add_argument("--label", required=False, help="Optional short name for command")
-    args = p.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("command", help="Shell command to execute")
+    parser.add_argument("--tag", required=True, help="Stage tag (build, lint, test)")
+    parser.add_argument("--label", required=False, help="Optional short label for job")
+    args = parser.parse_args()
     rc = run_and_heal(args.command, args.tag, args.label)
     sys.exit(rc)

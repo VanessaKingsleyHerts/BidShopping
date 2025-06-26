@@ -16,6 +16,7 @@ variables:
   DATABASE_URL:             "postgres://postgres:postgres@db:5432/bidshopping"
   STATIC_ROOT:              "/tmp/static"
   DOCKER_TLS_CERTDIR:       ""
+  INJECT_FAIL:              "true"
 
 
 # ─── Global setup for all jobs ────────────────────────────────────────────────
@@ -75,6 +76,7 @@ lint:
 test:
   stage: test
   script:
+    - export FAIL_NEXT=0  # ← only for test purposes
     # 1) collectstatic & migrate
     - python ci/predict_and_heal.py "python manage.py collectstatic --noinput" --tag test
     - python ci/predict_and_heal.py "python manage.py migrate --noinput" --tag test
