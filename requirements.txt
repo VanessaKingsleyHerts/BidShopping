@@ -7,6 +7,7 @@ selenium>=4.0.0
 psutil>=5.9.5
 tblib>=1.7.0
 
+scikit-learn
 
 absl-py==2.3.0
 anyio==4.9.0
