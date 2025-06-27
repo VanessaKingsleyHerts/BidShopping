@@ -76,7 +76,7 @@ lint:
 test:
   stage: test
   script:
-    - export FAIL_NEXT=1  # ← only for test purposes
+    - export FAIL_NEXT=0  # ← only for test purposes
     # 1) collectstatic & migrate
     - python ci/predict_and_heal.py "python manage.py collectstatic --noinput" --tag test
     - python ci/predict_and_heal.py "python manage.py migrate --noinput" --tag test
