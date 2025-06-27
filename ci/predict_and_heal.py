@@ -123,6 +123,11 @@ def run_and_heal(command, tag, label=None):
     
     # 1) Initial run & log
     init_code = run_logged(command, tag, label)
+
+    # 🧪 Optional Failure Injection for A/B testing
+    if os.environ.get("INJECT_FAIL", "true").lower() == "true" and tag == "lint":
+        print("[Injected Failure] Forcing lint stage to fail for experiment")
+        init_code = 1
     
     # 2) If it failed, do exactly one retry and log it
     if init_code != 0:
