@@ -1,7 +1,7 @@
-#predict_and_heal
+#predict_and_heal.py
 
 #!/usr/bin/env python3
-import os, sys, csv, joblib, subprocess, argparse
+import os, sys, csv, joblib, subprocess, argparse, shlex
 import numpy as np
 import pandas as pd
 from keras.models import load_model
@@ -121,39 +121,36 @@ def run_logged(command, tag, label=None, override_status=None):
 def run_and_heal(command, tag, label=None):
     ensure_header()
 
-    # 🔁 1. Run actual job (capture real exit code), then log it
-    code = subprocess.call(command, shell=True)
-    status = "pass" if code == 0 else "fail"
-    run_logged(command, tag, label, override_status=status)
+    # 1) Run & log the job exactly once
+    # ----------------------------------
+    # Build call to ci_logger
+    base_cmd = f'python ci/ci_logger.py "{command}" --tag {tag}'
+    if label:
+        base_cmd += f' --label {label}'
 
-    # 🧪 2. Optional failure injection
-    if os.environ.get("INJECT_FAIL", "false").lower() == "true" and tag == "lint":
-        print("[Injected Failure] Forcing lint stage to fail for experiment")
-        code = 1
-        status = "fail"
-        run_logged(command, tag, label, override_status=status)
+    # If you need to inject a failure for experiments:
+    if tag == "lint" and os.getenv("INJECT_FAIL","false")=="true":
+        # override to force a fail
+        base_cmd = f'python ci/ci_logger.py "exit 1" --tag {tag}'
 
-    # 🤖 3. Healing logic
-    if MODE == "baseline":
-        if code != 0:
-            print("[Baseline] Job failed—retrying once")
-            retry_code = subprocess.call(command, shell=True)
-            retry_status = "pass" if retry_code == 0 else "fail"
-            run_logged(command, tag, label, override_status=retry_status)
-            code = retry_code
-    else:
-        rf_pred = predict_rf()
-        if rf_pred == 0:
-            print("[RF] Anomaly detected—retrying job once")
-            retry_code = subprocess.call(command, shell=True)
-            retry_status = "pass" if retry_code == 0 else "fail"
-            run_logged(command, tag, label, override_status=retry_status)
-            code = retry_code
-        if tag == "lint":
-            pipe_id = os.environ.get("CI_PIPELINE_ID", "0")
-            lstm_pred = predict_lstm(pipe_id)
-            if lstm_pred == 0:
-                print("[LSTM] Pipeline predicted to fail—aborting before test")
+    # Run & log
+    code = subprocess.call(base_cmd, shell=True)
+
+    # 2) Healing logic (silent retries only)
+    # ---------------------------------------
+    if code != 0:
+        if MODE == "baseline":
+            print(f"[Baseline] {tag} failed — retrying once (no extra log)")
+            code = subprocess.call(shlex.split(command))
+        else:
+            # RF-driven retry (only for lint/test)
+            if tag in ("lint","test") and predict_rf() == 0:
+                print(f"[RF] {tag} anomaly — retrying once (no extra log)")
+                code = subprocess.call(shlex.split(command))
+
+            # LSTM abort before test
+            if tag == "lint" and predict_lstm(os.getenv("CI_PIPELINE_ID","0")) == 0:
+                print("[LSTM] Pipeline predicted to fail — aborting before test")
                 sys.exit(0)
 
     return code
