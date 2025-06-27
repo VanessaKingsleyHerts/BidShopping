@@ -120,40 +120,31 @@ def run_logged(command, tag, label=None, override_status=None):
 
 def run_and_heal(command, tag, label=None):
     ensure_header()
-
-    # 1) Run & log the job exactly once
-    # ----------------------------------
-    # Build call to ci_logger
-    base_cmd = f'python ci/ci_logger.py "{command}" --tag {tag}'
-    if label:
-        base_cmd += f' --label {label}'
-
-    # If you need to inject a failure for experiments:
-    if tag == "lint" and os.getenv("INJECT_FAIL","false")=="true":
-        # override to force a fail
-        base_cmd = f'python ci/ci_logger.py "exit 1" --tag {tag}'
-
-    # Run & log
-    code = subprocess.call(base_cmd, shell=True)
-
-    # 2) Healing logic (silent retries only)
-    # ---------------------------------------
-    if code != 0:
+    
+    # 1) Initial run & log
+    init_code = run_logged(command, tag, label)
+    
+    # 2) If it failed, do exactly one retry and log it
+    if init_code != 0:
         if MODE == "baseline":
-            print(f"[Baseline] {tag} failed — retrying once (no extra log)")
-            code = subprocess.call(shlex.split(command))
-        else:
+            print(f"[Baseline] {tag} failed—retrying once")
+            retry_code = run_logged(command, tag, label)
+            return retry_code
+
+        else:  # ML mode
             # RF-driven retry (only for lint/test)
-            if tag in ("lint","test") and predict_rf() == 0:
-                print(f"[RF] {tag} anomaly — retrying once (no extra log)")
-                code = subprocess.call(shlex.split(command))
+            if tag in ("lint", "test") and predict_rf() == 0:
+                print(f"[RF] {tag} anomaly—retrying once")
+                retry_code = run_logged(command, tag, label)
+                return retry_code
 
             # LSTM abort before test
             if tag == "lint" and predict_lstm(os.getenv("CI_PIPELINE_ID","0")) == 0:
-                print("[LSTM] Pipeline predicted to fail — aborting before test")
+                print("[LSTM] Pipeline predicted to fail—aborting before test")
                 sys.exit(0)
-
-    return code
+                
+    # If initial succeeded (or no retry triggered), return that code
+    return init_code
 
 
 if __name__ == "__main__":
