@@ -434,3 +434,12 @@ timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,status,pipelin
 2025-06-27 08:06:32,python manage.py migrate --noinput,0.5,0,34.3,0,test,pass,1893367071.0,ml
 2025-06-27 08:06:43,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,52.07,59216,test,pass,1893367071.0,ml
 2025-06-27 08:07:10,coverage run --append --source=. manage.py test --tag=functional,9.02,0,24.15,60048,test,pass,1893367071.0,ml
+2025-06-27 08:32:40,docker-login,0.5,0,5.1,0,build,pass,1893432506.0,ml
+2025-06-27 08:37:43,docker-build,1.0,0,10.65,42580,build,pass,1893432506.0,ml
+2025-06-27 08:41:29,docker-push,1.0,0,8.55,36404,build,pass,1893432506.0,ml
+2025-06-27 08:44:15,flake8 .,1.0,0,52.5,22556,lint,pass,1893432506.0,ml
+2025-06-27 08:44:17,flake8 .,1.0,0,54.3,22560,lint,pass,1893432506.0,ml
+2025-06-27 08:46:40,python manage.py collectstatic --noinput,0.5,0,28.3,0,test,pass,1893432506.0,ml
+2025-06-27 08:46:45,python manage.py migrate --noinput,0.5,0,39.8,0,test,pass,1893432506.0,ml
+2025-06-27 08:46:56,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,53.04,59136,test,pass,1893432506.0,ml
+2025-06-27 08:47:24,coverage run --append --source=. manage.py test --tag=functional,9.02,0,26.07,59716,test,pass,1893432506.0,ml
