@@ -1,148 +1,141 @@
-#.gitlab-ci.yml - hybrid
+# ──────────────────────────────────────────────────────────────────────────────
+# .gitlab-ci.yml — Hybrid with Fast A/B Schedules + Full Main Pipeline
+# ──────────────────────────────────────────────────────────────────────────────
 
-stages:
-  - build
-  - lint
-  - test
-  - post_logs
+#################### 1. workflow: rules  #######################################
+# Sets variables automatically per‑schedule name so you DON'T need
+# UI variables or multiple branches
+workflow:
+  rules:
+    # If triggered by a schedule called "Baseline", force baseline vars
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /Baseline/i'
+      variables:
+        HEAL_MODE:   "baseline"
+        INJECT_FAIL: "true"
+    # If triggered by a schedule called "ML", set ml vars
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /ML/i'
+      variables:
+        HEAL_MODE:   "ml"
+        INJECT_FAIL: "true"
+    # Otherwise leave defaults
+    - when: always
+
+#################### 2. global defaults #######################################
+stages: [build, lint, test, post_logs]
 
 variables:
-  HEAL_MODE:                "ml" #"baseline"  # or "ml"
-  PYTHONDONTWRITEBYTECODE:  "1"
-  PYTHONUNBUFFERED:         "1"
-  POSTGRES_DB:              "bidshopping"
-  POSTGRES_USER:            "postgres"
-  POSTGRES_PASSWORD:        "postgres"
-  DATABASE_URL:             "postgres://postgres:postgres@db:5432/bidshopping"
-  STATIC_ROOT:              "/tmp/static"
-  DOCKER_TLS_CERTDIR:       ""
-  INJECT_FAIL:              "true"
+  HEAL_MODE:      "ml"          # default for normal pushes
+  INJECT_FAIL:    "false"       # no failure injection by default
+  PIP_CACHE_DIR:  "$CI_PROJECT_DIR/.cache/pip"
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONUNBUFFERED:        "1"
 
-
-# ─── Global setup for all jobs ────────────────────────────────────────────────
 before_script:
-  # 1) Make logs folder and static root
   - mkdir -p logs
-  - mkdir -p "$STATIC_ROOT"
-  # 2) Update pip & install Python deps
   - python3 -m pip install --upgrade pip
-  - python3 -m pip install --no-cache-dir -r requirements.txt
-  # 3) Only in build stage: install Docker CLI
-  - if [ "$CI_JOB_STAGE" = "build" ]; then apt-get update && apt-get install -y docker.io; fi
-
-# ─── Per-job definitions ─────────────────────────────────────────────────────
-
-# ──────────────────────────────────────────────────────────────────────────────
-build-image:
-  stage: build
-  image: python:3.10-slim    # has Python3 built‑in
-  services:
-    - docker:dind
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
-  script:
-    # Run predict_and_heal on Docker commands:
-    - python ci/predict_and_heal.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" --tag build --label docker-login
-    - python ci/predict_and_heal.py "docker build -t \"$CI_REGISTRY_IMAGE/bidshopping:dev\" ." --tag build --label docker-build
-    - python ci/predict_and_heal.py "docker push \"$CI_REGISTRY_IMAGE/bidshopping:dev\"" --tag build --label docker-push
-  artifacts:
-    when: always
-    paths:
-      - logs/ci_logs.csv
-  only:
-    - main
-
-image: "$CI_REGISTRY_IMAGE/bidshopping:dev"
-services:
-  - name: postgres:13
-    alias: db
+  - pip install --cache-dir "$PIP_CACHE_DIR" -r requirements.txt
 
 cache:
-  key: "$CI_PIPELINE_ID"
+  key: "$CI_COMMIT_REF_SLUG"
   paths:
-    - .cache/pip
-    - logs/ci_logs.csv
+    - .cache/pip/
+
+#################### 3. FAST A/B EXPERIMENT JOBS (schedules) ###################
+.experiment_template: &experiment
+  image: python:3.10-slim
+  stage: build            # runs build + lint only
+  services:
+    - docker:dind
+  before_script:
+    - apt-get update && apt-get install -y docker.io
+  script: |
+    echo "=== EXPERIMENT MODE: $HEAL_MODE  (inject=$INJECT_FAIL) ==="
+    # 1. Lightweight Docker build with cache
+    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    docker pull "$CI_REGISTRY_IMAGE:cache" || true
+    docker build --cache-from "$CI_REGISTRY_IMAGE:cache" -t "$CI_REGISTRY_IMAGE:dev" .
+    docker tag "$CI_REGISTRY_IMAGE:dev" "$CI_REGISTRY_IMAGE:cache"
+    docker push "$CI_REGISTRY_IMAGE:cache"
+    # 2. Lint stage (failure injected if INJECT_FAIL=true)
+    python ci/predict_and_heal.py "flake8 ." --tag lint
+  artifacts:
+    when: always
+    paths: [logs/ci_logs.csv]
+  only:
+    - schedules       # runs ONLY when triggered by schedule
+
+baseline_experiment:
+  <<: *experiment
+  # HEAL_MODE / INJECT_FAIL are set automatically from workflow rules
+  # Schedule description must be "Baseline"
+
+ml_experiment:
+  <<: *experiment
+  # Schedule description must be "ML"
+
+#################### 4. FULL PIPELINE FOR MAIN PUSHES ##########################
+build-image:
+  stage: build
+  image: python:3.10-slim
+  services: [docker:dind]
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - apt-get update && apt-get install -y docker.io
+    - python ci/predict_and_heal.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" --tag build
+    - python ci/predict_and_heal.py "docker build -t $CI_REGISTRY_IMAGE:dev ." --tag build
+    - python ci/predict_and_heal.py "docker push $CI_REGISTRY_IMAGE:dev" --tag build
+  artifacts:
+    when: always
+    paths: [logs/ci_logs.csv]
+  only: [main]
 
 lint:
   stage: lint
+  image: "$CI_REGISTRY_IMAGE:dev"
   script:
     - python ci/predict_and_heal.py "flake8 ." --tag lint
   artifacts:
     when: always
-    paths:
-      - logs/ci_logs.csv
+    paths: [logs/ci_logs.csv]
+  only: [main]
 
 test:
   stage: test
+  image: "$CI_REGISTRY_IMAGE:dev"
   script:
-    - export FAIL_NEXT=0  # ← only for test purposes
-    # 1) collectstatic & migrate
     - python ci/predict_and_heal.py "python manage.py collectstatic --noinput" --tag test
     - python ci/predict_and_heal.py "python manage.py migrate --noinput" --tag test
-
-    # 2) unit tests
     - python ci/predict_and_heal.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional" --tag test
-
-    # 3) functional tests
-    - python manage.py runserver 0.0.0.0:8000 &
-    - sleep 5
+    - python manage.py runserver 0.0.0.0:8000 & sleep 5
     - python ci/predict_and_heal.py "coverage run --append --source=. manage.py test --tag=functional" --tag test
-
-    # 4) coverage report
     - coverage report
   artifacts:
     when: always
-    paths:
-      - htmlcov/
-      - functional_tests/screenshots/
-      - logs/ci_logs.csv
-    # expire_in: 1 week
+    paths: [htmlcov/, functional_tests/screenshots/, logs/ci_logs.csv]
+  only: [main]
 
-# 📥 Download and merge incrementally
+#################### 5. LOG MERGE / PUSH BACK ##################################
 update-logs:
   stage: post_logs
-  image: python:3.10
-  # needs:
-    # - job: build-image
-      # artifacts: true
-      # optional: true
-    # - job: lint
-      # artifacts: true
-      # optional: true
-    # - job: test
-      # artifacts: true
-      # optional: true
+  image: python:3.10-slim
+  needs: [build-image, lint, test]
   when: always
-  allow_failure: false
-  before_script:
-    - pip install pandas requests
-  script:
-    # 1) Copy this pipeline's log into data/raw/
-    - mkdir -p data/raw
-    - cp logs/ci_logs.csv data/raw/${CI_PIPELINE_ID}.csv
-    # 2) Merge it into data/all_logs.csv
-    - python scripts/merge_incremental.py
-    # 3) Push back to GitHub via your existing push_to_github.py
-    - echo ">>>> Pushing updated all_logs.csv to GitHub"
-    - python scripts/push_to_github.py
-  only:
-    - main
-  except:
-    - schedules
+  before_script: pip install pandas requests
+  script: |
+    mkdir -p data/raw
+    cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv
+    python scripts/merge_incremental.py
+    python scripts/push_to_github.py
+  only: [main]
 
-# 🧼 Full refresh from all raw logs — used for scheduled jobs
 collect-logs:
   stage: post_logs
-  image: python:3.10
-  before_script:
-    - pip install requests pandas
-  script:
-    - python scripts/download_logs.py
-    - python scripts/merge_full.py
-    - echo ">>> Pushing merged CSV via GitHub API"
-    - python scripts/push_to_github.py
-  only:
-    - schedules
+  image: python:3.10-slim
   when: manual
-  allow_failure: false
+  before_script: pip install pandas requests
+  script: |
+    python scripts/download_logs.py
+    python scripts/merge_full.py
+    python scripts/push_to_github.py
+  only: [schedules]
