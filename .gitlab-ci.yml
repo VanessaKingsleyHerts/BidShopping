@@ -53,7 +53,7 @@ cache:
   before_script:
     - apt-get update && apt-get install -y docker.io
   script:
-    - echo "=== EXPERIMENT MODE: $HEAL_MODE  (inject=$INJECT_FAIL) ==="
+    - 'echo "=== EXPERIMENT MODE: $HEAL_MODE (inject=$INJECT_FAIL) ==="'
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - docker pull "$CI_REGISTRY_IMAGE:cache" || true
     - docker build --cache-from "$CI_REGISTRY_IMAGE:cache" -t "$CI_REGISTRY_IMAGE:dev" .
