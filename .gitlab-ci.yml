@@ -52,7 +52,7 @@ cache:
     - pip install --cache-dir "$PIP_CACHE_DIR" -r requirements.txt
     - apt-get update && apt-get install -y docker.io
   script:
-    - echo "=== EXPERIMENT MODE: $HEAL_MODE  (inject=$INJECT_FAIL) ==="
+    - 'echo "=== EXPERIMENT MODE: $HEAL_MODE  (inject=$INJECT_FAIL) ==="'
     # 1) Fast Docker build (layer cache) and push
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - docker pull "$CI_REGISTRY_IMAGE:cache" || true
