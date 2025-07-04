@@ -56,7 +56,7 @@ cache:
     - *before_all                      # ensure Python deps
     - apt-get update && apt-get install -y docker.io
   script:
-    - echo "=== EXPERIMENT MODE: $HEAL_MODE (inject=$INJECT_FAIL) ==="
+    - 'echo "=== EXPERIMENT MODE: $HEAL_MODE (inject=$INJECT_FAIL) ==="'
     # Fast Docker build (cache) + push
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - docker pull "$CI_REGISTRY_IMAGE:cache" || true
