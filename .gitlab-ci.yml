@@ -46,6 +46,10 @@ cache:
   stage: build            # runs build + lint only
   services:
     - docker:dind
+  variables:
+    DOCKER_HOST:       tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+    SKIP_TEST_STAGE:  "true"
   before_script:
     - apt-get update && apt-get install -y docker.io
   script: |
@@ -79,9 +83,11 @@ build-image:
   image: python:3.10-slim
   services: [docker:dind]
   variables:
+    DOCKER_HOST:       tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
-  script:
+  before_script:
     - apt-get update && apt-get install -y docker.io
+  script:
     - python ci/predict_and_heal.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" --tag build
     - python ci/predict_and_heal.py "docker build -t $CI_REGISTRY_IMAGE:dev ." --tag build
     - python ci/predict_and_heal.py "docker push $CI_REGISTRY_IMAGE:dev" --tag build
