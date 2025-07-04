@@ -46,18 +46,20 @@ cache:
   stage: build            # runs build + lint only
   services:
     - docker:dind
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375  # ← Required to talk to dind
+    SKIP_TEST_STAGE: "true"
   before_script:
     - apt-get update && apt-get install -y docker.io
-  script: |
-    echo "=== EXPERIMENT MODE: $HEAL_MODE  (inject=$INJECT_FAIL) ==="
-    # 1. Lightweight Docker build with cache
-    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-    docker pull "$CI_REGISTRY_IMAGE:cache" || true
-    docker build --cache-from "$CI_REGISTRY_IMAGE:cache" -t "$CI_REGISTRY_IMAGE:dev" .
-    docker tag "$CI_REGISTRY_IMAGE:dev" "$CI_REGISTRY_IMAGE:cache"
-    docker push "$CI_REGISTRY_IMAGE:cache"
-    # 2. Lint stage (failure injected if INJECT_FAIL=true)
-    python ci/predict_and_heal.py "flake8 ." --tag lint
+  script:
+    - echo "=== EXPERIMENT MODE: $HEAL_MODE  (inject=$INJECT_FAIL) ==="
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker pull "$CI_REGISTRY_IMAGE:cache" || true
+    - docker build --cache-from "$CI_REGISTRY_IMAGE:cache" -t "$CI_REGISTRY_IMAGE:dev" .
+    - docker tag "$CI_REGISTRY_IMAGE:dev" "$CI_REGISTRY_IMAGE:cache"
+    - docker push "$CI_REGISTRY_IMAGE:cache"
+    - python ci/predict_and_heal.py "flake8 ." --tag lint
   artifacts:
     when: always
     paths: [logs/ci_logs.csv]
