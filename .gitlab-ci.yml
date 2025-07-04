@@ -42,31 +42,27 @@ cache:
 
 #################### 3. FAST A/B EXPERIMENT JOBS (schedules) ###################
 .experiment_template: &experiment
-  image: docker:24.0.5  # Use the official Docker image with CLI pre-installed
-  stage: build
+  image: python:3.10-slim
+  stage: build            # runs build + lint only
   services:
-    - docker:24.0.5-dind
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
-    SKIP_TEST_STAGE: "true"
+    - docker:dind
   before_script:
-    - 'echo "=== EXPERIMENT MODE: $HEAL_MODE (inject=$INJECT_FAIL) ==="'
-  script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-    - docker pull "$CI_REGISTRY_IMAGE:cache" || true
-    - docker build --cache-from "$CI_REGISTRY_IMAGE:cache" -t "$CI_REGISTRY_IMAGE:dev" .
-    - docker tag "$CI_REGISTRY_IMAGE:dev" "$CI_REGISTRY_IMAGE:cache"
-    - docker push "$CI_REGISTRY_IMAGE:cache"
-    - apk add --no-cache python3 py3-pip  # Add Python for predict_and_heal
-    - pip install -r requirements.txt
-    - python ci/predict_and_heal.py "flake8 ." --tag lint
+    - apt-get update && apt-get install -y docker.io
+  script: |
+    echo "=== EXPERIMENT MODE: $HEAL_MODE  (inject=$INJECT_FAIL) ==="
+    # 1. Lightweight Docker build with cache
+    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    docker pull "$CI_REGISTRY_IMAGE:cache" || true
+    docker build --cache-from "$CI_REGISTRY_IMAGE:cache" -t "$CI_REGISTRY_IMAGE:dev" .
+    docker tag "$CI_REGISTRY_IMAGE:dev" "$CI_REGISTRY_IMAGE:cache"
+    docker push "$CI_REGISTRY_IMAGE:cache"
+    # 2. Lint stage (failure injected if INJECT_FAIL=true)
+    python ci/predict_and_heal.py "flake8 ." --tag lint
   artifacts:
     when: always
-    paths:
-      - logs/ci_logs.csv
+    paths: [logs/ci_logs.csv]
   only:
-    - schedules
+    - schedules       # runs ONLY when triggered by schedule
 
 baseline_experiment:
   <<: *experiment
