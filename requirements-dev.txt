@@ -1,0 +1,9 @@
+-r requirements.txt
+jupyterlab
+matplotlib
+seaborn
+ipython
+notebook
+
+# pip install -r requirements-dev.txt 
+# - pulls in your full data‑science environment only where you need it.

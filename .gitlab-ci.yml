@@ -1,21 +1,24 @@
-# ──────────────────────────────────────────────────────────────────────────────
-# .gitlab-ci.yml — Restored main pipeline + Fast A/B experiments (simplified)
-# ──────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────
+# .gitlab-ci.yml — main pipeline  +  fast A/B experiment schedules
+# ────────────────────────────────────────────────────────────────
 
-#################### 1. workflow: rules #######################################
+######################## 1. workflow rules ########################
 workflow:
   rules:
+    # Schedule named “Baseline”  → baseline mode + failure injection
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /Baseline/i'
       variables:
         HEAL_MODE:   "baseline"
         INJECT_FAIL: "true"
+    # Schedule named “ML”        → ml mode + failure injection
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /ML/i'
       variables:
         HEAL_MODE:   "ml"
         INJECT_FAIL: "true"
+    # All other pipelines (push / manual) use defaults
     - when: always
 
-#################### 2. Global defaults #######################################
+######################## 2. global defaults #######################
 stages:
   - build
   - lint
@@ -23,9 +26,9 @@ stages:
   - post_logs
 
 variables:
-  HEAL_MODE:      "ml"
-  INJECT_FAIL:    "false"
-  PIP_CACHE_DIR:  "$CI_PROJECT_DIR/.cache/pip"
+  HEAL_MODE:            "ml"        # default for pushes
+  INJECT_FAIL:          "false"
+  PIP_CACHE_DIR:        "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED:        "1"
 
@@ -34,7 +37,7 @@ cache:
   paths:
     - .cache/pip/
 
-#################### 3. FAST A/B EXPERIMENT JOBS (schedules) ##################
+################### 3. FAST A/B EXPERIMENT JOBS ###################
 .experiment_template: &experiment_template
   image: python:3.10-slim
   stage: build
@@ -43,34 +46,35 @@ cache:
   variables:
     DOCKER_HOST:       "tcp://docker:2375"
     DOCKER_TLS_CERTDIR: ""
-    SKIP_TEST_STAGE:  "true"
   before_script:
     - mkdir -p logs
     - python3 -m pip install --upgrade pip
     - pip install --cache-dir "$PIP_CACHE_DIR" -r requirements.txt
     - apt-get update && apt-get install -y docker.io
   script:
-    - 'echo "=== EXPERIMENT MODE: $HEAL_MODE (inject=$INJECT_FAIL) ==="'
+    - echo "=== EXPERIMENT MODE: $HEAL_MODE  (inject=$INJECT_FAIL) ==="
+    # 1) Fast Docker build (layer cache) and push
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - docker pull "$CI_REGISTRY_IMAGE:cache" || true
     - docker build --cache-from "$CI_REGISTRY_IMAGE:cache" -t "$CI_REGISTRY_IMAGE:dev" .
     - docker tag "$CI_REGISTRY_IMAGE:dev" "$CI_REGISTRY_IMAGE:cache"
     - docker push "$CI_REGISTRY_IMAGE:cache"
+    # 2) Run lint with healing & injected failure
     - python ci/predict_and_heal.py "flake8 ." --tag lint
   artifacts:
     when: always
     paths:
       - logs/ci_logs.csv
   only:
-    - schedules
+    - schedules               # runs ONLY via schedules
 
 baseline_experiment:
-  <<: *experiment_template
+  <<: *experiment_template     # schedule name must contain “Baseline”
 
 ml_experiment:
-  <<: *experiment_template
+  <<: *experiment_template     # schedule name must contain “ML”
 
-#################### 4. FULL PIPELINE FOR MAIN PUSHES ########################
+################ 4. FULL PIPELINE FOR MAIN PUSHES #################
 build-image:
   image: python:3.10-slim
   stage: build
@@ -86,8 +90,8 @@ build-image:
     - apt-get update && apt-get install -y docker.io
   script:
     - python ci/predict_and_heal.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" --tag build --label docker-login
-    - python ci/predict_and_heal.py "docker build -t \"$CI_REGISTRY_IMAGE/bidshopping:dev\" ." --tag build --label docker-build
-    - python ci/predict_and_heal.py "docker push \"$CI_REGISTRY_IMAGE/bidshopping:dev\"" --tag build --label docker-push
+    - python ci/predict_and_heal.py "docker build -t \"$CI_REGISTRY_IMAGE:dev\" ." --tag build --label docker-build
+    - python ci/predict_and_heal.py "docker push \"$CI_REGISTRY_IMAGE:dev\"" --tag build --label docker-push
   artifacts:
     when: always
     paths:
@@ -98,10 +102,6 @@ build-image:
 lint:
   image: "$CI_REGISTRY_IMAGE:dev"
   stage: lint
-  before_script:
-    - mkdir -p logs
-    - python3 -m pip install --upgrade pip
-    - pip install --cache-dir "$PIP_CACHE_DIR" -r requirements.txt
   script:
     - python ci/predict_and_heal.py "flake8 ." --tag lint
   artifacts:
@@ -114,10 +114,6 @@ lint:
 test:
   image: "$CI_REGISTRY_IMAGE:dev"
   stage: test
-  before_script:
-    - mkdir -p logs
-    - python3 -m pip install --upgrade pip
-    - pip install --cache-dir "$PIP_CACHE_DIR" -r requirements.txt
   script:
     - python ci/predict_and_heal.py "python manage.py collectstatic --noinput" --tag test
     - python ci/predict_and_heal.py "python manage.py migrate --noinput" --tag test
@@ -134,13 +130,12 @@ test:
   only:
     - main
 
-#################### 5. LOG MERGE / PUSH BACK #################################
+################# 5. LOG MERGE / PUSH BACK ########################
 update-logs:
   image: python:3.10-slim
   stage: post_logs
-  services: []
+  needs: [build-image, lint, test]
   before_script:
-    - mkdir -p logs
     - python3 -m pip install --upgrade pip
     - pip install --cache-dir "$PIP_CACHE_DIR" pandas requests
   script:
