@@ -1,5 +1,5 @@
 # ──────────────────────────────────────────────────────────────────────────────
-# .gitlab-ci.yml — main pipeline + Fast A/B experiments
+# .gitlab-ci.yml — Restored main pipeline + Fast A/B experiments (simplified)
 # ──────────────────────────────────────────────────────────────────────────────
 
 #################### 1. workflow: rules #######################################
@@ -29,21 +29,13 @@ variables:
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED:        "1"
 
-# A global before_script that installs Python deps for EVERY job
-.before_all: &before_all
-  before_script:
-    - mkdir -p logs
-    - python3 -m pip install --upgrade pip
-    - pip install --cache-dir "$PIP_CACHE_DIR" -r requirements.txt
-
 cache:
   key: "$CI_COMMIT_REF_SLUG"
   paths:
     - .cache/pip/
 
 #################### 3. FAST A/B EXPERIMENT JOBS (schedules) ##################
-.experiment: &experiment
-  <<: *before_all                      # install Python deps
+.experiment_template: &experiment_template
   image: python:3.10-slim
   stage: build
   services:
@@ -53,17 +45,17 @@ cache:
     DOCKER_TLS_CERTDIR: ""
     SKIP_TEST_STAGE:  "true"
   before_script:
-    - *before_all                      # ensure Python deps
+    - mkdir -p logs
+    - python3 -m pip install --upgrade pip
+    - pip install --cache-dir "$PIP_CACHE_DIR" -r requirements.txt
     - apt-get update && apt-get install -y docker.io
   script:
     - 'echo "=== EXPERIMENT MODE: $HEAL_MODE (inject=$INJECT_FAIL) ==="'
-    # Fast Docker build (cache) + push
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - docker pull "$CI_REGISTRY_IMAGE:cache" || true
     - docker build --cache-from "$CI_REGISTRY_IMAGE:cache" -t "$CI_REGISTRY_IMAGE:dev" .
     - docker tag "$CI_REGISTRY_IMAGE:dev" "$CI_REGISTRY_IMAGE:cache"
     - docker push "$CI_REGISTRY_IMAGE:cache"
-    # Run lint under healing wrapper (failure injection)
     - python ci/predict_and_heal.py "flake8 ." --tag lint
   artifacts:
     when: always
@@ -73,25 +65,24 @@ cache:
     - schedules
 
 baseline_experiment:
-  <<: *experiment
-  # triggered when schedule name includes "Baseline"
+  <<: *experiment_template
 
 ml_experiment:
-  <<: *experiment
-  # triggered when schedule name includes "ML"
+  <<: *experiment_template
 
 #################### 4. FULL PIPELINE FOR MAIN PUSHES ########################
 build-image:
-  <<: *before_all                      # install Python deps
-  stage: build
   image: python:3.10-slim
+  stage: build
   services:
     - docker:dind
   variables:
     DOCKER_HOST:       "tcp://docker:2375"
     DOCKER_TLS_CERTDIR: ""
   before_script:
-    - *before_all
+    - mkdir -p logs
+    - python3 -m pip install --upgrade pip
+    - pip install --cache-dir "$PIP_CACHE_DIR" -r requirements.txt
     - apt-get update && apt-get install -y docker.io
   script:
     - python ci/predict_and_heal.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" --tag build --label docker-login
@@ -105,9 +96,12 @@ build-image:
     - main
 
 lint:
-  <<: *before_all
-  stage: lint
   image: "$CI_REGISTRY_IMAGE:dev"
+  stage: lint
+  before_script:
+    - mkdir -p logs
+    - python3 -m pip install --upgrade pip
+    - pip install --cache-dir "$PIP_CACHE_DIR" -r requirements.txt
   script:
     - python ci/predict_and_heal.py "flake8 ." --tag lint
   artifacts:
@@ -118,9 +112,12 @@ lint:
     - main
 
 test:
-  <<: *before_all
-  stage: test
   image: "$CI_REGISTRY_IMAGE:dev"
+  stage: test
+  before_script:
+    - mkdir -p logs
+    - python3 -m pip install --upgrade pip
+    - pip install --cache-dir "$PIP_CACHE_DIR" -r requirements.txt
   script:
     - python ci/predict_and_heal.py "python manage.py collectstatic --noinput" --tag test
     - python ci/predict_and_heal.py "python manage.py migrate --noinput" --tag test
@@ -139,27 +136,32 @@ test:
 
 #################### 5. LOG MERGE / PUSH BACK #################################
 update-logs:
-  <<: *before_all
-  stage: post_logs
   image: python:3.10-slim
-  needs:
-    - build-image
-    - lint
-    - test
-  when: always
+  stage: post_logs
+  services: []
+  before_script:
+    - mkdir -p logs
+    - python3 -m pip install --upgrade pip
+    - pip install --cache-dir "$PIP_CACHE_DIR" pandas requests
   script:
     - mkdir -p data/raw
     - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv
     - python scripts/merge_incremental.py
     - python scripts/push_to_github.py
+  artifacts:
+    when: always
+    paths:
+      - logs/ci_logs.csv
   only:
     - main
 
 collect-logs:
-  <<: *before_all
-  stage: post_logs
   image: python:3.10-slim
+  stage: post_logs
   when: manual
+  before_script:
+    - python3 -m pip install --upgrade pip
+    - pip install --cache-dir "$PIP_CACHE_DIR" pandas requests
   script:
     - python scripts/download_logs.py
     - python scripts/merge_full.py
