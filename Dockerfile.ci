@@ -2,11 +2,11 @@
 FROM python:3.10-slim
 
 # OS packages needed for wheels (build‑essential) and Git
-RUN apt-get update \
- && apt-get install -y --no-install-recommends \
-      build-essential  \
-      git \
-      curl \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    curl \
+    docker.io \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Copy only requirements to leverage Docker layer cache
@@ -17,3 +17,9 @@ RUN pip install --no-cache-dir --upgrade pip \
  && pip install --no-cache-dir -r requirements.txt
 
 # This image’s job is only to supply Python deps; nothing else
+
+#docker build -f Dockerfile.ci -t registry.gitlab.com/uhthesis/bidshopping:ci-base .
+#docker push registry.gitlab.com/uhthesis/bidshopping:ci-base
+
+#docker build -f Dockerfile.ci -t registry.gitlab.com/uhthesis/bidshopping:dev .
+#docker push registry.gitlab.com/uhthesis/bidshopping:dev
