@@ -31,6 +31,7 @@ variables:
   PIP_CACHE_DIR:        "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED:        "1"
+  BASE_IMG: "registry.gitlab.com/uhthesis/bidshopping:ci-base" 
 
 cache:
   key: "$CI_COMMIT_REF_SLUG"
@@ -39,7 +40,7 @@ cache:
 
 ################### 3. FAST A/B EXPERIMENT JOBS ###################
 .experiment_template: &experiment_template
-  image: python:3.10-slim
+  image: "$BASE_IMG"
   stage: build
   services:
     - docker:dind
@@ -48,9 +49,6 @@ cache:
     DOCKER_TLS_CERTDIR: ""
   before_script:
     - mkdir -p logs
-    - python3 -m pip install --upgrade pip
-    - pip install --cache-dir "$PIP_CACHE_DIR" -r requirements.txt
-    - apt-get update && apt-get install -y docker.io
   script:
     - 'echo "=== EXPERIMENT MODE: $HEAL_MODE  (inject=$INJECT_FAIL) ==="'
     # 1) Fast Docker build (layer cache) and push
@@ -63,10 +61,8 @@ cache:
     - python ci/predict_and_heal.py "flake8 ." --tag lint
   artifacts:
     when: always
-    paths:
-      - logs/ci_logs.csv
-  only:
-    - schedules               # runs ONLY via schedules
+    paths: [logs/ci_logs.csv]
+  only: [schedules]
 
 baseline_experiment:
   <<: *experiment_template     # schedule name must contain “Baseline”
@@ -76,28 +72,22 @@ ml_experiment:
 
 ################ 4. FULL PIPELINE FOR MAIN PUSHES #################
 build-image:
-  image: python:3.10-slim
+  image: "$BASE_IMG"
   stage: build
-  services:
-    - docker:dind
+  services: [docker:dind]
   variables:
     DOCKER_HOST:       "tcp://docker:2375"
     DOCKER_TLS_CERTDIR: ""
   before_script:
     - mkdir -p logs
-    - python3 -m pip install --upgrade pip
-    - pip install --cache-dir "$PIP_CACHE_DIR" -r requirements.txt
-    - apt-get update && apt-get install -y docker.io
   script:
     - python ci/predict_and_heal.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" --tag build --label docker-login
     - python ci/predict_and_heal.py "docker build -t \"$CI_REGISTRY_IMAGE:dev\" ." --tag build --label docker-build
     - python ci/predict_and_heal.py "docker push \"$CI_REGISTRY_IMAGE:dev\"" --tag build --label docker-push
   artifacts:
     when: always
-    paths:
-      - logs/ci_logs.csv
-  only:
-    - main
+    paths: [logs/ci_logs.csv]
+  only: [main]
 
 lint:
   image: "$CI_REGISTRY_IMAGE:dev"
@@ -106,10 +96,8 @@ lint:
     - python ci/predict_and_heal.py "flake8 ." --tag lint
   artifacts:
     when: always
-    paths:
-      - logs/ci_logs.csv
-  only:
-    - main
+    paths: [logs/ci_logs.csv]
+  only: [main]
 
 test:
   image: "$CI_REGISTRY_IMAGE:dev"
@@ -127,17 +115,15 @@ test:
       - htmlcov/
       - functional_tests/screenshots/
       - logs/ci_logs.csv
-  only:
-    - main
+  only: [main]
 
 ################# 5. LOG MERGE / PUSH BACK ########################
 update-logs:
-  image: python:3.10-slim
+  image: "$BASE_IMG"
   stage: post_logs
   needs: [build-image, lint, test]
   before_script:
-    - python3 -m pip install --upgrade pip
-    - pip install --cache-dir "$PIP_CACHE_DIR" pandas requests
+    -- mkdir -p logs
   script:
     - mkdir -p data/raw
     - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv
@@ -145,21 +131,17 @@ update-logs:
     - python scripts/push_to_github.py
   artifacts:
     when: always
-    paths:
-      - logs/ci_logs.csv
-  only:
-    - main
+    paths: [logs/ci_logs.csv]
+  only: [main]
 
 collect-logs:
-  image: python:3.10-slim
+  image: "$BASE_IMG"
   stage: post_logs
   when: manual
   before_script:
-    - python3 -m pip install --upgrade pip
-    - pip install --cache-dir "$PIP_CACHE_DIR" pandas requests
+    - mkdir -p logs
   script:
     - python scripts/download_logs.py
     - python scripts/merge_full.py
     - python scripts/push_to_github.py
-  only:
-    - schedules
+  only: [schedules]

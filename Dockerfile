@@ -1,5 +1,5 @@
 # Dockerfile – app image built *from* ci-base
-FROM registry.gitlab.com/<NAMESPACE>/<PROJECT>:ci-base
+FROM registry.gitlab.com/uhthesis/bidshopping:ci-base
 
 WORKDIR /app
 COPY . .

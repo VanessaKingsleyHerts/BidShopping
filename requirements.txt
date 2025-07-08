@@ -10,3 +10,9 @@ scikit-learn==1.7.0
 joblib==1.5.1
 tensorflow==2.19.0
 xgboost==3.0.2
+
+
+# Rebuild base image from Dockerfile.ci
+#docker build -f Dockerfile.ci -t registry.gitlab.com/uhthesis/bidshopping:ci-base .
+# Push to GitLab container registry
+#docker push registry.gitlab.com/uhthesis/bidshopping:ci-base
