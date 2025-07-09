@@ -1,7 +1,7 @@
-# Dockerfile.ci — Custom CI base image with pre-installed Python deps
+# Dockerfile.ci — reusable base for CI, with healing & linting deps
 FROM python:3.10-slim
 
-# OS packages needed for wheels (build‑essential) and Git
+# 1. Install build tools & Docker CLI (for in-job docker builds)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     git \
@@ -9,17 +9,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     docker.io \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy only requirements to leverage Docker layer cache
+# 2. Copy requirements files and install all CI + ML deps
 COPY requirements.txt .
+COPY requirements-ml.txt .
+COPY requirements-ci.txt .
 
-# Install ALL Python deps once, without keeping pip cache
+# 3. Upgrade pip & install everything without cache
 RUN pip install --no-cache-dir --upgrade pip \
- && pip install --no-cache-dir -r requirements.txt
-
-# This image’s job is only to supply Python deps; nothing else
+ && pip install --no-cache-dir -r requirements-ci.txt
 
 #docker build -f Dockerfile.ci -t registry.gitlab.com/uhthesis/bidshopping:ci-base .
 #docker push registry.gitlab.com/uhthesis/bidshopping:ci-base
 
-#docker build -f Dockerfile.ci -t registry.gitlab.com/uhthesis/bidshopping:dev .
-#docker push registry.gitlab.com/uhthesis/bidshopping:dev

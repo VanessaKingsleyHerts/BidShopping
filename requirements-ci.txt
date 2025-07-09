@@ -1,0 +1,6 @@
+# requirements-ci.txt — used in GitLab jobs only
+-r requirements.txt
+-r requirements-ml.txt
+
+flake8==7.0.0
+coverage==7.5.1

@@ -1,21 +1,18 @@
 # ────────────────────────────────────────────────────────────────
-# .gitlab-ci.yml — main pipeline  +  fast A/B experiment schedules
+# .gitlab-ci.yml — main pipeline + fast A/B experiment schedules
 # ────────────────────────────────────────────────────────────────
 
 ######################## 1. workflow rules ########################
 workflow:
   rules:
-    # Schedule named “Baseline”  → baseline mode + failure injection
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /Baseline/i'
       variables:
         HEAL_MODE:   "baseline"
         INJECT_FAIL: "true"
-    # Schedule named “ML”        → ml mode + failure injection
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /ML/i'
       variables:
         HEAL_MODE:   "ml"
         INJECT_FAIL: "true"
-    # All other pipelines (push / manual) use defaults
     - when: always
 
 ######################## 2. global defaults #######################
@@ -26,12 +23,12 @@ stages:
   - post_logs
 
 variables:
-  HEAL_MODE:            "ml"        # default for pushes
-  INJECT_FAIL:          "false"
-  PIP_CACHE_DIR:        "$CI_PROJECT_DIR/.cache/pip"
+  HEAL_MODE:             "ml"
+  INJECT_FAIL:           "false"
+  PIP_CACHE_DIR:         "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED:        "1"
-  BASE_IMG: "registry.gitlab.com/uhthesis/bidshopping:ci-base" 
+  BASE_IMG:              "registry.gitlab.com/uhthesis/bidshopping:ci-base"
 
 cache:
   key: "$CI_COMMIT_REF_SLUG"
@@ -50,31 +47,32 @@ cache:
   before_script:
     - mkdir -p logs
   script:
-    - 'echo "=== EXPERIMENT MODE: $HEAL_MODE  (inject=$INJECT_FAIL) ==="'
-    # 1) Fast Docker build (layer cache) and push
+    - echo "=== EXPERIMENT MODE: $HEAL_MODE  (inject=$INJECT_FAIL) ==="
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - docker pull "$CI_REGISTRY_IMAGE:cache" || true
     - docker build --cache-from "$CI_REGISTRY_IMAGE:cache" -t "$CI_REGISTRY_IMAGE:dev" .
     - docker tag "$CI_REGISTRY_IMAGE:dev" "$CI_REGISTRY_IMAGE:cache"
     - docker push "$CI_REGISTRY_IMAGE:cache"
-    # 2) Run lint with healing & injected failure
     - python ci/predict_and_heal.py "flake8 ." --tag lint
   artifacts:
     when: always
-    paths: [logs/ci_logs.csv]
-  only: [schedules]
+    paths:
+      - logs/ci_logs.csv
+  only:
+    - schedules
 
 baseline_experiment:
-  <<: *experiment_template     # schedule name must contain “Baseline”
+  <<: *experiment_template
 
 ml_experiment:
-  <<: *experiment_template     # schedule name must contain “ML”
+  <<: *experiment_template
 
 ################ 4. FULL PIPELINE FOR MAIN PUSHES #################
 build-image:
   image: "$BASE_IMG"
   stage: build
-  services: [docker:dind]
+  services:
+    - docker:dind
   variables:
     DOCKER_HOST:       "tcp://docker:2375"
     DOCKER_TLS_CERTDIR: ""
@@ -82,12 +80,14 @@ build-image:
     - mkdir -p logs
   script:
     - python ci/predict_and_heal.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" --tag build --label docker-login
-    - python ci/predict_and_heal.py "docker build -t \"$CI_REGISTRY_IMAGE:dev\" ." --tag build --label docker-build
+    - python ci/predict_and_heal.py "docker build -f Dockerfile -t \"$CI_REGISTRY_IMAGE:dev\" ." --tag build --label docker-build
     - python ci/predict_and_heal.py "docker push \"$CI_REGISTRY_IMAGE:dev\"" --tag build --label docker-push
   artifacts:
     when: always
-    paths: [logs/ci_logs.csv]
-  only: [main]
+    paths:
+      - logs/ci_logs.csv
+  only:
+    - main
 
 lint:
   image: "$CI_REGISTRY_IMAGE:dev"
@@ -96,8 +96,10 @@ lint:
     - python ci/predict_and_heal.py "flake8 ." --tag lint
   artifacts:
     when: always
-    paths: [logs/ci_logs.csv]
-  only: [main]
+    paths:
+      - logs/ci_logs.csv
+  only:
+    - main
 
 test:
   image: "$CI_REGISTRY_IMAGE:dev"
@@ -115,7 +117,8 @@ test:
       - htmlcov/
       - functional_tests/screenshots/
       - logs/ci_logs.csv
-  only: [main]
+  only:
+    - main
 
 ################# 5. LOG MERGE / PUSH BACK ########################
 update-logs:
@@ -123,7 +126,7 @@ update-logs:
   stage: post_logs
   needs: [build-image, lint, test]
   before_script:
-    -- mkdir -p logs
+    - mkdir -p logs
   script:
     - mkdir -p data/raw
     - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv
@@ -131,8 +134,10 @@ update-logs:
     - python scripts/push_to_github.py
   artifacts:
     when: always
-    paths: [logs/ci_logs.csv]
-  only: [main]
+    paths:
+      - logs/ci_logs.csv
+  only:
+    - main
 
 collect-logs:
   image: "$BASE_IMG"
@@ -144,4 +149,5 @@ collect-logs:
     - python scripts/download_logs.py
     - python scripts/merge_full.py
     - python scripts/push_to_github.py
-  only: [schedules]
+  only:
+    - schedules

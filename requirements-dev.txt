@@ -1,9 +1,13 @@
+# requirements-dev.txt — for local experimentation (Jupyter, plotting)
 -r requirements.txt
+-r requirements-ml.txt
+
 jupyterlab
-matplotlib
-seaborn
-ipython
 notebook
+seaborn
+matplotlib
+ipython
+
 
 # pip install -r requirements-dev.txt 
 # - pulls in your full data‑science environment only where you need it.
