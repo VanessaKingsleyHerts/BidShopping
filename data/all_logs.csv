@@ -451,3 +451,11 @@ timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,status,pipelin
 2025-07-04 10:58:33,docker build -t registry.gitlab.com/uhthesis/bidshopping:dev .,0.5,1,6.0,0,build,fail,1906458576.0,ml
 2025-07-04 12:32:31,docker login -u gitlab-ci-token -p glcbt-eyJraWQiOiIxVHRMOTJuWlJnVHNqSVVvWDJPWVZMVU9KMWJXbUdFYmwtZkFuS3NZVWhRIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXJzaW9uIjoiMC4xLjAiLCJvIjoiMSIsInUiOiJnYzlzbCIsInAiOiIxNThxdnUiLCJnIjoiMXJiNGNsIiwianRpIjoiMGQ4MWE5YjItYTQzZC00YWU0LTgyNDItZTJiYWZjZGI2NDEyIiwiYXVkIjoiZ2l0bGFiLWF1dGh6LXRva2VuIiwic3ViIjoiZ2lkOi8vZ2l0bGFiL0NpOjpCdWlsZC8xMDU2ODA3NzA1NiIsImlzcyI6ImdpdGxhYi5jb20iLCJpYXQiOjE3NTE2MzIxNTksIm5iZiI6MTc1MTYzMjE1NCwiZXhwIjoxNzUxNjM2MDU5fQ.CR5geiO4xGxMM0dz_-jN1My4bsdw6AIOGGB7BsohNjVTdaw1CtmRClgG8sXm8rveh9Js2YBNaVV9exW-nhVmlqXaYlTUAV2eHgOV2oApEDfgDEJZ7kGPy4PEm9KfE33G7ZvqnR5jre9rdvfjepE0Wn7ZMGwkZbsL83PVI25_61S17FMDY_Qjq1tWUkxhSQkrnMqb3ZjF4MUqiGFEnA16oG47kdVZp5l02yUC39XQ68_TVwzMjfMB4E38F2iB9rP1yzjnKbKbwWvyCaXBfsWRzGrxsysAz4YJjcSg8x008V2eLLGA28ZptKeD3KG5YwfSqoAJDxuMAAPGmXtsUs4gQg registry.gitlab.com,0.5,0,6.9,0,build,pass,1906616245.0,ml
 2025-07-04 12:32:37,docker build -t registry.gitlab.com/uhthesis/bidshopping:dev .,0.5,1,8.0,0,build,fail,1906616245.0,ml
+2025-07-09 19:14:45,docker-login,0.5,0,5.1,0,build,pass,1917362882.0,ml
+2025-07-09 19:17:17,docker-build,1.0,0,24.45,40872,build,pass,1917362882.0,ml
+2025-07-09 19:18:13,docker-push,1.0,0,7.15,37308,build,pass,1917362882.0,ml
+2025-07-09 19:20:56,flake8 .,1.0,0,57.8,22144,lint,pass,1917362882.0,ml
+2025-07-09 19:23:41,python manage.py collectstatic --noinput,0.5,0,28.7,0,test,pass,1917362882.0,ml
+2025-07-09 19:23:46,python manage.py migrate --noinput,0.5,0,35.6,0,test,pass,1917362882.0,ml
+2025-07-09 19:23:55,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,59.0,60744,test,pass,1917362882.0,ml
+2025-07-09 19:24:38,coverage run --append --source=. manage.py test --tag=functional,10.02,0,23.44,61548,test,pass,1917362882.0,ml
