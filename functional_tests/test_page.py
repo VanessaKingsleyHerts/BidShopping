@@ -20,6 +20,7 @@ class TestHomePage(StaticLiveServerTestCase):
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
+        options.binary_location = "/usr/bin/chromium"  # Or sometimes /usr/bin/chromium-browser
         cls.browser = webdriver.Chrome(options=options)
         cls.remote_server_url = cls.live_server_url
 
