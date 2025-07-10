@@ -1,8 +1,21 @@
-# .gitlab-ci.yml 
+# .gitlab-ci.yml — clean and controlled
+#
+# Pipeline structure and logic:
+# - build-image: builds Docker image only when relevant files change
+# - lint, unit_tests, functional_tests: run on Python changes or can be manually triggered
+# - qa-all: manually triggers all stages (build, lint, tests) in one job, skipping other test jobs
+# - update-logs: always runs if any log-producing job ran; uses optional needs to avoid blocking
+# - collect-logs: manually regenerates full log history from past pipelines
+#
+# Notes:
+# - qa-all runs in a separate 'qa' stage so it's never blocked by earlier jobs
+# - RUN_MODE=qa suppresses test/lint jobs when qa-all is triggered
+# - Manual control and isolation ensure clean A/B ML log collection and reproducibility
 
 stages:
   - build
   - lint
+  - qa
   - test
   - post_logs
 
@@ -108,7 +121,7 @@ functional_tests:
       when: manual
 
 qa-all:
-  stage: test
+  stage: qa
   image: $BASE_IMAGE
   when: manual
   variables:
@@ -129,8 +142,12 @@ qa-all:
 update-logs:
   stage: post_logs
   image: $BASE_IMAGE
+  before_script:
+    - mkdir -p logs
   script:
+    - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv
     - python scripts/merge_incremental.py
+    - python scripts/push_to_github.py
   needs:
     - job: build-image
       artifacts: true
@@ -155,5 +172,9 @@ collect-logs:
   stage: post_logs
   image: $BASE_IMAGE
   when: manual
+  before_script:
+    - mkdir -p logs
   script:
+    - python scripts/download_logs.py
     - python scripts/merge_full.py
+    - python scripts/push_to_github.py
