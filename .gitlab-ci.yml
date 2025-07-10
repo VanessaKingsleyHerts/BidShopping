@@ -26,10 +26,14 @@ build-image:
   image: docker:latest
   services:
     - docker:dind
+  artifacts:
+    paths:
+      - logs/ci_logs.csv
+    when: always
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker pull $CACHE_REGISTRY || true
-    - docker build --cache-from $CACHE_REGISTRY -f Dockerfile.ci -t $BASE_IMAGE .
+    - python ci/ci_logger.py "docker build --cache-from $CACHE_REGISTRY -f Dockerfile.ci -t $BASE_IMAGE ." --tag build
     - docker push $BASE_IMAGE
   rules:
     - changes:
@@ -111,6 +115,15 @@ update-logs:
   image: $BASE_IMAGE
   script:
     - python scripts/merge_incremental.py
+  needs:
+    - job: build-image
+      artifacts: true
+    - job: unit_tests
+      artifacts: true
+    - job: lint
+      artifacts: true
+    - job: functional_tests
+      artifacts: true
   rules:
     - exists:
         - logs/ci_logs.csv
