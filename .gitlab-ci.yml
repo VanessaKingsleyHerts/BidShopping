@@ -71,7 +71,7 @@ unit_tests:
   stage: test
   image: $BASE_IMAGE
   script:
-    - python ci/predict_and_heal.py "pytest auction/tests/ -m 'not functional' --tb=short -n auto" --tag test
+    - python ci/predict_and_heal.py "python manage.py test auction.tests" --tag test
   rules:
     - changes:
         - auction/tests/**/*.py
@@ -106,6 +106,8 @@ update-logs:
   rules:
     - exists:
         - logs/ci_logs.csv
+      when: always
+  allow_failure: true
 
 collect-logs:
   stage: post_logs
