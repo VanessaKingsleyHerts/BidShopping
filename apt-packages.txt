@@ -1,0 +1,11 @@
+build-essential
+gcc
+g++
+python3-dev
+docker.io
+git
+curl
+unzip
+wget
+chromium
+chromium-driver
