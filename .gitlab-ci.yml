@@ -88,8 +88,13 @@ build-image:
     when: always
     paths:
       - logs/ci_logs.csv
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+    - changes:
+        - Dockerfile
+        - requirements*.txt
+        - **/*.py
+        - ci/**
 
 lint:
   image: "$CI_REGISTRY_IMAGE:dev"
@@ -100,33 +105,57 @@ lint:
     when: always
     paths:
       - logs/ci_logs.csv
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+    - changes:
+        - "**/*.py"
+        - pyproject.toml
+        - setup.cfg
+        - .flake8
 
-test:
+unit_tests:
   image: "$CI_REGISTRY_IMAGE:dev"
   stage: test
   script:
     - python ci/predict_and_heal.py "python manage.py collectstatic --noinput" --tag test
     - python ci/predict_and_heal.py "python manage.py migrate --noinput" --tag test
     - python ci/predict_and_heal.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional" --tag test
+  artifacts:
+    when: always
+    paths: [htmlcov/, logs/ci_logs.csv]
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+    - changes:
+        - "**/*.py"
+        - manage.py
+        - requirements*.txt
+        - ci/**
+
+functional_tests:
+  image: "$CI_REGISTRY_IMAGE:dev"
+  stage: test
+  script:
     - python manage.py runserver 0.0.0.0:8000 & sleep 5
     - python ci/predict_and_heal.py "coverage run --append --source=. manage.py test --tag=functional" --tag test
     - coverage report
   artifacts:
     when: always
     paths:
-      - htmlcov/
       - functional_tests/screenshots/
       - logs/ci_logs.csv
-  only:
-    - main
+  needs: [unit_tests]
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+    - changes:
+        - templates/**/*
+        - static/**/*
+        - functional_tests/**/*
 
 ################# 5. LOG MERGE / PUSH BACK ########################
 update-logs:
   image: "$BASE_IMG"
   stage: post_logs
-  needs: [build-image, lint, test]
+  needs: [build-image, lint, unit_tests, functional_tests]
   when: always
   before_script:
     - mkdir -p logs
