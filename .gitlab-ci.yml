@@ -1,4 +1,4 @@
-# .gitlab-ci.yml — optimized for speed and caching
+# .gitlab-ci.yml — clean and controlled
 
 stages:
   - build
@@ -40,22 +40,91 @@ build-image:
     - if: '$RUN_MODE == "qa"'
       when: never
     - changes:
+        - Dockerfile.ci
+        - requirements-*.txt
+        - ci/apt-packages.txt
+      when: on_success
+
+lint:
+  stage: lint
+  image: $BASE_IMAGE
+  script:
+    - python ci/predict_and_heal.py "flake8 ." --tag lint
+  artifacts:
+    paths:
+      - logs/ci_logs.csv
+    when: always
+  rules:
+    - if: '$RUN_MODE == "qa"'
+      when: never
+    - changes:
+        - "**/*.py"
+        - ".flake8"
+      when: on_success
+    - exists:
+        - .flake8
+      when: manual
+
+unit_tests:
+  stage: test
+  image: $BASE_IMAGE
+  script:
+    - python ci/predict_and_heal.py "python manage.py test auction.tests" --tag test
+  artifacts:
+    paths:
+      - logs/ci_logs.csv
+    when: always
+  rules:
+    - if: '$RUN_MODE == "qa"'
+      when: never
+    - changes:
         - "**/*.py"
       when: on_success
     - exists:
-        - functional_tests/
+        - auction/tests/
       when: manual
-      when: manual
+
+functional_tests:
+  stage: test
+  image: $BASE_IMAGE
+  services:
+    - name: docker:dind
+      alias: docker
+  script:
+    - python manage.py migrate
+    - python ci/predict_and_heal.py "python manage.py test --tag=functional" --tag test
+  artifacts:
+    paths:
+      - logs/ci_logs.csv
+    when: always
+  rules:
+    - if: '$RUN_MODE == "qa"'
+      when: never
     - changes:
         - "**/*.py"
       when: on_success
     - exists:
         - functional_tests/
       when: manual
-    - changes:
-        - functional_tests/**/*.py
-    - exists:
-        - functional_tests/
+
+qa-all:
+  stage: test
+  image: $BASE_IMAGE
+  when: manual
+  variables:
+    RUN_MODE: qa
+  rules:
+    - when: manual
+  script:
+    - python manage.py migrate
+    - python ci/ci_logger.py "docker build --cache-from $CACHE_REGISTRY -f Dockerfile.ci -t $BASE_IMAGE ." --tag build
+    - python ci/predict_and_heal.py "flake8 ." --tag lint
+    - python ci/predict_and_heal.py "python manage.py test auction.tests" --tag test
+    - python ci/predict_and_heal.py "python manage.py test --tag=functional" --tag test
+  artifacts:
+    paths:
+      - logs/ci_logs.csv
+    when: always
 
 update-logs:
   stage: post_logs
@@ -88,22 +157,3 @@ collect-logs:
   when: manual
   script:
     - python scripts/merge_full.py
-
-qa-all:
-  stage: test
-  image: $BASE_IMAGE
-  when: manual
-  variables:
-    RUN_MODE: qa
-  rules:
-    - when: manual
-  script:
-    - python manage.py migrate
-    - python ci/ci_logger.py "docker build --cache-from $CACHE_REGISTRY -f Dockerfile.ci -t $BASE_IMAGE ." --tag build
-    - python ci/predict_and_heal.py "flake8 ." --tag lint
-    - python ci/predict_and_heal.py "python manage.py test auction.tests" --tag test
-    - python ci/predict_and_heal.py "python manage.py test --tag=functional" --tag test
-  artifacts:
-    paths:
-      - logs/ci_logs.csv
-    when: always
