@@ -1,4 +1,4 @@
-# .gitlab-ci.yml — clean and controlled
+# .gitlab-ci.yml 
 
 stages:
   - build
