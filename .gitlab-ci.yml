@@ -64,18 +64,20 @@ lint:
     - changes:
         - "**/*.py"
         - ".flake8"
+    - exists:
+        - .flake8
 
 unit_tests:
   stage: test
   image: $BASE_IMAGE
   script:
-    - python ci/predict_and_heal.py "pytest -m 'not functional' --tb=short -n auto" --tag test
+    - python ci/predict_and_heal.py "pytest auction/tests/ -m 'not functional' --tb=short -n auto" --tag test
   rules:
     - changes:
-        - "**/*.py"
-        - tests/
+        - auction/tests/**/*.py
+        - auction/**/*.py
     - exists:
-        - tests/
+        - auction/tests/
 
 functional_tests:
   stage: test
@@ -85,10 +87,12 @@ functional_tests:
       alias: docker
   script:
     - python manage.py migrate
-    - python ci/predict_and_heal.py "pytest -m functional --live-server=localhost:8000" --tag test
+    - python ci/predict_and_heal.py "python manage.py test --tag=functional" --tag test
   rules:
     - changes:
-        - tests/test_functional_*.py
+        - functional_tests/**/*.py
+    - exists:
+        - functional_tests/
 
 update-logs:
   stage: post_logs
