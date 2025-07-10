@@ -137,14 +137,19 @@ update-logs:
   needs:
     - job: build-image
       artifacts: true
+      optional: true
     - job: unit_tests
       artifacts: true
+      optional: true
     - job: lint
       artifacts: true
+      optional: true
     - job: functional_tests
       artifacts: true
+      optional: true
     - job: qa-all
       artifacts: true
+      optional: true
   rules:
     - when: always
   allow_failure: true
