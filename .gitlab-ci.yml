@@ -127,6 +127,7 @@ update-logs:
   image: "$BASE_IMG"
   stage: post_logs
   needs: [build-image, lint, test]
+  when: always
   before_script:
     - mkdir -p logs
   script:
@@ -134,10 +135,6 @@ update-logs:
     - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv
     - python scripts/merge_incremental.py
     - python scripts/push_to_github.py
-  artifacts:
-    when: always
-    paths:
-      - logs/ci_logs.csv
   only:
     - main
 
