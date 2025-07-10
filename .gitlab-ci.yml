@@ -143,10 +143,10 @@ update-logs:
       artifacts: true
     - job: functional_tests
       artifacts: true
+    - job: qa-all
+      artifacts: true
   rules:
-    - exists:
-        - logs/ci_logs.csv
-      when: always
+    - when: always
   allow_failure: true
 
 collect-logs:
@@ -155,3 +155,18 @@ collect-logs:
   when: manual
   script:
     - python scripts/merge_full.py
+
+qa-all:
+  stage: test
+  image: $BASE_IMAGE
+  when: manual
+  script:
+    - python manage.py migrate
+    - python ci/ci_logger.py "docker build --cache-from $CACHE_REGISTRY -f Dockerfile.ci -t $BASE_IMAGE ." --tag build
+    - python ci/predict_and_heal.py "flake8 ." --tag lint
+    - python ci/predict_and_heal.py "python manage.py test auction.tests" --tag test
+    - python ci/predict_and_heal.py "python manage.py test --tag=functional" --tag test
+  artifacts:
+    paths:
+      - logs/ci_logs.csv
+    when: always
