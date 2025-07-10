@@ -60,6 +60,10 @@ lint:
   image: $BASE_IMAGE
   script:
     - python ci/predict_and_heal.py "flake8 ." --tag lint
+  artifacts:
+    paths:
+      - logs/ci_logs.csv
+    when: always
   rules:
     - changes:
         - "**/*.py"
@@ -72,6 +76,10 @@ unit_tests:
   image: $BASE_IMAGE
   script:
     - python ci/predict_and_heal.py "python manage.py test auction.tests" --tag test
+  artifacts:
+    paths:
+      - logs/ci_logs.csv
+    when: always
   rules:
     - changes:
         - auction/tests/**/*.py
@@ -88,6 +96,10 @@ functional_tests:
   script:
     - python manage.py migrate
     - python ci/predict_and_heal.py "python manage.py test --tag=functional" --tag test
+  artifacts:
+    paths:
+      - logs/ci_logs.csv
+    when: always
   rules:
     - changes:
         - functional_tests/**/*.py
@@ -98,11 +110,7 @@ update-logs:
   stage: post_logs
   image: $BASE_IMAGE
   script:
-    - python scripts/update_logs.py
-  artifacts:
-    paths:
-      - logs/
-    expire_in: 1 week
+    - python scripts/merge_incremental.py
   rules:
     - exists:
         - logs/ci_logs.csv
@@ -114,4 +122,4 @@ collect-logs:
   image: $BASE_IMAGE
   when: manual
   script:
-    - python scripts/collect_logs.py
+    - python scripts/merge_full.py
