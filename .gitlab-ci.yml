@@ -13,9 +13,9 @@
 # - Manual control and isolation ensure clean A/B ML log collection and reproducibility
 
 stages:
+  - qa_manual
   - build
   - lint
-  - qa
   - test
   - post_logs
 
@@ -121,7 +121,7 @@ functional_tests:
       when: manual
 
 qa-all:
-  stage: qa
+  stage: qa_manual
   image: $BASE_IMAGE
   when: manual
   variables:
@@ -142,12 +142,11 @@ qa-all:
 update-logs:
   stage: post_logs
   image: $BASE_IMAGE
-  before_script:
-    - mkdir -p logs
   script:
-    - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv
-    - python scripts/merge_incremental.py
-    - python scripts/push_to_github.py
+    - mkdir -p data/raw
+    - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv || echo "No logs to copy"
+    - test -f data/raw/$CI_PIPELINE_ID.csv && python scripts/merge_incremental.py || echo "No log to merge"
+    - python scripts/push_to_github.py || echo "Push failed"
   needs:
     - job: build-image
       artifacts: true
@@ -172,9 +171,8 @@ collect-logs:
   stage: post_logs
   image: $BASE_IMAGE
   when: manual
-  before_script:
-    - mkdir -p logs
   script:
+    - mkdir -p logs
     - python scripts/download_logs.py
     - python scripts/merge_full.py
     - python scripts/push_to_github.py
