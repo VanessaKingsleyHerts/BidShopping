@@ -72,6 +72,13 @@ lint:
     - changes:
         - "**/*.py"
         - ".flake8"
+      when: on_success
+    - exists:
+        - .flake8
+      when: manual
+    - changes:
+        - "**/*.py"
+        - ".flake8"
     - exists:
         - .flake8
 
@@ -85,6 +92,12 @@ unit_tests:
       - logs/ci_logs.csv
     when: always
   rules:
+    - changes:
+        - "**/*.py"
+      when: on_success
+    - exists:
+        - auction/tests/
+      when: manual
     - changes:
         - auction/tests/**/*.py
         - auction/**/*.py
@@ -105,6 +118,12 @@ functional_tests:
       - logs/ci_logs.csv
     when: always
   rules:
+    - changes:
+        - "**/*.py"
+      when: on_success
+    - exists:
+        - functional_tests/
+      when: manual
     - changes:
         - functional_tests/**/*.py
     - exists:
