@@ -7,6 +7,7 @@ stages:
   - post_logs
 
 variables:
+  RUN_MODE: auto
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: ""
   CACHE_REGISTRY: registry.gitlab.com/uhthesis/bidshopping:ci-base
@@ -69,6 +70,15 @@ lint:
       - logs/ci_logs.csv
     when: always
   rules:
+    - if: '$RUN_MODE == "qa"'
+      when: never
+    - changes:
+        - "**/*.py"
+        - ".flake8"
+      when: on_success
+    - exists:
+        - .flake8
+      when: manual
     - changes:
         - "**/*.py"
         - ".flake8"
@@ -92,6 +102,14 @@ unit_tests:
       - logs/ci_logs.csv
     when: always
   rules:
+    - if: '$RUN_MODE == "qa"'
+      when: never
+    - changes:
+        - "**/*.py"
+      when: on_success
+    - exists:
+        - auction/tests/
+      when: manual
     - changes:
         - "**/*.py"
       when: on_success
@@ -118,6 +136,14 @@ functional_tests:
       - logs/ci_logs.csv
     when: always
   rules:
+    - if: '$RUN_MODE == "qa"'
+      when: never
+    - changes:
+        - "**/*.py"
+      when: on_success
+    - exists:
+        - functional_tests/
+      when: manual
     - changes:
         - "**/*.py"
       when: on_success
@@ -165,6 +191,10 @@ qa-all:
   stage: test
   image: $BASE_IMAGE
   when: manual
+  variables:
+    RUN_MODE: qa
+  rules:
+    - when: manual
   script:
     - python manage.py migrate
     - python ci/ci_logger.py "docker build --cache-from $CACHE_REGISTRY -f Dockerfile.ci -t $BASE_IMAGE ." --tag build
