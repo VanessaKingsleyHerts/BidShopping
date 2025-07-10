@@ -42,7 +42,7 @@ cache:
     - pip install -r requirements-ci.txt
     - mkdir -p logs
   script:
-    - 'echo "=== EXPERIMENT MODE: $HEAL_MODE  (inject=$INJECT_FAIL) ==="'
+    - 'echo "=== EXPERIMENT MODE: $HEAL_MODE (inject=$INJECT_FAIL) ==="'
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     - docker pull "$CI_REGISTRY_IMAGE:cache" || true
     - docker build --cache-from "$CI_REGISTRY_IMAGE:cache" -t "$CI_REGISTRY_IMAGE:dev" .
@@ -74,19 +74,21 @@ build-image:
     - mkdir -p logs
   script:
     - python ci/predict_and_heal.py "docker login -u \"$CI_REGISTRY_USER\" -p \"$CI_REGISTRY_PASSWORD\" \"$CI_REGISTRY\"" --tag build --label docker-login
-    - python ci/predict_and_heal.py "docker build -f Dockerfile -t \"$CI_REGISTRY_IMAGE:dev\" ." --tag build --label docker-build
+    - python ci/predict_and_heal.py "docker build -f Dockerfile -t \"$CI_REGISTRY_IMAGE:dev\"" --tag build --label docker-build
     - python ci/predict_and_heal.py "docker push \"$CI_REGISTRY_IMAGE:dev\"" --tag build --label docker-push
   artifacts:
     when: always
     paths:
       - logs/ci_logs.csv
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
         - Dockerfile
         - requirements*.txt
-        - "**/*.py"
         - ci/**
+      when: on_success
+    - exists:
+        - ci/
+      when: manual
 
 lint:
   image: "$CI_REGISTRY_IMAGE:dev"
@@ -98,12 +100,15 @@ lint:
     paths:
       - logs/ci_logs.csv
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
         - "**/*.py"
+        - .flake8
         - pyproject.toml
         - setup.cfg
+      when: on_success
+    - exists:
         - .flake8
+      when: manual
 
 unit_tests:
   image: "$CI_REGISTRY_IMAGE:dev"
@@ -114,14 +119,19 @@ unit_tests:
     - python ci/predict_and_heal.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional" --tag test
   artifacts:
     when: always
-    paths: [htmlcov/, logs/ci_logs.csv]
+    paths:
+      - htmlcov/
+      - logs/ci_logs.csv
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
         - "**/*.py"
         - manage.py
         - requirements*.txt
         - ci/**
+      when: on_success
+    - exists:
+        - auction/tests/
+      when: manual
 
 functional_tests:
   image: "$CI_REGISTRY_IMAGE:dev"
@@ -137,11 +147,14 @@ functional_tests:
       - logs/ci_logs.csv
   needs: [unit_tests]
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
         - templates/**/*
         - static/**/*
         - functional_tests/**/*
+      when: on_success
+    - exists:
+        - functional_tests/
+      when: manual
 
 update-logs:
   image: "$BASE_IMG"
