@@ -58,9 +58,17 @@ cache:
 
 baseline_experiment:
   <<: *experiment_template
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /Baseline/i'
+      when: always
+    - when: never
 
 ml_experiment:
   <<: *experiment_template
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /ML/i'
+      when: always
+    - when: never
 
 build-image:
   image: "$BASE_IMG"
