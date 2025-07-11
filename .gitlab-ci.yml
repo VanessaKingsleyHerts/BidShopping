@@ -53,8 +53,6 @@ cache:
     when: always
     paths:
       - logs/ci_logs.csv
-  only:
-    - schedules
 
 baseline_experiment:
   <<: *experiment_template
