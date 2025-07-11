@@ -5,28 +5,43 @@ workflow:
         HEAL_MODE:   "baseline"
         INJECT_FAIL: "true"
       when: always
+
+    - if: '$CI_PIPELINE_SOURCE == "web" && $EXPERIMENT_TYPE == "baseline"'
+      variables:
+        HEAL_MODE:   "baseline"
+        INJECT_FAIL: "true"
+      when: always
+
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /ML/i'
       variables:
         HEAL_MODE:   "ml"
         INJECT_FAIL: "true"
       when: always
-    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_SCHEDULE_NAME =~ /Baseline/i'
-      variables:
-        HEAL_MODE:   "baseline"
-        INJECT_FAIL: "true"
-      when: always
-    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_SCHEDULE_NAME =~ /ML/i'
+
+    - if: '$CI_PIPELINE_SOURCE == "web" && $EXPERIMENT_TYPE == "ml"'
       variables:
         HEAL_MODE:   "ml"
         INJECT_FAIL: "true"
       when: always
+
     - when: always
 
 stages:
+  - setup
   - build
   - lint
   - test
   - post_logs
+
+show_env:
+  stage: setup
+  script:
+    - echo "Triggered via: $CI_PIPELINE_SOURCE"
+    - echo "Schedule name: $CI_SCHEDULE_NAME"
+    - echo "Experiment type: $EXPERIMENT_TYPE"
+    - echo "HEAL_MODE: $HEAL_MODE"
+    - echo "INJECT_FAIL: $INJECT_FAIL"
+  when: always
 
 variables:
   HEAL_MODE: "baseline"
