@@ -7,6 +7,7 @@ from selenium import webdriver
 from django.urls import reverse
 import time
 from urllib.parse import urlparse
+from auction.models import User
 
 SCREENSHOT_DIR = os.path.join(os.getcwd(), 'functional_tests', 'screenshots')
 os.makedirs(SCREENSHOT_DIR, exist_ok=True)
@@ -52,6 +53,11 @@ class TestHomePage(StaticLiveServerTestCase):
         url = self.remote_server_url + reverse('contact')
         self.browser.get(url)
         time.sleep(1)
+
+    def test_user_dashboard(self):
+        User.objects.create_user(username="test", password="1234")
+        self.browser.get(self.remote_server_url + reverse("home"))
+        self.assertIn("auction", self.browser.page_source)
 
     @skip
     def test_file_upload(self):

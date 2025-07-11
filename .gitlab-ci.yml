@@ -145,7 +145,6 @@ functional_tests:
     paths:
       - functional_tests/screenshots/
       - logs/ci_logs.csv
-  needs: [unit_tests]
   rules:
     - changes:
         - templates/**/*
