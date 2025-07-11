@@ -101,15 +101,6 @@ lint:
     when: always
     paths:
       - logs/ci_logs.csv
-  lint:
-  image: "$CI_REGISTRY_IMAGE:dev"
-  stage: lint
-  script:
-    - python ci/predict_and_heal.py "flake8 ." --tag lint
-  artifacts:
-    when: always
-    paths:
-      - logs/ci_logs.csv
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
