@@ -2,25 +2,25 @@ workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /Baseline/i'
       variables:
-        HEAL_MODE:   "baseline"
+        HEAL_MODE: "baseline"
         INJECT_FAIL: "true"
       when: always
 
     - if: '$CI_PIPELINE_SOURCE == "web" && $EXPERIMENT_TYPE == "baseline"'
       variables:
-        HEAL_MODE:   "baseline"
+        HEAL_MODE: "baseline"
         INJECT_FAIL: "true"
       when: always
 
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /ML/i'
       variables:
-        HEAL_MODE:   "ml"
+        HEAL_MODE: "ml"
         INJECT_FAIL: "true"
       when: always
 
     - if: '$CI_PIPELINE_SOURCE == "web" && $EXPERIMENT_TYPE == "ml"'
       variables:
-        HEAL_MODE:   "ml"
+        HEAL_MODE: "ml"
         INJECT_FAIL: "true"
       when: always
 
@@ -37,10 +37,10 @@ show_env:
   stage: setup
   script:
     - echo "Triggered via: $CI_PIPELINE_SOURCE"
-    - echo "Schedule name: $CI_SCHEDULE_NAME"
-    - echo "Experiment type: $EXPERIMENT_TYPE"
-    - echo "HEAL_MODE: $HEAL_MODE"
-    - echo "INJECT_FAIL: $INJECT_FAIL"
+    - echo "Schedule name: ${CI_SCHEDULE_NAME:-unset}"
+    - echo "Experiment type: ${EXPERIMENT_TYPE:-unset}"
+    - echo "HEAL_MODE: ${HEAL_MODE:-unset}"
+    - echo "INJECT_FAIL: ${INJECT_FAIL:-unset}"
   when: always
 
 variables:
