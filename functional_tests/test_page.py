@@ -56,8 +56,8 @@ class TestHomePage(StaticLiveServerTestCase):
 
     def test_user_dashboard(self):
         User.objects.create_user(username="test", password="1234")
-        self.browser.get(self.remote_server_url + reverse("home"))
-        self.assertIn("auction", self.browser.page_source)
+        self.browser.get(self.remote_server_url + reverse("user_dashboard"))
+        self.assertIn("Welcome", self.browser.page_source)
 
     @skip
     def test_file_upload(self):
