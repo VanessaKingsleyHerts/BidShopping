@@ -193,8 +193,6 @@ update-logs:
     - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv || echo "no logs to copy"
     - test -f data/raw/$CI_PIPELINE_ID.csv && python scripts/merge_incremental.py || echo "no logs to merge"
     - python scripts/push_to_github.py || echo "log push failed"
-  only:
-    - main
 
 collect-logs:
   image: "$BASE_IMG"
