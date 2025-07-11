@@ -21,6 +21,7 @@ stages:
   - build
   - lint
   - test
+  - experiment
   - post_logs
 
 show_env:
@@ -40,7 +41,7 @@ cache:
 
 .experiment_template: &experiment_template
   image: docker:24.0.6
-  stage: build
+  stage: experiment
   services:
     - docker:dind
   variables:
