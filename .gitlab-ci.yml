@@ -1,29 +1,19 @@
+variables:
+  EXPERIMENT_TYPE: "baseline"  # change to "ml" when needed
+  HEAL_MODE: "baseline"
+  INJECT_FAIL: "true"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONUNBUFFERED: "1"
+  BASE_IMG: "registry.gitlab.com/uhthesis/bidshopping:ci-base"
+
 workflow:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /Baseline/i'
+    - if: '$EXPERIMENT_TYPE'
       variables:
-        HEAL_MODE: "baseline"
+        HEAL_MODE: "$EXPERIMENT_TYPE"
         INJECT_FAIL: "true"
       when: always
-
-    - if: '$CI_PIPELINE_SOURCE == "web" && $EXPERIMENT_TYPE == "baseline"'
-      variables:
-        HEAL_MODE: "baseline"
-        INJECT_FAIL: "true"
-      when: always
-
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /ML/i'
-      variables:
-        HEAL_MODE: "ml"
-        INJECT_FAIL: "true"
-      when: always
-
-    - if: '$CI_PIPELINE_SOURCE == "web" && $EXPERIMENT_TYPE == "ml"'
-      variables:
-        HEAL_MODE: "ml"
-        INJECT_FAIL: "true"
-      when: always
-
     - when: always
 
 stages:
@@ -42,14 +32,6 @@ show_env:
     - 'echo "HEAL_MODE: ${HEAL_MODE:-unset}"'
     - 'echo "INJECT_FAIL: ${INJECT_FAIL:-unset}"'
   when: always
-
-variables:
-  HEAL_MODE: "baseline"
-  INJECT_FAIL: "false"
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-  PYTHONDONTWRITEBYTECODE: "1"
-  PYTHONUNBUFFERED: "1"
-  BASE_IMG: "registry.gitlab.com/uhthesis/bidshopping:ci-base"
 
 cache:
   key: "$CI_COMMIT_REF_SLUG"
@@ -84,18 +66,14 @@ cache:
 baseline_experiment:
   <<: *experiment_template
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /Baseline/i'
-      when: always
-    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_SCHEDULE_NAME =~ /Baseline/i'
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $HEAL_MODE == "baseline"'
       when: always
     - when: never
 
 ml_experiment:
   <<: *experiment_template
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /ML/i'
-      when: always
-    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_SCHEDULE_NAME =~ /Baseline/i'
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $HEAL_MODE == "ml"'
       when: always
     - when: never
 
