@@ -36,11 +36,11 @@ stages:
 show_env:
   stage: setup
   script:
-    - echo "Triggered via: $CI_PIPELINE_SOURCE"
-    - echo "Schedule name: ${CI_SCHEDULE_NAME:-unset}"
-    - echo "Experiment type: ${EXPERIMENT_TYPE:-unset}"
-    - echo "HEAL_MODE: ${HEAL_MODE:-unset}"
-    - echo "INJECT_FAIL: ${INJECT_FAIL:-unset}"
+    - 'echo "Triggered via: $CI_PIPELINE_SOURCE"'
+    - 'echo "Schedule name: ${CI_SCHEDULE_NAME:-unset}"'
+    - 'echo "Experiment type: ${EXPERIMENT_TYPE:-unset}"'
+    - 'echo "HEAL_MODE: ${HEAL_MODE:-unset}"'
+    - 'echo "INJECT_FAIL: ${INJECT_FAIL:-unset}"'
   when: always
 
 variables:
