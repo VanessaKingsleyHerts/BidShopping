@@ -19,7 +19,7 @@ stages:
   - post_logs
 
 variables:
-  HEAL_MODE: "ml"
+  HEAL_MODE: "baseline"
   INJECT_FAIL: "false"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
