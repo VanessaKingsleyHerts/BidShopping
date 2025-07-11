@@ -1,11 +1,11 @@
 workflow:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /Baseline/i'
+    - if: '($CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "web") && $CI_SCHEDULE_NAME =~ /Baseline/i'
       variables:
         HEAL_MODE:   "baseline"
         INJECT_FAIL: "true"
       when: always
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /ML/i'
+    - if: '($CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "web") && $CI_SCHEDULE_NAME =~ /Baseline/i'
       variables:
         HEAL_MODE:   "ml"
         INJECT_FAIL: "true"
@@ -59,14 +59,14 @@ cache:
 baseline_experiment:
   <<: *experiment_template
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /Baseline/i'
+    - if: '($CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "web") && $CI_SCHEDULE_NAME =~ /Baseline/i'
       when: always
     - when: never
 
 ml_experiment:
   <<: *experiment_template
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /ML/i'
+    - if: '($CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "web") && $CI_SCHEDULE_NAME =~ /Baseline/i'
       when: always
     - when: never
 
