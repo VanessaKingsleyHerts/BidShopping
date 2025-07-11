@@ -81,6 +81,8 @@ build-image:
     paths:
       - logs/ci_logs.csv
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
     - changes:
         - Dockerfile
         - requirements*.txt
@@ -99,12 +101,21 @@ lint:
     when: always
     paths:
       - logs/ci_logs.csv
+  lint:
+  image: "$CI_REGISTRY_IMAGE:dev"
+  stage: lint
+  script:
+    - python ci/predict_and_heal.py "flake8 ." --tag lint
+  artifacts:
+    when: always
+    paths:
+      - logs/ci_logs.csv
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
     - changes:
         - "**/*.py"
         - .flake8
-        - pyproject.toml
-        - setup.cfg
       when: on_success
     - exists:
         - .flake8
@@ -123,6 +134,8 @@ unit_tests:
       - htmlcov/
       - logs/ci_logs.csv
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
     - changes:
         - "**/*.py"
         - manage.py
@@ -146,6 +159,8 @@ functional_tests:
       - functional_tests/screenshots/
       - logs/ci_logs.csv
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
     - changes:
         - templates/**/*
         - static/**/*
