@@ -4,10 +4,12 @@ workflow:
       variables:
         HEAL_MODE:   "baseline"
         INJECT_FAIL: "true"
+      when: always
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_SCHEDULE_NAME =~ /ML/i'
       variables:
         HEAL_MODE:   "ml"
         INJECT_FAIL: "true"
+      when: always
     - when: always
 
 stages:
