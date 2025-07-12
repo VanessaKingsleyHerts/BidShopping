@@ -1,7 +1,7 @@
 variables:
-  EXPERIMENT_TYPE: "baseline"  # change to "ml" when needed
+  EXPERIMENT: "true"
   HEAL_MODE: "baseline"
-  INJECT_FAIL: "true"
+  INJECT_FAIL: "false"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED: "1"
@@ -9,12 +9,11 @@ variables:
 
 workflow:
   rules:
-    - if: '$EXPERIMENT_TYPE'
+    - if: '$EXPERIMENT == "true"'
       variables:
-        HEAL_MODE: "$EXPERIMENT_TYPE"
         INJECT_FAIL: "true"
       when: always
-    - when: always
+    - when: never
 
 stages:
   - setup
@@ -29,17 +28,17 @@ show_env:
   script:
     - 'echo "Triggered via: $CI_PIPELINE_SOURCE"'
     - 'echo "Schedule name: ${CI_SCHEDULE_NAME:-unset}"'
-    - 'echo "Experiment type: ${EXPERIMENT_TYPE:-unset}"'
+    - 'echo "Experiment type: ${EXPERIMENT:-unset}"'
     - 'echo "HEAL_MODE: ${HEAL_MODE:-unset}"'
     - 'echo "INJECT_FAIL: ${INJECT_FAIL:-unset}"'
-  when: always
+  when: never
 
 cache:
   key: "$CI_COMMIT_REF_SLUG"
   paths:
     - .cache/pip/
 
-.experiment_template: &experiment_template
+experiment_template:
   image: docker:24.0.6
   stage: experiment
   services:
@@ -63,16 +62,6 @@ cache:
     when: always
     paths:
       - logs/ci_logs.csv
-
-baseline_experiment:
-  <<: *experiment_template
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: always
-    - when: never
-
-ml_experiment:
-  <<: *experiment_template
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: always
@@ -97,7 +86,7 @@ build-image:
     paths:
       - logs/ci_logs.csv
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
         - Dockerfile
@@ -118,7 +107,7 @@ lint:
     paths:
       - logs/ci_logs.csv
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
         - "**/*.py"
@@ -141,7 +130,7 @@ unit_tests:
       - htmlcov/
       - logs/ci_logs.csv
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
         - "**/*.py"
@@ -166,7 +155,7 @@ functional_tests:
       - functional_tests/screenshots/
       - logs/ci_logs.csv
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
         - templates/**/*
@@ -212,5 +201,9 @@ collect-logs:
     - python scripts/download_logs.py
     - python scripts/merge_full.py
     - python scripts/push_to_github.py
-  only:
-    - schedules
+  rules:
+    - if: '$EXPERIMENT == "true"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: always
+    - when: never
