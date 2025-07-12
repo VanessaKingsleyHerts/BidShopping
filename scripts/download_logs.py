@@ -1,11 +1,10 @@
-#download_logs.py
-
 #!/usr/bin/env python3
 import os
 import sys
 import io
 import zipfile
 import requests
+from ci.log_schema import EXPECTED_COLS
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 GITLAB_API_URL = "https://gitlab.com/api/v4"
@@ -27,8 +26,7 @@ def fetch_pipelines(page=1):
         headers=HEADERS
     )
     resp.raise_for_status()
-    data = resp.json()
-    return data if isinstance(data, list) else []
+    return resp.json()
 
 def fetch_jobs(pid):
     resp = requests.get(
@@ -39,7 +37,6 @@ def fetch_jobs(pid):
     return resp.json()
 
 def download_artifacts_zip(job_id):
-    """Download the full artifact zip for a job."""
     resp = requests.get(
         f"{GITLAB_API_URL}/projects/{PROJECT_ID}/jobs/{job_id}/artifacts",
         headers=HEADERS, stream=True
@@ -55,9 +52,6 @@ def main():
 
     while True:
         pipelines = fetch_pipelines(page)
-        if page == 1:
-            ids = [p["id"] for p in pipelines[:10]]
-            print(f"[DEBUG] First page pipeline IDs: {ids}")
         if not pipelines:
             break
 
@@ -65,30 +59,37 @@ def main():
             pid = p["id"]
             print(f"\n[DEBUG] Inspecting Pipeline {pid} (status={p['status']}, ref={p['ref']})")
             jobs = fetch_jobs(pid)
-            jobs_info = [f"{j['name']}({j.get('artifacts_file') is not None})" for j in jobs]
-            print("[DEBUG]  Jobs found:", jobs_info)
 
             for j in jobs:
-                if j.get("artifacts_file"):
-                    buf = download_artifacts_zip(j["id"])
-                    if not buf:
-                        print("[!] Could not fetch artifacts ZIP for job", j["id"])
+                if not j.get("artifacts_file"):
+                    continue
+
+                buf = download_artifacts_zip(j["id"])
+                if not buf:
+                    print(f"[!] Could not fetch ZIP for job {j['id']}")
+                    continue
+
+                with zipfile.ZipFile(buf) as z:
+                    namelist = z.namelist()
+                    print("[DEBUG] Artifact contents:", namelist)
+
+                    if "logs/ci_logs.csv" not in namelist:
+                        print("[!] ci_logs.csv not found in this ZIP")
                         continue
 
-                    with zipfile.ZipFile(buf) as z:
-                        namelist = z.namelist()
-                        print("[DEBUG]  Artifact contents:", namelist)
+                    raw_bytes = z.read("logs/ci_logs.csv")
+                    text = raw_bytes.decode("utf-8-sig")
+                    header = text.splitlines()[0].split(",")
 
-                        # Attempt to read the expected path
-                        if "logs/ci_logs.csv" in namelist:
-                            data = z.read("logs/ci_logs.csv")
-                        else:
-                            print("[!]  ci_logs.csv not found in this ZIP")
-                            continue
+                    if header != EXPECTED_COLS:
+                        print(f"❌ [download] Skipping {pid} — column mismatch")
+                        skipped.append(pid)
+                        continue
 
                     out_path = os.path.join(TARGET_DIR, f"{pid}.csv")
-                    with open(out_path, "wb") as f:
-                        f.write(data)
+                    with open(out_path, "w", encoding="utf-8", newline="") as f:
+                        f.write(text)
+
                     print("✅ Saved:", out_path)
                     downloaded += 1
                     break
@@ -97,9 +98,9 @@ def main():
 
         page += 1
 
-    print(f"\n🎉 Done—downloaded {downloaded} log files into {TARGET_DIR}")
+    print(f"\n🎉 Done — downloaded {downloaded} logs into {TARGET_DIR}")
     if skipped:
-        print("[!] Skipped", len(skipped), "pipelines with no artifacts:", skipped[:10], "...")
+        print("[!] Skipped", len(skipped), "pipelines:", skipped[:10])
 
 if __name__ == "__main__":
     main()
