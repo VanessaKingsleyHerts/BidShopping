@@ -488,3 +488,10 @@ timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,status,pipelin
 2025-07-11 10:23:20,flake8 .,1.0,0,60.65,22124,lint,pass,1920773917.0,baseline
 2025-07-11 10:27:11,coverage run --append --source=. manage.py test --tag=functional,10.02,0,24.32,61800,test,pass,1920773917.0,baseline
 2025-07-12 01:20:00,flake8 .,1.0,0,61.0,22148,lint,pass,1922861554.0,baseline
+2025-07-12 10:27:52,docker-login,0.5,0,5.1,0,build,pass,1923260094.0,ml
+2025-07-12 10:30:48,docker-build,1.5,0,18.03,42480,build,pass,1923260094.0,ml
+2025-07-12 10:31:51,docker-push,1.0,0,10.2,36084,build,pass,1923260094.0,ml
+2025-07-12 10:31:57,flake8 .,1.0,0,59.8,22212,lint,pass,1923260094.0,ml
+2025-07-12 10:32:04,python manage.py collectstatic --noinput,0.5,0,32.0,0,test,pass,1923260094.0,ml
+2025-07-12 10:32:09,python manage.py migrate --noinput,0.5,0,41.6,0,test,pass,1923260094.0,ml
+2025-07-12 10:32:20,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,52.47,60564,test,pass,1923260094.0,ml
