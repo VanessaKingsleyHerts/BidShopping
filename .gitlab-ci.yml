@@ -41,7 +41,7 @@ cache:
     - .cache/pip/
 
 experiment:
-  image: docker:24.0.6
+  image: python:3.11-slim
   stage: experiment
   services:
     - docker:dind
@@ -49,7 +49,7 @@ experiment:
     DOCKER_HOST: "tcp://docker:2375"
     DOCKER_TLS_CERTDIR: ""
   before_script:
-    - apk add --no-cache python3 py3-pip
+    - apt-get update && apt-get install -y gcc g++ python3-dev
     - pip install -r requirements-ci.txt
     - mkdir -p logs
   script:
