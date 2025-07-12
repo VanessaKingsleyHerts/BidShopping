@@ -4,6 +4,7 @@ import sys
 import io
 import zipfile
 import requests
+
 try:
     from ci.log_schema import EXPECTED_COLS
 except ModuleNotFoundError:

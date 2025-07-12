@@ -9,6 +9,7 @@ from datetime import datetime
 import psutil
 import os
 import argparse
+
 try:
     from ci.log_schema import EXPECTED_COLS as HEADER
 except ModuleNotFoundError:

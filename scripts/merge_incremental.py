@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import hashlib
 import sys
+
 try:
     from ci.log_schema import EXPECTED_COLS
 except ModuleNotFoundError:

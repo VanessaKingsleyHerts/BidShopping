@@ -5,6 +5,7 @@ import json
 import requests
 import pandas as pd
 from datetime import datetime
+
 try:
     from ci.log_schema import EXPECTED_COLS
 except ModuleNotFoundError:

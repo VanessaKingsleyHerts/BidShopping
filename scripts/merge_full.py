@@ -4,6 +4,7 @@ import sys
 import csv
 import pandas as pd
 from glob import glob
+
 try:
     from ci.log_schema import EXPECTED_COLS
 except ModuleNotFoundError:

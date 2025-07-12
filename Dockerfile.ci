@@ -22,6 +22,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
 WORKDIR /app
 
 # Note 
-# Build locally with if changes in dockerfile or requirements:
+# Build locally with if changes in Dockerfile-ci or requirements dependencies:
 # docker build -f Dockerfile.ci -t registry.gitlab.com/uhthesis/bidshopping:ci-base .
 # docker push registry.gitlab.com/uhthesis/bidshopping:ci-base
