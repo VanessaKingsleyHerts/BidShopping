@@ -191,11 +191,11 @@ update-logs:
     - mkdir -p data/raw
     - |
       if [ ! -f logs/ci_logs.csv ]; then
-        echo "⚠️ No logs/ci_logs.csv found — skipping log merge"
+        echo "⚠️ No logs/ci_logs.csv found — skipping logs update"
         exit 0
       fi
     - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv
-    - python scripts/merge_incremental.py || echo "merge failed"
+    - python scripts/merge_incremental.py || echo "update logs failed"
     - python scripts/push_to_github.py || echo "push failed"
   rules:
     - when: always
