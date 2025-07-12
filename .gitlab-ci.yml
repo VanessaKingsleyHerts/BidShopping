@@ -40,7 +40,7 @@ cache:
   paths:
     - .cache/pip/
 
-experiment_template:
+experiment:
   image: docker:24.0.6
   stage: experiment
   services:
@@ -184,14 +184,21 @@ update-logs:
     - job: functional_tests
       artifacts: true
       optional: true
-  when: always
-  before_script:
-    - mkdir -p logs
+    - job: experiment
+      artifacts: true
+      optional: true
   script:
     - mkdir -p data/raw
-    - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv || echo "no logs to copy"
-    - test -f data/raw/$CI_PIPELINE_ID.csv && python scripts/merge_incremental.py || echo "no logs to merge"
-    - python scripts/push_to_github.py || echo "log push failed"
+    - |
+      if [ ! -f logs/ci_logs.csv ]; then
+        echo "⚠️ No logs/ci_logs.csv found — skipping log merge"
+        exit 0
+      fi
+    - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv
+    - python scripts/merge_incremental.py || echo "merge failed"
+    - python scripts/push_to_github.py || echo "push failed"
+  rules:
+    - when: always
 
 collect-logs:
   image: "$BASE_IMG"
