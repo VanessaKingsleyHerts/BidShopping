@@ -50,6 +50,7 @@ experiment:
     DOCKER_TLS_CERTDIR: ""
   before_script:
     - mkdir -p logs
+    - test -f ci/__init__.py || (echo "ci module is not importable!" && exit 1)
   script:
     - 'echo "=== EXPERIMENT MODE: $HEAL_MODE (inject=$INJECT_FAIL) ==="'
 

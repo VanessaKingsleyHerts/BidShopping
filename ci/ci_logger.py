@@ -9,7 +9,12 @@ from datetime import datetime
 import psutil
 import os
 import argparse
-from ci.log_schema import EXPECTED_COLS as HEADER
+try:
+    from ci.log_schema import EXPECTED_COLS as HEADER
+except ModuleNotFoundError:
+    import sys
+    sys.path.append('.')
+    from ci.log_schema import EXPECTED_COLS as HEADER
 
 # Ensure logs/ folder exists
 os.makedirs("logs", exist_ok=True)
