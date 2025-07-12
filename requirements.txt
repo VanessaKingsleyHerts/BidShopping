@@ -6,6 +6,6 @@ requests>=2.32.4
 
 
 # Rebuild base image from Dockerfile.ci
-#docker build -f Dockerfile.ci -t registry.gitlab.com/uhthesis/bidshopping:ci-base .
+# docker build -f Dockerfile.ci -t registry.gitlab.com/uhthesis/bidshopping:ci-base .
 # Push to GitLab container registry
-#docker push registry.gitlab.com/uhthesis/bidshopping:ci-base
+# docker push registry.gitlab.com/uhthesis/bidshopping:ci-base

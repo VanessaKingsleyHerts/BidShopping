@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 from keras.models import load_model
 
+# os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"  # Only show errors
+
 # Paths to models
 RF_MODEL   = os.path.join(os.path.dirname(__file__), "../notebooks/models/rf_model.joblib")
 RF_SCALER  = os.path.join(os.path.dirname(__file__), "../notebooks/models/rf_scaler.joblib")
