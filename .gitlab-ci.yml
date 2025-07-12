@@ -31,7 +31,9 @@ show_env:
     - 'echo "Experiment type: ${EXPERIMENT:-unset}"'
     - 'echo "HEAL_MODE: ${HEAL_MODE:-unset}"'
     - 'echo "INJECT_FAIL: ${INJECT_FAIL:-unset}"'
-  when: never
+  rules:
+    - when: never
+
 
 cache:
   key: "$CI_COMMIT_REF_SLUG"
