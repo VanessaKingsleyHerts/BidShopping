@@ -5,7 +5,12 @@ import json
 import requests
 import pandas as pd
 from datetime import datetime
-from ci.log_schema import EXPECTED_COLS
+try:
+    from ci.log_schema import EXPECTED_COLS
+except ModuleNotFoundError:
+    import sys
+    sys.path.append('.')
+    from ci.log_schema import EXPECTED_COLS
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 GITHUB_TOKEN = os.environ["GITHUB_PAT_LOG_PUSH"]

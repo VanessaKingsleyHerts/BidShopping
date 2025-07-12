@@ -3,7 +3,12 @@ import os
 import pandas as pd
 import hashlib
 import sys
-from ci.log_schema import EXPECTED_COLS
+try:
+    from ci.log_schema import EXPECTED_COLS
+except ModuleNotFoundError:
+    import sys
+    sys.path.append('.')
+    from ci.log_schema import EXPECTED_COLS
 
 pipe_id     = os.environ["CI_PIPELINE_ID"]
 raw_path    = f"data/raw/{pipe_id}.csv"

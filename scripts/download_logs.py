@@ -4,7 +4,12 @@ import sys
 import io
 import zipfile
 import requests
-from ci.log_schema import EXPECTED_COLS
+try:
+    from ci.log_schema import EXPECTED_COLS
+except ModuleNotFoundError:
+    import sys
+    sys.path.append('.')
+    from ci.log_schema import EXPECTED_COLS
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 GITLAB_API_URL = "https://gitlab.com/api/v4"

@@ -4,7 +4,12 @@ import sys
 import csv
 import pandas as pd
 from glob import glob
-from ci.log_schema import EXPECTED_COLS
+try:
+    from ci.log_schema import EXPECTED_COLS
+except ModuleNotFoundError:
+    import sys
+    sys.path.append('.')
+    from ci.log_schema import EXPECTED_COLS
 
 RAW_DIR = "data/raw"
 OUT_CSV = "data/all_logs.csv"
