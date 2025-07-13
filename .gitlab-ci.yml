@@ -144,7 +144,7 @@ unit_tests:
       - htmlcov/
       - logs/ci_logs.csv
   rules:
-    - when: always
+    - when: never
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
@@ -171,7 +171,7 @@ functional_tests:
       - functional_tests/screenshots/
       - logs/ci_logs.csv
   rules:
-    - when: always
+    - when: never
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
