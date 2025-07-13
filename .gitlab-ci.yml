@@ -219,7 +219,7 @@ update-logs:
 collect-logs:
   image: "$BASE_IMG"
   stage: post_logs
-  when: manual
+  when: never
   allow_failure: true
   before_script:
     - mkdir -p logs
