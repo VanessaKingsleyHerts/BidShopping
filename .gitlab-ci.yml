@@ -1,7 +1,7 @@
 variables:
-  EXPERIMENT: "false"
+  ALL_IN_ONE: "false"
   HEAL_MODE: "ml"
-  INJECT_FAIL: "true"
+  INJECT_FAIL: "false"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED: "1"
@@ -9,7 +9,7 @@ variables:
 
 #workflow:
   #rules:
-    #- if: '$EXPERIMENT == "true"'
+    #- if: '$ALL_IN_ONE == "true"'
       #variables:
         #INJECT_FAIL: "false"
       #when: always
@@ -20,7 +20,7 @@ stages:
   - build
   - lint
   - test
-  - experiment
+  - all_in_one
   - log_collect
   - post_logs
 
@@ -29,7 +29,7 @@ show_env:
   script:
     - 'echo "Triggered via: $CI_PIPELINE_SOURCE"'
     - 'echo "Schedule name: ${CI_SCHEDULE_NAME:-unset}"'
-    - 'echo "Experiment type: ${EXPERIMENT:-unset}"'
+    - 'echo "Experiment type: ${ALL_IN_ONE:-unset}"'
     - 'echo "HEAL_MODE: ${HEAL_MODE:-unset}"'
     - 'echo "INJECT_FAIL: ${INJECT_FAIL:-unset}"'
   rules:
@@ -41,9 +41,9 @@ cache:
   paths:
     - .cache/pip/
 
-experiment:
+all_in_one:
   image: "$BASE_IMG"
-  stage: experiment
+  stage: all_in_one
   services:
     - docker:dind
   variables:
@@ -53,7 +53,7 @@ experiment:
     - mkdir -p logs
     - test -f ci/__init__.py || (echo "ci module is not importable!" && exit 1)
   script:
-    - 'echo "=== EXPERIMENT MODE: $HEAL_MODE (inject=$INJECT_FAIL) ==="'
+    - 'echo "=== ALL_IN_ONE MODE: $HEAL_MODE (inject=$INJECT_FAIL) ==="'
 
     # Safer login
     - python ci/predict_and_heal.py "echo \"$CI_REGISTRY_PASSWORDD\" | docker login -u \"$CI_REGISTRY_USER\" --password-stdin \"$CI_REGISTRY\"" --tag build --label docker-login
@@ -72,7 +72,7 @@ experiment:
     paths:
       - logs/ci_logs.csv
   rules:
-    - if: '$EXPERIMENT == "true"'
+    - if: '$ALL_IN_ONE == "true"'
       when: always
     - when: never
 
@@ -97,7 +97,7 @@ build-image:
       - logs/ci_logs.csv
   rules:
     - when: never
-    - if: '$EXPERIMENT == "true"'
+    - if: '$ALL_IN_ONE == "true"'
       when: never
     - changes:
         - Dockerfile
@@ -119,8 +119,8 @@ lint:
     paths:
       - logs/ci_logs.csv
   rules:
-    - when: always
-    - if: '$EXPERIMENT == "true"'
+    - when: never
+    - if: '$ALL_IN_ONE == "true"'
       when: never
     - changes:
         - "**/*.py"
@@ -145,7 +145,7 @@ unit_tests:
       - logs/ci_logs.csv
   rules:
     - when: never
-    - if: '$EXPERIMENT == "true"'
+    - if: '$ALL_IN_ONE == "true"'
       when: never
     - changes:
         - "**/*.py"
@@ -172,7 +172,7 @@ functional_tests:
       - logs/ci_logs.csv
   rules:
     - when: always
-    - if: '$EXPERIMENT == "true"'
+    - if: '$ALL_IN_ONE == "true"'
       when: never
     - changes:
         - auction/templates/**/*
@@ -200,7 +200,7 @@ update-logs:
     - job: functional_tests
       artifacts: true
       optional: true
-    - job: experiment
+    - job: all_in_one
       artifacts: true
       optional: true
   script:
@@ -228,7 +228,7 @@ collect-logs:
     - python scripts/push_to_github.py
   rules:
     - when: never
-    - if: '$EXPERIMENT == "true"'
+    - if: '$ALL_IN_ONE == "true"'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: always

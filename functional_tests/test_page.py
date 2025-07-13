@@ -55,7 +55,7 @@ class TestHomePage(StaticLiveServerTestCase):
     def test_user_dashboard(self):
         User.objects.create_user(username="test", password="1234")
         self.browser.get(self.remote_server_url + reverse("home"))
-        self.assertIn("auction", self.browser.page_source)
+        self.assertIn("auctionn", self.browser.page_source)
 
     @skip
     def test_file_upload(self):
@@ -76,6 +76,3 @@ class TestHomePage(StaticLiveServerTestCase):
         r = requests.get(href)
         self.assertEqual(r.headers['Content-Type'], 'application/pdf')
         self.assertGreater(len(r.content), 0)
-
-    def bad(self):
-        self.assertEqual(1, 0) 
