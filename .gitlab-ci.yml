@@ -1,7 +1,7 @@
 variables:
   EXPERIMENT: "false"
   HEAL_MODE: "baseline"
-  INJECT_FAIL: "true"
+  INJECT_FAIL: "false"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED: "1"
@@ -21,6 +21,7 @@ stages:
   - lint
   - test
   - experiment
+  - log_collect
   - post_logs
 
 show_env:
@@ -77,7 +78,8 @@ experiment:
 
 build-image:
   image: "$BASE_IMG"
-  stage: build
+  stage: log_collect
+  allow_failure: true
   services:
     - docker:dind
   variables:
@@ -94,7 +96,7 @@ build-image:
     paths:
       - logs/ci_logs.csv
   rules:
-    - when: never
+    - when: always
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
@@ -108,7 +110,8 @@ build-image:
 
 lint:
   image: "$CI_REGISTRY_IMAGE:dev"
-  stage: lint
+  stage: log_collect
+  allow_failure: true
   script:
     - python ci/predict_and_heal.py "flake8 ." --tag lint
   artifacts:
@@ -116,7 +119,7 @@ lint:
     paths:
       - logs/ci_logs.csv
   rules:
-    - when: never
+    - when: always
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
@@ -129,7 +132,8 @@ lint:
 
 unit_tests:
   image: "$CI_REGISTRY_IMAGE:dev"
-  stage: test
+  stage: log_collect
+  allow_failure: true
   script:
     - python ci/predict_and_heal.py "python manage.py collectstatic --noinput" --tag test
     - python ci/predict_and_heal.py "python manage.py migrate --noinput" --tag test
@@ -140,7 +144,7 @@ unit_tests:
       - htmlcov/
       - logs/ci_logs.csv
   rules:
-    - when: never
+    - when: always
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
@@ -155,7 +159,8 @@ unit_tests:
 
 functional_tests:
   image: "$CI_REGISTRY_IMAGE:dev"
-  stage: test
+  stage: log_collect
+  allow_failure: true
   script:
     - python manage.py runserver 0.0.0.0:8000 & sleep 5
     - python ci/predict_and_heal.py "coverage run --append --source=. manage.py test --tag=functional" --tag test
@@ -166,7 +171,7 @@ functional_tests:
       - functional_tests/screenshots/
       - logs/ci_logs.csv
   rules:
-    - when: never
+    - when: always
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
@@ -181,6 +186,7 @@ functional_tests:
 update-logs:
   image: "$BASE_IMG"
   stage: post_logs
+  allow_failure: true
   needs:
     - job: build-image
       artifacts: true
@@ -214,6 +220,7 @@ collect-logs:
   image: "$BASE_IMG"
   stage: post_logs
   when: manual
+  allow_failure: true
   before_script:
     - mkdir -p logs
   script:
