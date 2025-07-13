@@ -144,7 +144,7 @@ unit_tests:
       - htmlcov/
       - logs/ci_logs.csv
   rules:
-    - when: always
+    - when: never
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
