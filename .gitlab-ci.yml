@@ -21,6 +21,7 @@ stages:
   - lint
   - test
   - experiment
+  - log_collect
   - post_logs
 
 show_env:
