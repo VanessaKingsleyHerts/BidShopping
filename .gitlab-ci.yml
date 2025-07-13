@@ -1,7 +1,7 @@
 variables:
   EXPERIMENT: "false"
   HEAL_MODE: "baseline"
-  INJECT_FAIL: "false"
+  INJECT_FAIL: "true"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED: "1"
@@ -96,7 +96,7 @@ build-image:
     paths:
       - logs/ci_logs.csv
   rules:
-    - when: never
+    - when: always
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
@@ -144,7 +144,7 @@ unit_tests:
       - htmlcov/
       - logs/ci_logs.csv
   rules:
-    - when: never
+    - when: always
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:

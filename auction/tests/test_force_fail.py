@@ -7,5 +7,8 @@ class SimulatedFailureTest(SimpleTestCase):
         # self.fail("💥 Simulated CI failure for logging")
 
     def test_failure_sim(self):
-        if os.environ.get("FAIL_NEXT") == "1":
-            self.assertEqual(1, 0)  # Force fail
+        #if os.environ.get("FAIL_NEXT") == "1":
+        self.assertEqual(1, 0)  # Force fail
+
+    def bad():
+    print("Oops")
