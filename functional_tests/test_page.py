@@ -1,12 +1,10 @@
 from unittest import skip
 import os
-import traceback
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import tag
 from selenium import webdriver
 from django.urls import reverse
 import time
-from urllib.parse import urlparse
 from auction.models import User
 
 SCREENSHOT_DIR = os.path.join(os.getcwd(), 'functional_tests', 'screenshots')

@@ -1,19 +1,19 @@
 variables:
-  EXPERIMENT: "true"
+  EXPERIMENT: "false"
   HEAL_MODE: "ml"
-  # INJECT_FAIL: "false"
+  INJECT_FAIL: "false"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED: "1"
   BASE_IMG: "registry.gitlab.com/uhthesis/bidshopping:ci-base"
 
-workflow:
-  rules:
-    - if: '$EXPERIMENT == "true"'
-      variables:
-        INJECT_FAIL: "false"
-      when: always
-    - when: never
+#workflow:
+  #rules:
+    #- if: '$EXPERIMENT == "true"'
+      #variables:
+        #INJECT_FAIL: "false"
+      #when: always
+    #- when: never
 
 stages:
   - setup
@@ -166,8 +166,8 @@ functional_tests:
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
-        - templates/**/*
-        - static/**/*
+        - auction/templates/**/*
+        - auction/static/**/*
         - functional_tests/**/*
       when: on_success
     - exists:
