@@ -78,4 +78,4 @@ class TestHomePage(StaticLiveServerTestCase):
         self.assertGreater(len(r.content), 0)
 
     def bad(self):
-    self.assertEqual(1, 0) 
+        self.assertEqual(1, 0) 
