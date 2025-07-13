@@ -1,5 +1,5 @@
 variables:
-  EXPERIMENT: "false"
+  EXPERIMENT: "true"
   HEAL_MODE: "ml"
   # INJECT_FAIL: "false"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
