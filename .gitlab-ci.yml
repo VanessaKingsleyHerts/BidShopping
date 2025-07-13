@@ -32,7 +32,7 @@ show_env:
     - 'echo "HEAL_MODE: ${HEAL_MODE:-unset}"'
     - 'echo "INJECT_FAIL: ${INJECT_FAIL:-unset}"'
   rules:
-    - when: never
+    - when: always
 
 
 cache:
