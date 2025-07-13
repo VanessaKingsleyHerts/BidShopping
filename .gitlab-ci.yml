@@ -1,7 +1,7 @@
 variables:
   EXPERIMENT: "false"
-  HEAL_MODE: "baseline"
-  INJECT_FAIL: "true"
+  HEAL_MODE: "ml"
+  INJECT_FAIL: "false"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED: "1"
@@ -21,7 +21,6 @@ stages:
   - lint
   - test
   - experiment
-  - log_collect
   - post_logs
 
 show_env:
@@ -56,7 +55,7 @@ experiment:
     - 'echo "=== EXPERIMENT MODE: $HEAL_MODE (inject=$INJECT_FAIL) ==="'
 
     # Safer login
-    - python ci/predict_and_heal.py "echo \"$CI_REGISTRY_PASSWORDD\" | docker login -u \"$CI_REGISTRY_USER\" --password-stdin \"$CI_REGISTRY\"" --tag build --label docker-login
+    - python ci/predict_and_heal.py "echo \"$CI_REGISTRY_PASSWORD\" | docker login -u \"$CI_REGISTRY_USER\" --password-stdin \"$CI_REGISTRY\"" --tag build --label docker-login
 
     # Docker build pipeline simulating 'build' stage
     - python ci/predict_and_heal.py "docker build -f Dockerfile -t \"$CI_REGISTRY_IMAGE:dev\" ." --tag build --label docker-build
@@ -144,7 +143,7 @@ unit_tests:
       - htmlcov/
       - logs/ci_logs.csv
   rules:
-    - when: never
+    - when: always
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
@@ -171,7 +170,7 @@ functional_tests:
       - functional_tests/screenshots/
       - logs/ci_logs.csv
   rules:
-    - when: never
+    - when: always
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
