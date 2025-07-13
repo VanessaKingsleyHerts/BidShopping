@@ -56,7 +56,7 @@ experiment:
     - 'echo "=== EXPERIMENT MODE: $HEAL_MODE (inject=$INJECT_FAIL) ==="'
 
     # Safer login
-    - python ci/predict_and_heal.py "echo \"$CI_REGISTRY_PASSWORD\" | docker login -u \"$CI_REGISTRY_USER\" --password-stdin \"$CI_REGISTRY\"" --tag build --label docker-login
+    - python ci/predict_and_heal.py "echo \"$CI_REGISTRY_PASSWORDD\" | docker login -u \"$CI_REGISTRY_USER\" --password-stdin \"$CI_REGISTRY\"" --tag build --label docker-login
 
     # Docker build pipeline simulating 'build' stage
     - python ci/predict_and_heal.py "docker build -f Dockerfile -t \"$CI_REGISTRY_IMAGE:dev\" ." --tag build --label docker-build
