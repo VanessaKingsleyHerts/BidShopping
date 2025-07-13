@@ -76,4 +76,6 @@ class TestHomePage(StaticLiveServerTestCase):
         r = requests.get(href)
         self.assertEqual(r.headers['Content-Type'], 'application/pdf')
         self.assertGreater(len(r.content), 0)
-        
+
+    def bad(self):
+    self.assertEqual(1, 0) 
