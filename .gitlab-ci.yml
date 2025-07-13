@@ -1,7 +1,7 @@
 variables:
   EXPERIMENT: "false"
-  HEAL_MODE: "ml"
-  INJECT_FAIL: "false"
+  HEAL_MODE: "baseline"
+  INJECT_FAIL: "true"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED: "1"
@@ -71,7 +71,7 @@ experiment:
     paths:
       - logs/ci_logs.csv
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$EXPERIMENT == "true"'
       when: always
     - when: never
 
@@ -94,6 +94,7 @@ build-image:
     paths:
       - logs/ci_logs.csv
   rules:
+    - when: never
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
@@ -115,6 +116,7 @@ lint:
     paths:
       - logs/ci_logs.csv
   rules:
+    - when: never
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
@@ -138,6 +140,7 @@ unit_tests:
       - htmlcov/
       - logs/ci_logs.csv
   rules:
+    - when: never
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
@@ -163,6 +166,7 @@ functional_tests:
       - functional_tests/screenshots/
       - logs/ci_logs.csv
   rules:
+    - when: never
     - if: '$EXPERIMENT == "true"'
       when: never
     - changes:
@@ -204,7 +208,7 @@ update-logs:
     - python scripts/merge_incremental.py || echo "update logs failed"
     - python scripts/push_to_github.py || echo "push failed"
   rules:
-    - when: always
+    - when: never
 
 collect-logs:
   image: "$BASE_IMG"
