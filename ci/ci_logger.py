@@ -67,7 +67,7 @@ def run_and_log(command_str, csv_path="logs/ci_logs.csv", tag=None, label=None, 
         tag,
         status,
         os.environ.get("CI_PIPELINE_ID", "unknown"),
-        os.environ.get("HEAL_MODE", "ml")
+        os.environ.get("HEAL_MODE", "none")
     ]
 
     with open(csv_path, "a", newline="") as f:

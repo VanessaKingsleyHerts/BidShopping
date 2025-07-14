@@ -7,9 +7,9 @@ from keras.models import load_model
 # os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"  # Only show errors
 
 # Paths to models
-RF_MODEL   = os.path.join(os.path.dirname(__file__), "../notebooks/models/rf_model.joblib")
-RF_SCALER  = os.path.join(os.path.dirname(__file__), "../notebooks/models/rf_scaler.joblib")
-LSTM_MODEL = os.path.join(os.path.dirname(__file__), "../notebooks/models/lstm_model.h5")
+RF_MODEL   = os.path.join(os.path.dirname(__file__), "../data/baseline/models/rf_model.joblib")
+RF_SCALER  = os.path.join(os.path.dirname(__file__), "../data/baseline/models/rf_scaler.joblib")
+LSTM_MODEL = os.path.join(os.path.dirname(__file__), "../data/baseline/models/lstm_model.keras ")
 
 # Constants
 SEQ_LEN  = 2  # build + lint
@@ -17,7 +17,7 @@ FEATURES = ["log_duration", "cpu_pct_avg", "mem_mb", "tag_code"]
 RF_ELIGIBLE_TAGS = {"lint", "test"}
 
 # Determine healing mode (baseline or ml)
-MODE = os.environ.get("HEAL_MODE", "ml")
+MODE = os.environ.get("HEAL_MODE", "none")
 
 def ensure_header(csv_path="logs/ci_logs.csv"):
     header = [

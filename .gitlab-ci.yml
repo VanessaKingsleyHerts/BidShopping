@@ -96,7 +96,6 @@ build-image:
     paths:
       - logs/ci_logs.csv
   rules:
-    - when: never
     - if: '$ALL_IN_ONE == "true"'
       when: never
     - changes:
@@ -119,7 +118,6 @@ lint:
     paths:
       - logs/ci_logs.csv
   rules:
-    - when: never
     - if: '$ALL_IN_ONE == "true"'
       when: never
     - changes:
@@ -144,7 +142,6 @@ unit_tests:
       - htmlcov/
       - logs/ci_logs.csv
   rules:
-    - when: never
     - if: '$ALL_IN_ONE == "true"'
       when: never
     - changes:
@@ -171,7 +168,6 @@ functional_tests:
       - functional_tests/screenshots/
       - logs/ci_logs.csv
   rules:
-    - when: always
     - if: '$ALL_IN_ONE == "true"'
       when: never
     - changes:
@@ -214,7 +210,7 @@ update-logs:
     - python scripts/merge_incremental.py || echo "update logs failed"
     - python scripts/push_to_github.py || echo "push failed"
   rules:
-    - when: never
+    - when: always
 
 collect-logs:
   image: "$BASE_IMG"
@@ -227,7 +223,6 @@ collect-logs:
     - python scripts/merge_full.py
     - python scripts/push_to_github.py
   rules:
-    - when: never
     - if: '$ALL_IN_ONE == "true"'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
