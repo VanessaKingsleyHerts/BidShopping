@@ -1,7 +1,7 @@
 variables:
-  ALL_IN_ONE: "false"
-  HEAL_MODE: "ml"
-  INJECT_FAIL: "false"
+  ALL_IN_ONE: "true"
+  HEAL_MODE: "baseline"
+  INJECT_FAIL: "true"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED: "1"
