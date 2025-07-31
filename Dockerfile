@@ -5,7 +5,7 @@ FROM registry.gitlab.com/uhthesis/bidshopping:ci-base
 WORKDIR /app
 
 ## FORCE BUILD FAIL
-RUN pip install broken-package==99.99.99 
+# RUN pip install broken-package==99.99.99 
 
 # Cache requirements before copying everything
 COPY requirements.txt ./
