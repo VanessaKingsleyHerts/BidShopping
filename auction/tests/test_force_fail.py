@@ -8,4 +8,4 @@ class SimulatedFailureTest(SimpleTestCase):
 
     def test_failure_sim(self):
     if os.environ.get("FAIL_NEXT") == "1":
-    self.assertEqual(1, 0)  # Force fail
+        self.assertEqual(1, 0)  # Force fail
