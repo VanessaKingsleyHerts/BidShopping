@@ -1,8 +1,12 @@
 variables:
-  ALL_IN_ONE: "true"
-  HEAL_MODE: "baseline"
+  ALL_IN_ONE: "false"
+  FORCE_RUN: "true"
+  HEAL_MODE: "ml" # baseline|ml
   INJECT_FAIL: "1"
-  FAIL_NEXT: "1"
+  TEST_SELECTION: "suite"     # off|suite|budget
+  RISK_THRESHOLD: "0.30"    # used only when TEST_SELECTION=suite
+  MAX_TEST_MINUTES: "15"    # used only when TEST_SELECTION=budget
+  FAIL_NEXT: "0"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED: "1"
@@ -79,7 +83,7 @@ all_in_one:
 
 build-image:
   image: "$BASE_IMG"
-  stage: log_collect
+  stage: build
   allow_failure: true
   services:
     - docker:dind
@@ -99,6 +103,8 @@ build-image:
   rules:
     - if: '$ALL_IN_ONE == "true"'
       when: never
+    - if: '$FORCE_RUN  == "true"'
+      when: always
     - changes:
         - Dockerfile
         - requirements*.txt
@@ -109,8 +115,8 @@ build-image:
       when: manual
 
 lint:
-  image: "$CI_REGISTRY_IMAGE:dev"
-  stage: log_collect
+  image: "$BASE_IMG"
+  stage: lint
   allow_failure: true
   script:
     - python ci/predict_and_heal.py "flake8 ." --tag lint
@@ -121,6 +127,8 @@ lint:
   rules:
     - if: '$ALL_IN_ONE == "true"'
       when: never
+    - if: '$FORCE_RUN  == "true"'
+      when: always
     - changes:
         - "**/*.py"
         - .flake8
@@ -130,13 +138,13 @@ lint:
       when: manual
 
 unit_tests:
-  image: "$CI_REGISTRY_IMAGE:dev"
-  stage: log_collect
+  image: "$BASE_IMG"
+  stage: test
   allow_failure: true
   script:
-    - python ci/predict_and_heal.py "python manage.py collectstatic --noinput" --tag test
-    - python ci/predict_and_heal.py "python manage.py migrate --noinput" --tag test
-    - python ci/predict_and_heal.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional" --tag test
+    - python ci/predict_and_heal.py "python manage.py collectstatic --noinput" --tag unit --label collectstatic
+    - python ci/predict_and_heal.py "python manage.py migrate --noinput" --tag unit --label migrate
+    - python ci/predict_and_heal.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional" --tag unit --label unit-tests
   artifacts:
     when: always
     paths:
@@ -145,6 +153,8 @@ unit_tests:
   rules:
     - if: '$ALL_IN_ONE == "true"'
       when: never
+    - if: '$FORCE_RUN  == "true"'
+      when: always
     - changes:
         - "**/*.py"
         - manage.py
@@ -156,13 +166,12 @@ unit_tests:
       when: manual
 
 functional_tests:
-  image: "$CI_REGISTRY_IMAGE:dev"
-  stage: log_collect
+  image: "$BASE_IMG"
+  stage: test
   allow_failure: true
   script:
-    - python manage.py runserver 0.0.0.0:8000 & sleep 5
-    - python ci/predict_and_heal.py "coverage run --append --source=. manage.py test --tag=functional" --tag test
-    - coverage report
+    # combine server spin-up + tests in a single wrapped command so selection can skip early
+    - python ci/predict_and_heal.py "bash -lc 'python manage.py runserver 0.0.0.0:8000 & sleep 5; coverage run --append --source=. manage.py test --tag=functional; coverage report'" --tag functional --label functional-tests
   artifacts:
     when: always
     paths:
@@ -171,6 +180,8 @@ functional_tests:
   rules:
     - if: '$ALL_IN_ONE == "true"'
       when: never
+    - if: '$FORCE_RUN  == "true"'
+      when: always
     - changes:
         - auction/templates/**/*
         - auction/static/**/*
