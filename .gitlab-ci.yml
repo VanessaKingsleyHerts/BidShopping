@@ -2,11 +2,11 @@ variables:
   ALL_IN_ONE: "false"
   FORCE_RUN: "true"
   HEAL_MODE: "ml" # baseline|ml
-  INJECT_FAIL: "1"
+  INJECT_FAIL: "0"
   TEST_SELECTION: "suite"     # off|suite|budget
-  RISK_THRESHOLD: "1.0"    # used only when TEST_SELECTION=suite
+  RISK_THRESHOLD: "1.0"    # used only when TEST_SELECTION=suite # 1.0 (forces functional to be not selected)
   MAX_TEST_MINUTES: "15"    # used only when TEST_SELECTION=budget
-  FAIL_NEXT: "1"
+  FAIL_NEXT: "0"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED: "1"
@@ -116,7 +116,6 @@ build-image:
 lint:
   image: "$BASE_IMG"
   stage: lint
-  allow_failure: true
   script:
     - python ci/predict_and_heal.py "flake8 ." --tag lint
   artifacts:
@@ -139,7 +138,6 @@ lint:
 unit_tests:
   image: "$BASE_IMG"
   stage: test
-  allow_failure: true
   script:
     - python ci/predict_and_heal.py "python manage.py collectstatic --noinput" --tag unit --label collectstatic
     - python ci/predict_and_heal.py "python manage.py migrate --noinput" --tag unit --label migrate
@@ -167,8 +165,8 @@ unit_tests:
 functional_tests:
   image: "$BASE_IMG"
   stage: test
-  allow_failure: true
   script:
+    #- mkdir -p functional_tests/screenshots
     # combine server spin-up + tests in a single wrapped command so selection can skip early
     - python ci/predict_and_heal.py "bash -lc 'python manage.py runserver 0.0.0.0:8000 & sleep 5; coverage run --append --source=. manage.py test --tag=functional; coverage report'" --tag functional --label functional-tests
   artifacts:

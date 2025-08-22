@@ -5,6 +5,7 @@ import pandas as pd
 from keras.models import load_model
 
 # os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"  # Only show errors
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 # Paths to models
 RF_MODEL   = os.path.join(os.path.dirname(__file__), "../data/baseline/models/rf_model.joblib")
@@ -132,11 +133,12 @@ def run_and_heal(command, tag, label=None):
 def soft_skip(tag, reason, label=None):
     """Log a 'skipped' row and exit 0 so the pipeline proceeds."""
     ensure_header()
-    cmd = f'echo "skip:{tag}:{reason}"'
-    subprocess.call(
-        f'python ci/ci_logger.py "{cmd}" --tag {tag} --force-status skipped' + (f' --label {label}' if label else ''),
-        shell=True
-    )
+    msg = f"skip:{tag}:{reason}"
+    quoted_msg = shlex.quote(msg)
+    log_cmd = f"python ci/ci_logger.py {quoted_msg} --tag {tag} --force-status skipped"
+    if label:
+        log_cmd += f" --label {label}"
+    subprocess.call(log_cmd, shell=True)
     print(f"[Selector] Skipping suite '{tag}' — {reason}")
     return 0
 
@@ -204,6 +206,7 @@ if __name__ == "__main__":
         rates = compute_suite_fail_rates()
         chosen = (decide_suites_suite_mode(rates) if TEST_SELECTION_MODE == "suite"
                   else decide_suites_budget_mode(rates, compute_suite_durations(), MAX_TEST_MINUTES))
+        print(f"[Selector] mode={TEST_SELECTION_MODE} tag={args.tag} rates={rates} chosen={sorted(chosen)}")
         if args.tag not in chosen:
             sys.exit(soft_skip(args.tag, f"Not selected ({TEST_SELECTION_MODE})", args.label))
     sys.exit(run_and_heal(args.command, args.tag, args.label))
