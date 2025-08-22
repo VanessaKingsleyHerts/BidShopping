@@ -189,7 +189,8 @@ def decide_suites_budget_mode(rates, durs, budget):
     for _, t in items:
         m = durs.get(t, 5.0)
         if used + m <= budget:
-            selected.add(t); used += m
+            selected.add(t)
+            used += m
     if not selected:
         selected.add("unit")
     print(f"[Selector] Budget={budget}m → {sorted(selected)} (≈{used:.1f}m)")

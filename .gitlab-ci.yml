@@ -95,10 +95,13 @@ build-image:
     - python ci/predict_and_heal.py "echo \"$CI_REGISTRY_PASSWORD\" | docker login -u \"$CI_REGISTRY_USER\" --password-stdin \"$CI_REGISTRY\"" --tag build --label docker-login
     - python ci/predict_and_heal.py "docker build -f Dockerfile -t \"$CI_REGISTRY_IMAGE:dev\" ." --tag build --label docker-build
     - python ci/predict_and_heal.py "docker push \"$CI_REGISTRY_IMAGE:dev\"" --tag build --label docker-push
+    # save a per-job copy to avoid artifact overwrite
+    - mkdir -p "logs/$CI_JOB_NAME"
+    - test -f logs/ci_logs.csv && cp logs/ci_logs.csv "logs/$CI_JOB_NAME/ci_logs.csv" || true
   artifacts:
     when: always
     paths:
-      - logs/ci_logs.csv
+      - logs/$CI_JOB_NAME/ci_logs.csv
   rules:
     - if: '$ALL_IN_ONE == "true"'
       when: never
@@ -118,10 +121,12 @@ lint:
   stage: lint
   script:
     - python ci/predict_and_heal.py "flake8 ." --tag lint
+    - mkdir -p "logs/$CI_JOB_NAME"
+    - test -f logs/ci_logs.csv && cp logs/ci_logs.csv "logs/$CI_JOB_NAME/ci_logs.csv" || true
   artifacts:
     when: always
     paths:
-      - logs/ci_logs.csv
+      - logs/$CI_JOB_NAME/ci_logs.csv
   rules:
     - if: '$ALL_IN_ONE == "true"'
       when: never
@@ -142,11 +147,13 @@ unit_tests:
     - python ci/predict_and_heal.py "python manage.py collectstatic --noinput" --tag unit --label collectstatic
     - python ci/predict_and_heal.py "python manage.py migrate --noinput" --tag unit --label migrate
     - python ci/predict_and_heal.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional" --tag unit --label unit-tests
+    - mkdir -p "logs/$CI_JOB_NAME"
+    - test -f logs/ci_logs.csv && cp logs/ci_logs.csv "logs/$CI_JOB_NAME/ci_logs.csv" || true
   artifacts:
     when: always
     paths:
       - htmlcov/
-      - logs/ci_logs.csv
+      - logs/$CI_JOB_NAME/ci_logs.csv
   rules:
     - if: '$ALL_IN_ONE == "true"'
       when: never
@@ -166,14 +173,16 @@ functional_tests:
   image: "$BASE_IMG"
   stage: test
   script:
-    #- mkdir -p functional_tests/screenshots
+    - mkdir -p functional_tests/screenshots   # prevents "no matching files" warning when skipped
     # combine server spin-up + tests in a single wrapped command so selection can skip early
     - python ci/predict_and_heal.py "bash -lc 'python manage.py runserver 0.0.0.0:8000 & sleep 5; coverage run --append --source=. manage.py test --tag=functional; coverage report'" --tag functional --label functional-tests
+    - mkdir -p "logs/$CI_JOB_NAME"
+    - test -f logs/ci_logs.csv && cp logs/ci_logs.csv "logs/$CI_JOB_NAME/ci_logs.csv" || true
   artifacts:
     when: always
     paths:
       - functional_tests/screenshots/
-      - logs/ci_logs.csv
+      - logs/$CI_JOB_NAME/ci_logs.csv
   rules:
     - if: '$ALL_IN_ONE == "true"'
       when: never
@@ -210,6 +219,34 @@ update-logs:
       optional: true
   script:
     - mkdir -p data/raw
+    # Merge per-job logs AND the root logs into one file
+    - |
+      python - <<'PY'
+      import glob, csv, os
+      # Collect both per-job copies and the root file if present
+      paths = sorted(set(
+          glob.glob('logs/*/ci_logs.csv')
+          + (['logs/ci_logs.csv'] if os.path.exists('logs/ci_logs.csv') else [])
+      ))
+      if not paths:
+          raise SystemExit(0)  # nothing to merge; let the shell step handle the "no file" case
+
+      header = None
+      rows = []
+      for p in paths:
+          with open(p, newline='') as f:
+              r = csv.reader(f)
+              h = next(r, None)
+              if h and header is None:
+                  header = h
+                  rows.append(h)
+              for row in r:
+                  rows.append(row)
+
+      os.makedirs("logs", exist_ok=True)
+      with open("logs/ci_logs.csv", "w", newline="") as f:
+          csv.writer(f).writerows(rows)
+      PY
     - |
       if [ ! -f logs/ci_logs.csv ]; then
         echo "⚠️ No logs/ci_logs.csv found — skipping logs update"
