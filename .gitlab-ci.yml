@@ -4,9 +4,9 @@ variables:
   HEAL_MODE: "ml" # baseline|ml
   INJECT_FAIL: "1"
   TEST_SELECTION: "suite"     # off|suite|budget
-  RISK_THRESHOLD: "0.30"    # used only when TEST_SELECTION=suite
+  RISK_THRESHOLD: "1.0"    # used only when TEST_SELECTION=suite
   MAX_TEST_MINUTES: "15"    # used only when TEST_SELECTION=budget
-  FAIL_NEXT: "0"
+  FAIL_NEXT: "1"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED: "1"
@@ -84,7 +84,6 @@ all_in_one:
 build-image:
   image: "$BASE_IMG"
   stage: build
-  allow_failure: true
   services:
     - docker:dind
   variables:
