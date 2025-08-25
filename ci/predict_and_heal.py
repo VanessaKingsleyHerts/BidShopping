@@ -134,11 +134,16 @@ def soft_skip(tag, reason, label=None):
     """Log a 'skipped' row and exit 0 so the pipeline proceeds."""
     ensure_header()
     msg = f"skip:{tag}:{reason}"
-    quoted_msg = shlex.quote(msg)
-    log_cmd = f"python ci/ci_logger.py {quoted_msg} --tag {tag} --force-status skipped"
+    # Build a safe, executable command for ci_logger to run:
+    # bash -lc 'echo skip:...'
+    cmd = f"bash -lc {shlex.quote('echo ' + msg)}"
+
+    argv = ["python", "ci/ci_logger.py", cmd, "--tag", tag, "--force-status", "skipped"]
     if label:
-        log_cmd += f" --label {label}"
-    subprocess.call(log_cmd, shell=True)
+        argv += ["--label", label]
+
+    # Call without a shell so we don’t fight nested quoting
+    subprocess.call(argv)
     print(f"[Selector] Skipping suite '{tag}' — {reason}")
     return 0
 
