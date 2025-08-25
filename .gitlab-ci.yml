@@ -258,7 +258,7 @@ update-logs:
       fi
     - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv
     - 'echo "DEBUG: listing candidate CSVs before merge"''
-    - "find logs -maxdepth 2 -type f -name ci_logs.csv -printf '%p\t' -exec wc -l {} \;"
+    - "find logs -maxdepth 2 -type f -name ci_logs.csv -printf '%p\t' -exec wc -l {} \\; || true"
     - python scripts/merge_incremental.py || echo "update logs failed"
     - python scripts/push_to_github.py || echo "push failed"
   rules:
