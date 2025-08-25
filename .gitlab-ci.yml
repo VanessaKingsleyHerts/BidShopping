@@ -223,6 +223,23 @@ update-logs:
       optional: true
   script:
     - mkdir -p data/raw
+     # DEBUG: list candidate CSVs (safe—no shell braces)
+    - |
+      python - <<'PY'
+      import glob, os
+      paths = sorted(set(
+          glob.glob('logs/*/ci_logs.csv')
+          + (['logs/ci_logs.csv'] if os.path.exists('logs/ci_logs.csv') else [])
+      ))
+      print("DEBUG candidates:", paths or "(none)")
+      for p in paths:
+          try:
+              with open(p) as f:
+                  n = sum(1 for _ in f)
+              print(f"{p}\t{n} lines")
+          except Exception as e:
+              print(f"{p}\tERR {e}")
+      PY
     # Merge per-job logs AND the root logs into one file
     - |
       python - <<'PY'
@@ -233,23 +250,22 @@ update-logs:
           + (['logs/ci_logs.csv'] if os.path.exists('logs/ci_logs.csv') else [])
       ))
       if not paths:
-          raise SystemExit(0)  # nothing to merge; let the shell step handle the "no file" case
-
-      header = None
-      rows = []
-      for p in paths:
-          with open(p, newline='') as f:
-              r = csv.reader(f)
-              h = next(r, None)
-              if h and header is None:
-                  header = h
-                  rows.append(h)
-              for row in r:
-                  rows.append(row)
-
-      os.makedirs("logs", exist_ok=True)
-      with open("logs/ci_logs.csv", "w", newline="") as f:
-          csv.writer(f).writerows(rows)
+          os.makedirs("logs", exist_ok=True)
+          with open("logs/ci_logs.csv","w") as f:
+              f.write("timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,status,pipeline_id,mode\n")
+      else:
+          header = None
+          rows = []
+          for p in paths:
+              with open(p, newline='') as f:
+                  r = csv.reader(f)
+                  h = next(r, None)
+                  if h and header is None:
+                      header = h; rows.append(h)
+                  for row in r: rows.append(row)
+          os.makedirs("logs", exist_ok=True)
+          with open("logs/ci_logs.csv","w",newline="") as f:
+              csv.writer(f).writerows(rows)
       PY
     - |
       if [ ! -f logs/ci_logs.csv ]; then
@@ -257,8 +273,6 @@ update-logs:
         exit 0
       fi
     - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv
-    - 'echo "DEBUG: listing candidate CSVs before merge"''
-    - "find logs -maxdepth 2 -type f -name ci_logs.csv -printf '%p\t' -exec wc -l {} \\; || true"
     - python scripts/merge_incremental.py || echo "update logs failed"
     - python scripts/push_to_github.py || echo "push failed"
   rules:
