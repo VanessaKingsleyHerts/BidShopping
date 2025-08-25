@@ -149,6 +149,8 @@ unit_tests:
     - python ci/predict_and_heal.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional" --tag unit --label unit-tests
     - mkdir -p "logs/$CI_JOB_NAME"
     - test -f logs/ci_logs.csv && cp logs/ci_logs.csv "logs/$CI_JOB_NAME/ci_logs.csv" || true
+    - 'echo "DEBUG list: logs/$CI_JOB_NAME"; ls -l "logs/$CI_JOB_NAME" || true'
+    - 'echo "DEBUG head:"; head -n 5 "logs/$CI_JOB_NAME/ci_logs.csv" || true'
   artifacts:
     when: always
     paths:
@@ -178,6 +180,8 @@ functional_tests:
     - python ci/predict_and_heal.py "bash -lc 'python manage.py runserver 0.0.0.0:8000 & sleep 5; coverage run --append --source=. manage.py test --tag=functional; coverage report'" --tag functional --label functional-tests
     - mkdir -p "logs/$CI_JOB_NAME"
     - test -f logs/ci_logs.csv && cp logs/ci_logs.csv "logs/$CI_JOB_NAME/ci_logs.csv" || true
+    - 'echo "DEBUG list: logs/$CI_JOB_NAME"; ls -l "logs/$CI_JOB_NAME" || true'
+    - 'echo "DEBUG head:"; head -n 5 "logs/$CI_JOB_NAME/ci_logs.csv" || true'
   artifacts:
     when: always
     paths:
@@ -253,6 +257,8 @@ update-logs:
         exit 0
       fi
     - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv
+    - 'echo "DEBUG: listing candidate CSVs before merge"''
+    - find logs -maxdepth 2 -type f -name ci_logs.csv -printf '%p\t' -exec wc -l {} \;
     - python scripts/merge_incremental.py || echo "update logs failed"
     - python scripts/push_to_github.py || echo "push failed"
   rules:
