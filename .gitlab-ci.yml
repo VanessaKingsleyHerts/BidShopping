@@ -2,7 +2,7 @@ variables:
   ALL_IN_ONE: "false"
   FORCE_RUN: "true"
   HEAL_MODE: "baseline" # baseline|ml
-  INJECT_FAIL: "1"
+  INJECT_FAIL: "true"
   TEST_SELECTION: "off"     # off|suite|budget
   RISK_THRESHOLD: "0.30"    # used only when TEST_SELECTION=suite # 1.0 (forces functional to be not selected)
   MAX_TEST_MINUTES: "15"    # used only when TEST_SELECTION=budget
