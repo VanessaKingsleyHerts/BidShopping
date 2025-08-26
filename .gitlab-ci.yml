@@ -5,6 +5,7 @@ variables:
   INJECT_FAIL: "false"
   FAIL_NEXT: "0"
   TEST_SELECTION: "budget"     # off|suite|budget
+  ALLOW_SKIP_UNIT: "true"
   RISK_THRESHOLD: "0.30"    # used only when TEST_SELECTION=suite # 1.0 (forces functional to be not selected)
   MAX_TEST_MINUTES: "1"    # used only when TEST_SELECTION=budget
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
@@ -152,9 +153,7 @@ unit_tests:
   script:
     - |
       set +e
-      python ci/predict_and_heal.py "python manage.py collectstatic --noinput" --tag unit --label collectstatic
-      python ci/predict_and_heal.py "python manage.py migrate --noinput" --tag unit --label migrate
-      python ci/predict_and_heal.py "coverage run --source=. manage.py test --parallel --exclude-tag=functional" --tag unit --label unit-tests
+      python ci/predict_and_heal.py "bash -lc 'python manage.py collectstatic --noinput && python manage.py migrate --noinput && coverage run --source=. manage.py test --parallel --exclude-tag=functional'" --tag unit --label unit-tests
       EXIT_CODE=$?
       set -e
       mkdir -p "logs/$CI_JOB_NAME"
