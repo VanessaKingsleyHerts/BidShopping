@@ -508,3 +508,9 @@ timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,status,pipelin
 2025-08-26 19:46:44,functional-tests,0.5,2.0,1.0,0,functional,skipped,2005148504,ml
 2025-08-26 19:46:46,migrate,0.5,0.0,42.0,0,unit,pass,2005148504,ml
 2025-08-26 19:46:56,unit-tests,3.01,0.0,59.58,61360,unit,pass,2005148504,ml
+2025-08-26 19:58:26,docker-login,0.5,0.0,0.0,0,build,pass,2005195176,ml
+2025-08-26 20:00:16,docker-build,1.5,0.0,6.4,39904,build,pass,2005195176,ml
+2025-08-26 20:00:35,docker-push,1.0,0.0,9.6,35924,build,pass,2005195176,ml
+2025-08-26 20:02:16,flake8 .,1.0,0.0,55.0,22232,lint,pass,2005195176,ml
+2025-08-26 20:03:48,functional-tests,0.5,2.0,0.0,0,functional,skipped,2005195176,ml
+2025-08-26 20:03:54,unit-tests,0.5,2.0,0.0,0,unit,skipped,2005195176,ml
