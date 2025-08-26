@@ -3,10 +3,10 @@ variables:
   FORCE_RUN: "true"
   HEAL_MODE: "ml" # baseline|ml
   INJECT_FAIL: "false"
-  FAIL_NEXT: "1"
+  FAIL_NEXT: "0"
   TEST_SELECTION: "budget"     # off|suite|budget
   RISK_THRESHOLD: "0.30"    # used only when TEST_SELECTION=suite # 1.0 (forces functional to be not selected)
-  MAX_TEST_MINUTES: "10"    # used only when TEST_SELECTION=budget
+  MAX_TEST_MINUTES: "1"    # used only when TEST_SELECTION=budget
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED: "1"
