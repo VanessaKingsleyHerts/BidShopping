@@ -426,3 +426,12 @@ timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,status,pipelin
 2025-08-26 15:43:52,docker-push,1.0,0.0,9.5,35092,build,pass,2004627584,baseline
 2025-08-26 15:45:30,flake8 .,1.0,0.0,59.6,22192,lint,pass,2004627584,baseline
 2025-08-26 15:47:28,functional-tests,14.53,0.0,22.23,3936,functional,pass,2004627584,baseline
+2025-08-26 16:12:34,docker-login,0.5,0.0,0.0,0,build,pass,2004743775,baseline
+2025-08-26 16:14:21,docker-build,1.5,0.0,7.1,40508,build,pass,2004743775,baseline
+2025-08-26 16:14:40,docker-push,1.0,0.0,10.2,35804,build,pass,2004743775,baseline
+2025-08-26 16:16:19,flake8 .,1.0,0.0,54.7,22188,lint,pass,2004743775,baseline
+2025-08-26 16:17:55,collectstatic,0.5,0.0,34.3,0,unit,pass,2004743775,baseline
+2025-08-26 16:18:00,migrate,0.5,0.0,41.6,0,unit,pass,2004743775,baseline
+2025-08-26 16:18:10,unit-tests,3.51,1.0,54.36,60644,unit,fail,2004743775,baseline
+2025-08-26 16:18:17,unit-tests-retry,3.51,1.0,53.96,60956,unit,fail,2004743775,baseline
+2025-08-26 16:18:22,functional-tests,14.52,0.0,20.68,3852,functional,pass,2004743775,baseline
