@@ -103,20 +103,24 @@ def run_logged(command, tag, label=None, override_status=None):
 def run_and_heal(command, tag, label=None):
     ensure_header()
 
-    # Initial execution
-    init_code = run_logged(command, tag, label)
+    # Are we injecting a failure on the first attempt?
+    injecting = _truthy(os.environ.get("INJECT_FAIL", "true")) and tag == "lint"
 
-    # Injected failure (only if command initially passed)
-    if _truthy(os.environ.get("INJECT_FAIL", "true")) and tag == "lint":
-        if init_code == 0:
-            print("[Injected Failure] Forcing artificial lint failure for baseline experiment")
-            init_code = 1
+    # First attempt: if injecting, force the logged status to 'fail'
+    first_override = "fail" if injecting else None
+    init_code = run_logged(command, tag, label, override_status=first_override)
+
+    # If we injected and the real command passed, make the wrapper see a failure to trigger retry
+    if injecting and init_code == 0:
+        print("[Injected Failure] Forcing artificial lint failure for baseline experiment")
+        init_code = 1
 
     # Retry or abort logic
     if init_code != 0:
         if MODE == "baseline":
             print(f"[Baseline] {tag} failed — retrying once")
-            return run_logged(command, tag, label)
+            retry_label = (label or tag) + "-retry"   # helps you see both rows in CSV
+            return run_logged(command, tag, retry_label)
 
         if MODE == "ml":
             if tag in RF_ELIGIBLE_TAGS and predict_rf() == 0:
