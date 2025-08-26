@@ -6,7 +6,7 @@ variables:
   TEST_SELECTION: "suite"     # off|suite|budget
   RISK_THRESHOLD: "0.30"    # used only when TEST_SELECTION=suite # 1.0 (forces functional to be not selected)
   MAX_TEST_MINUTES: "15"    # used only when TEST_SELECTION=budget
-  FAIL_NEXT: "1"
+  FAIL_NEXT: "0"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONUNBUFFERED: "1"
