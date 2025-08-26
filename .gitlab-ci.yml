@@ -188,8 +188,7 @@ functional_tests:
     - |
       set +e
       mkdir -p functional_tests/screenshots   # avoids artifact warning when skipped
-     # combine server spin-up + tests in a single wrapped command so selection can skip early
-      python ci/predict_and_heal.py "bash -lc 'python manage.py runserver 0.0.0.0:8000 & sleep 5; coverage run --append --source=. manage.py test --tag=functional; coverage report'" --tag functional --label functional-tests
+      python ci/predict_and_heal.py "bash -lc 'python manage.py runserver 0.0.0.0:8000 & sleep 5; coverage run --append --source=. manage.py test --tag=functional; coverage report'" --tag functional --label functional-tests # combine server spin-up + tests in a single wrapped command so selection can skip early
       EXIT_CODE=$?
       set -e
       mkdir -p "logs/$CI_JOB_NAME"
