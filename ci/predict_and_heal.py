@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from keras.models import load_model
 
-# os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"  # Only show errors
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"  # Only show errors
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 # Paths to models
