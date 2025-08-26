@@ -1,0 +1,9 @@
+pipeline_id,tag,status,count
+1997439219,unit,pass,3
+1997481162,unit,fail,2
+1997481162,unit,pass,2
+1997508403,unit,pass,3
+1997553750,unit,pass,3
+2001049716,unit,pass,3
+2001067214,functional,skipped,1
+2001067214,unit,pass,3

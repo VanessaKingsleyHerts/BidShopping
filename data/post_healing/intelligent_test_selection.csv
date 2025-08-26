@@ -1,0 +1,64 @@
+timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,status,pipeline_id,mode
+2025-08-20 23:02:10,docker-login,0.5,0.0,0.0,0,build,pass,1995029365,baseline
+2025-08-20 23:04:02,docker-build,1.5,0.0,6.73,39020,build,pass,1995029365,baseline
+2025-08-20 23:04:19,docker-push,1.0,0.0,11.1,35180,build,pass,1995029365,baseline
+2025-08-20 23:04:25,flake8 .,1.0,0.0,54.5,22224,lint,pass,1995029365,baseline
+2025-08-20 23:04:31,python manage.py collectstatic --noinput,0.5,0.0,31.7,0,test,pass,1995029365,baseline
+2025-08-20 23:04:36,python manage.py migrate --noinput,0.5,0.0,41.0,0,test,pass,1995029365,baseline
+2025-08-20 23:04:46,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1.0,53.26,61068,test,fail,1995029365,baseline
+2025-08-20 23:04:53,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1.0,51.97,61020,test,fail,1995029365,baseline
+2025-08-21 23:41:45,docker-login,0.5,0.0,0.0,0,build,pass,1997439219,ml
+2025-08-21 23:43:39,docker-build,1.5,0.0,10.67,39704,build,pass,1997439219,ml
+2025-08-21 23:43:58,docker-push,1.0,0.0,9.6,36724,build,pass,1997439219,ml
+2025-08-21 23:45:33,flake8 .,1.0,1.0,51.5,22240,lint,fail,1997439219,ml
+2025-08-21 23:45:35,flake8 .,1.0,1.0,55.5,22172,lint,fail,1997439219,ml
+2025-08-21 23:47:15,collectstatic,0.5,0.0,34.0,0,unit,pass,1997439219,ml
+2025-08-21 23:47:19,migrate,0.5,0.0,42.4,0,unit,pass,1997439219,ml
+2025-08-21 23:47:28,unit-tests,3.01,0.0,60.08,61040,unit,pass,1997439219,ml
+2025-08-22 00:29:09,docker-login,0.5,0.0,0.0,0,build,pass,1997481162,ml
+2025-08-22 00:31:01,docker-build,1.5,0.0,6.03,41836,build,pass,1997481162,ml
+2025-08-22 00:31:20,docker-push,1.0,0.0,17.05,35404,build,pass,1997481162,ml
+2025-08-22 00:32:58,flake8 .,1.0,1.0,58.5,22196,lint,fail,1997481162,ml
+2025-08-22 00:33:00,flake8 .,1.0,1.0,55.75,22192,lint,fail,1997481162,ml
+2025-08-22 00:34:31,collectstatic,0.5,0.0,31.3,0,unit,pass,1997481162,ml
+2025-08-22 00:34:35,migrate,0.5,0.0,41.0,0,unit,pass,1997481162,ml
+2025-08-22 00:34:46,unit-tests,3.51,1.0,52.77,61280,unit,fail,1997481162,ml
+2025-08-22 00:34:52,unit-tests,3.51,1.0,52.79,60696,unit,fail,1997481162,ml
+2025-08-22 01:03:26,docker-login,0.5,0.0,0.0,0,build,pass,1997508403,ml
+2025-08-22 01:05:22,docker-build,1.5,0.0,6.8,40376,build,pass,1997508403,ml
+2025-08-22 01:05:42,docker-push,1.0,0.0,9.15,34064,build,pass,1997508403,ml
+2025-08-22 01:07:20,flake8 .,1.0,1.0,56.75,22164,lint,fail,1997508403,ml
+2025-08-22 01:07:22,flake8 .,1.0,1.0,56.25,22188,lint,fail,1997508403,ml
+2025-08-22 01:09:03,collectstatic,0.5,0.0,45.0,0,unit,pass,1997508403,ml
+2025-08-22 01:09:08,migrate,0.5,0.0,43.4,0,unit,pass,1997508403,ml
+2025-08-22 01:09:18,unit-tests,3.51,0.0,55.0,61332,unit,pass,1997508403,ml
+2025-08-22 01:45:02,docker-login,0.5,0.0,0.0,0,build,pass,1997553750,ml
+2025-08-22 01:46:52,docker-build,1.5,0.0,6.07,43280,build,pass,1997553750,ml
+2025-08-22 01:47:09,docker-push,1.0,0.0,7.55,35808,build,pass,1997553750,ml
+2025-08-22 01:48:50,flake8 .,1.0,0.0,58.35,22196,lint,pass,1997553750,ml
+2025-08-22 01:50:19,collectstatic,0.5,0.0,34.3,0,unit,pass,1997553750,ml
+2025-08-22 01:50:23,migrate,0.5,0.0,40.4,0,unit,pass,1997553750,ml
+2025-08-22 01:50:33,unit-tests,3.01,0.0,60.02,61320,unit,pass,1997553750,ml
+2025-08-25 00:28:17,docker-login,0.5,0.0,0.0,0,build,pass,2001049716,ml
+2025-08-25 00:30:06,docker-build,1.5,0.0,7.37,39832,build,pass,2001049716,ml
+2025-08-25 00:30:24,docker-push,1.0,0.0,10.1,35684,build,pass,2001049716,ml
+2025-08-25 00:32:10,flake8 .,1.0,0.0,63.5,22200,lint,pass,2001049716,ml
+2025-08-25 00:33:46,collectstatic,0.5,0.0,32.3,0,unit,pass,2001049716,ml
+2025-08-25 00:33:50,migrate,0.5,0.0,38.4,0,unit,pass,2001049716,ml
+2025-08-25 00:34:00,unit-tests,3.51,0.0,52.56,61412,unit,pass,2001049716,ml
+2025-08-25 00:57:35,docker-login,0.5,0.0,1.0,0,build,pass,2001067214,ml
+2025-08-25 00:59:24,docker-build,1.5,0.0,6.73,41320,build,pass,2001067214,ml
+2025-08-25 00:59:42,docker-push,1.0,0.0,10.1,36376,build,pass,2001067214,ml
+2025-08-25 01:03:02,functional-tests,0.5,2.0,1.0,0,functional,skipped,2001067214,ml
+2025-08-25 01:01:22,flake8 .,1.0,0.0,56.0,22240,lint,pass,2001067214,ml
+2025-08-25 01:03:04,collectstatic,0.5,0.0,37.4,0,unit,pass,2001067214,ml
+2025-08-25 01:03:09,migrate,0.5,0.0,49.0,0,unit,pass,2001067214,ml
+2025-08-25 01:03:20,unit-tests,3.51,0.0,54.57,60988,unit,pass,2001067214,ml
+2025-08-25 01:47:20,docker-login,0.5,0.0,0.0,0,build,pass,2001112534,ml
+2025-08-25 01:49:10,docker-build,1.5,0.0,6.7,40048,build,pass,2001112534,ml
+2025-08-25 01:49:29,docker-push,1.0,0.0,9.55,37152,build,pass,2001112534,ml
+2025-08-25 01:53:20,functional-tests,15.03,0.0,22.28,30812,functional,pass,2001112534,ml
+2025-08-25 01:51:11,flake8 .,1.0,0.0,56.5,22264,lint,pass,2001112534,ml
+2025-08-25 01:52:45,collectstatic,0.5,0.0,36.6,0,unit,pass,2001112534,ml
+2025-08-25 01:52:50,migrate,0.5,0.0,40.6,0,unit,pass,2001112534,ml
+2025-08-25 01:52:59,unit-tests,3.01,0.0,60.27,61180,unit,pass,2001112534,ml

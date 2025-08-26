@@ -1,9 +1,9 @@
 variables:
   ALL_IN_ONE: "false"
   FORCE_RUN: "true"
-  HEAL_MODE: "ml" # baseline|ml
+  HEAL_MODE: "baseline" # baseline|ml
   INJECT_FAIL: "0"
-  TEST_SELECTION: "budget"     # off|suite|budget
+  TEST_SELECTION: "off"     # off|suite|budget
   RISK_THRESHOLD: "0.30"    # used only when TEST_SELECTION=suite # 1.0 (forces functional to be not selected)
   MAX_TEST_MINUTES: "15"    # used only when TEST_SELECTION=budget
   FAIL_NEXT: "0"
@@ -223,10 +223,12 @@ update-logs:
       optional: true
   script:
     - mkdir -p data/raw
-     # DEBUG: list candidate CSVs (safe—no shell braces)
+    # DEBUG: list candidate CSVs (safe—no shell braces)
     - |
       python - <<'PY'
-      import glob, os
+      import glob, os, csv
+      from datetime import datetime
+
       paths = sorted(set(
           glob.glob('logs/*/ci_logs.csv')
           + (['logs/ci_logs.csv'] if os.path.exists('logs/ci_logs.csv') else [])
@@ -239,40 +241,57 @@ update-logs:
               print(f"{p}\t{n} lines")
           except Exception as e:
               print(f"{p}\tERR {e}")
-      PY
-    # Merge per-job logs AND the root logs into one file
-    - |
-      python - <<'PY'
-      import glob, csv, os
-      # Collect both per-job copies and the root file if present
-      paths = sorted(set(
-          glob.glob('logs/*/ci_logs.csv')
-          + (['logs/ci_logs.csv'] if os.path.exists('logs/ci_logs.csv') else [])
-      ))
-      if not paths:
+
+      # Merge per-job logs AND the root logs into one file
+      rows, header = [], None
+      for p in paths:
+          with open(p, newline='') as f:
+              r = csv.reader(f)
+              h = next(r, None)
+              if h and header is None:
+                  header = h
+              for row in r:
+                  rows.append(row)
+
+      if header is None:
           os.makedirs("logs", exist_ok=True)
           with open("logs/ci_logs.csv","w") as f:
               f.write("timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,status,pipeline_id,mode\n")
       else:
-          header = None
-          rows = []
-          for p in paths:
-              with open(p, newline='') as f:
-                  r = csv.reader(f)
-                  h = next(r, None)
-                  if h and header is None:
-                      header = h; rows.append(h)
-                  for row in r: rows.append(row)
+          def parse_ts(s):
+              for fmt in ("%Y-%m-%d %H:%M:%S",):
+                  try: return datetime.strptime(s, fmt)
+                  except: pass
+              try: return datetime.fromisoformat(s)
+              except: return datetime.max
+          tag_order = {"build":0, "lint":1, "unit":2, "functional":3, "test":2}
+          rows.sort(key=lambda r: (parse_ts(r[0]), tag_order.get(r[6], 9), r[1]))
           os.makedirs("logs", exist_ok=True)
           with open("logs/ci_logs.csv","w",newline="") as f:
-              csv.writer(f).writerows(rows)
+              w = csv.writer(f)
+              w.writerow(header)
+              w.writerows(rows)
       PY
+
     - |
       if [ ! -f logs/ci_logs.csv ]; then
         echo "⚠️ No logs/ci_logs.csv found — skipping logs update"
         exit 0
       fi
+
+    # Copy merged CSV into cohort subfolders
+    - |
+      case "$(echo "$TEST_SELECTION" | tr '[:upper:]' '[:lower:]')" in
+        off) DEST="data/raw/posthealing" ;;
+        *)   DEST="data/raw/selection" ;;
+      esac
+      mkdir -p "$DEST"
+      cp logs/ci_logs.csv "$DEST/$CI_PIPELINE_ID.csv"
+
+    # Keep single-file raw archive too
     - cp logs/ci_logs.csv data/raw/$CI_PIPELINE_ID.csv
+
+    # Merge into all_logs and push
     - python scripts/merge_incremental.py || echo "update logs failed"
     - python scripts/push_to_github.py || echo "push failed"
   rules:
