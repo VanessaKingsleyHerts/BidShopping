@@ -3,7 +3,7 @@ variables:
   FORCE_RUN: "true"
   HEAL_MODE: "ml" # baseline|ml
   INJECT_FAIL: "false"
-  FAIL_NEXT: "0"
+  FAIL_NEXT: "1"
   TEST_SELECTION: "priority"     # off|suite|budget|priority
   ALLOW_SKIP_UNIT: "true"
   RISK_THRESHOLD: "0.30"    # used only when TEST_SELECTION=suite # 1.0 (forces functional to be not selected)
