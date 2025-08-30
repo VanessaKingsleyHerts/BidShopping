@@ -8,9 +8,9 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"  # Only show errors
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 # Paths to models
-RF_MODEL   = os.path.join(os.path.dirname(__file__), "../data/baseline/models/rf_model.joblib")
-RF_SCALER  = os.path.join(os.path.dirname(__file__), "../data/baseline/models/rf_scaler.joblib")
-LSTM_MODEL = os.path.join(os.path.dirname(__file__), "../data/baseline/models/lstm_model.keras")
+RF_MODEL   = os.path.join(os.path.dirname(__file__), "../data/pre_healing/models/rf_model.joblib")
+RF_SCALER  = os.path.join(os.path.dirname(__file__), "../data/pre_healing/models/rf_scaler.joblib")
+LSTM_MODEL = os.path.join(os.path.dirname(__file__), "../data/pre_healing/models/lstm_model.keras")
 
 # Constants
 SEQ_LEN  = 2  # build + lint
