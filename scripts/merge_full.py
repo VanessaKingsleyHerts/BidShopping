@@ -13,7 +13,7 @@ except ModuleNotFoundError:
     from ci.log_schema import EXPECTED_COLS
 
 RAW_DIR = "data/raw"
-OUT_CSV = "data/all_logs.csv"
+OUT_CSV = "logs/all_logs.csv"
 
 # 1) Load master
 if os.path.exists(OUT_CSV):

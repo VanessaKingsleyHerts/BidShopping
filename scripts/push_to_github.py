@@ -18,7 +18,7 @@ GITHUB_TOKEN = os.environ["GITHUB_PAT_LOG_PUSH"]
 REPO_OWNER   = "VanessaKingsleyHerts"
 REPO_NAME    = "BidShopping"
 BRANCH       = "main"
-FILE_PATH    = "data/all_logs.csv"
+FILE_PATH    = "logs/all_logs.csv"
 now          = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 COMMIT_MSG   = f"ci: update merged CI log dataset ({now} UTC) [skip ci]"
 # ────────────────────────────────────────────────────────────────────────────────

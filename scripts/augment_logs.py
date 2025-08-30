@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 # Load original
-df = pd.read_csv("data/all_logs.csv")
+df = pd.read_csv("logs/all_logs.csv")
 
 # How many synthetic copies per row?
 N_DUPLICATES = 20

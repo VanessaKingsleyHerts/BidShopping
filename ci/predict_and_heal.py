@@ -100,6 +100,45 @@ def run_logged(command, tag, label=None, override_status=None):
     subprocess.call(log_cmd, shell=True)
     return raw_code
 
+def log_healing_outcome(tag, action, result):
+    os.makedirs("logs", exist_ok=True)
+    path = "logs/healing_outcomes.csv"
+    header = ["timestamp","tag","mode","action","result"]
+    row = [
+        pd.Timestamp.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+        tag,
+        MODE,
+        action,
+        "success" if result == 0 else "fail"
+    ]
+    write_header = not os.path.exists(path)
+    with open(path, "a", newline="") as f:
+        w = csv.writer(f)
+        if write_header: w.writerow(header)
+        w.writerow(row)
+
+def recent_success_rate(tag, action="retry", window=20):
+    """
+    Compute rolling success rate for a given healing action on a tag.
+    Looks back at the last `window` entries in healing_outcomes.csv.
+    """
+    path = "logs/healing_outcomes.csv"
+    if not os.path.exists(path):
+        return 1.0  # assume optimistic until we have data
+
+    try:
+        df = pd.read_csv(path)
+    except Exception:
+        return 1.0
+
+    df = df[(df["tag"] == tag) & (df["action"] == action)]
+    if df.empty:
+        return 1.0
+
+    recent = df.tail(window)
+    success_rate = (recent["result"] == "success").mean()
+    return float(success_rate)
+
 def run_and_heal(command, tag, label=None):
     ensure_header()
 
@@ -118,17 +157,30 @@ def run_and_heal(command, tag, label=None):
     # Retry or abort logic
     if init_code != 0:
         if MODE == "baseline":
-            print(f"[Baseline] {tag} failed — retrying once")
+            sr = recent_success_rate(tag, "retry")
+            if sr < 0.3:  # less than 30% success historically → stop retrying
+                print(f"[Adaptive] Retry disabled for {tag} (success rate {sr:.0%})")
+                return init_code
+            print(f"[Baseline] {tag} failed — retrying once (success rate {sr:.0%})")
             retry_label = (label or tag) + "-retry"   # helps you see both rows in CSV
-            return run_logged(command, tag, retry_label)
+            rc = run_logged(command, tag, retry_label)
+            log_healing_outcome(tag, "retry", rc)
+            return rc
 
         if MODE == "ml":
             if tag in RF_ELIGIBLE_TAGS and predict_rf() == 0:
-                print(f"[RF] {tag} anomaly — retrying once")
-                return run_logged(command, tag, label)
+                sr = recent_success_rate(tag, "rf-retry")
+                if sr < 0.3:
+                    print(f"[Adaptive] RF retry disabled for {tag} (success rate {sr:.0%})")
+                    return init_code
+                print(f"[RF] {tag} anomaly — retrying once (success rate {sr:.0%})")
+                rc = run_logged(command, tag, label)
+                log_healing_outcome(tag, "rf-retry", rc)
+                return rc
 
             if tag == "lint" and predict_lstm(os.getenv("CI_PIPELINE_ID", "0")) == 0:
                 print("[LSTM] Pipeline predicted to fail — aborting before test")
+                log_healing_outcome(tag, "lstm-abort", 1)  # mark as 'fail' since pipeline stopped
                 sys.exit(0)
 
     return init_code
@@ -149,6 +201,8 @@ def soft_skip(tag, reason, label=None):
     # Call without a shell so we don’t fight nested quoting
     subprocess.call(argv)
     print(f"[Selector] Skipping suite '{tag}' — {reason}")
+
+    log_healing_outcome(tag, "skip", 0)  # treat skip as success by default
     return 0
 
 def compute_suite_fail_rates():
@@ -183,11 +237,51 @@ def compute_suite_durations():
         durs.setdefault(t, default)
     return durs
 
+def adaptive_risk_threshold(window=50, base=RISK_THRESHOLD):
+    """
+    Adjust RISK_THRESHOLD adaptively based on skip outcomes.
+    If skips often lead to hidden failures → lower threshold (be more cautious).
+    If skips are usually safe → raise threshold (be more aggressive).
+    """
+    path = "logs/healing_outcomes.csv"
+    if not os.path.exists(path):
+        return base
+
+    try:
+        df = pd.read_csv(path)
+    except Exception:
+        return base
+
+    df = df[df["action"] == "skip"]
+    if df.empty:
+        return base
+
+    recent = df.tail(window)
+    safe_rate = (recent["result"] == "success").mean()
+
+    if safe_rate > 0.8:
+        return min(0.6, base + 0.1)  # raise threshold → skip more often
+    elif safe_rate < 0.5:
+        return max(0.1, base - 0.1)  # lower threshold → skip less often
+    else:
+        return base
+
 def decide_suites_suite_mode(rates):
     # threshold policy; always include unit as a safety net
     selected = {"unit"}
-    if rates.get("functional", 0.0) >= RISK_THRESHOLD:
+    dynamic_threshold = adaptive_risk_threshold()
+    if rates.get("functional", 0.0) >= dynamic_threshold:
         selected.add("functional")
+    return selected
+
+def decide_suites_prioritized(rates):
+    # Always run unit, then order others by failure probability
+    suites = sorted(rates.items(), key=lambda kv: kv[1], reverse=True)
+    selected = {"unit"}
+    dynamic_threshold = adaptive_risk_threshold()
+    for t, rate in suites:
+        if rate >= dynamic_threshold:
+            selected.add(t)
     return selected
 
 def decide_suites_budget_mode(rates, durs, budget):
@@ -212,11 +306,21 @@ if __name__ == "__main__":
     parser.add_argument("--tag", required=True, help="Stage tag (build, lint) or suite tag (unit, functional)")
     parser.add_argument("--label", help="Optional short label for job")
     args = parser.parse_args()
+    if os.environ.get("SHADOW_BUILD", "false").lower() == "true":
+        print(f"[Shadow] Forcing execution of {args.tag} (no skipping)")
+        rc = run_and_heal(args.command, args.tag, args.label)
+        # If test failed but would normally be skipped, log skip as fail
+        log_healing_outcome(args.tag, "skip", rc)
+        sys.exit(rc)
     # Selection applies only to the suite jobs (requires YAML to tag suites as 'unit'/'functional')
-    if TEST_SELECTION_MODE in {"suite","budget"} and args.tag in {"unit","functional"}:
+    if TEST_SELECTION_MODE in {"suite","budget","priority"} and args.tag in {"unit","functional"}:
         rates = compute_suite_fail_rates()
-        chosen = (decide_suites_suite_mode(rates) if TEST_SELECTION_MODE == "suite"
-                  else decide_suites_budget_mode(rates, compute_suite_durations(), MAX_TEST_MINUTES))
+        if TEST_SELECTION_MODE == "suite":
+            chosen = decide_suites_suite_mode(rates)
+        elif TEST_SELECTION_MODE == "budget":
+            chosen = decide_suites_budget_mode(rates, compute_suite_durations(), MAX_TEST_MINUTES)
+        elif TEST_SELECTION_MODE == "priority":
+            chosen = decide_suites_prioritized(rates)
         print(f"[Selector] mode={TEST_SELECTION_MODE} tag={args.tag} rates={rates} chosen={sorted(chosen)}")
         if args.tag not in chosen:
             sys.exit(soft_skip(args.tag, f"Not selected ({TEST_SELECTION_MODE})", args.label))

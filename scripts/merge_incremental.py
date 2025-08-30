@@ -13,7 +13,7 @@ except ModuleNotFoundError:
 
 pipe_id     = os.environ["CI_PIPELINE_ID"]
 raw_path    = f"data/raw/{pipe_id}.csv"
-master_path = "data/all_logs.csv"
+master_path = "logs/all_logs.csv"
 
 # 1) Read current log
 print(f"[DEBUG][merge] Reading current log: {raw_path}")

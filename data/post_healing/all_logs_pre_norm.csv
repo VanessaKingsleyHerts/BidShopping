@@ -1,0 +1,607 @@
+timestamp,command,duration_s,exit_code,cpu_pct_avg,mem_kb_max,tag,status,pipeline_id,mode
+2025-06-24 15:29:43,docker-login,0.5,0,7.0,0,build,pass,1886996200,
+2025-06-24 15:34:52,docker-build,305.09,0,28.37,47760,build,pass,1886996200,
+2025-06-24 15:38:37,docker-push,214.41,0,61.31,38456,build,pass,1886996200,
+2025-06-24 15:41:14,flake8 .,1.0,0,54.1,22636,lint,pass,1886996200,
+2025-06-24 15:57:43,docker-login,0.5,0,7.1,0,build,pass,1887046168,
+2025-06-24 16:02:25,docker-build,278.53,0,29.42,45500,build,pass,1887046168,
+2025-06-24 16:06:00,docker-push,207.88,0,60.01,38872,build,pass,1887046168,
+2025-06-24 16:08:36,flake8 .,1.0,0,52.2,22648,lint,pass,1887046168,
+2025-06-24 16:20:05,docker-login,0.5,0,12.1,0,build,pass,1887089637,baseline
+2025-06-24 16:25:43,docker-build,332.73,0,33.34,47188,build,pass,1887089637,baseline
+2025-06-24 16:29:44,docker-push,229.98,0,62.24,38824,build,pass,1887089637,baseline
+2025-06-24 16:32:34,flake8 .,1.0,0,61.75,22556,lint,pass,1887089637,baseline
+2025-06-26 06:48:46,docker-login,0.5,0,7.1,0,build,pass,1890434299,baseline
+2025-06-26 06:54:28,docker-build,338.2,0,31.52,46316,build,pass,1890434299,baseline
+2025-06-26 06:58:38,docker-push,239.48,0,62.09,39148,build,pass,1890434299,baseline
+2025-06-26 07:01:12,flake8 .,1.0,0,55.0,22500,lint,pass,1890434299,baseline
+2025-06-26 07:03:38,python manage.py collectstatic --noinput,0.5,0,34.0,0,test,pass,1890434299,baseline
+2025-06-26 07:03:43,python manage.py migrate --noinput,0.5,0,43.0,0,test,pass,1890434299,baseline
+2025-06-26 07:03:51,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,52.4,59576,test,pass,1890434299,baseline
+2025-06-26 07:04:10,coverage run --append --source=. manage.py test --tag=functional,9.52,0,23.89,59972,test,pass,1890434299,baseline
+2025-06-26 06:50:53,docker-login,0.5,0,6.1,0,build,pass,1890437184,baseline
+2025-06-26 06:55:36,docker-build,280.02,0,28.57,46376,build,pass,1890437184,baseline
+2025-06-26 06:59:04,docker-push,199.36,0,62.09,38644,build,pass,1890437184,baseline
+2025-06-26 07:01:39,flake8 .,1.0,0,54.0,22524,lint,pass,1890437184,baseline
+2025-06-26 07:04:04,python manage.py collectstatic --noinput,0.5,0,35.0,0,test,pass,1890437184,baseline
+2025-06-26 07:04:09,python manage.py migrate --noinput,0.5,0,39.0,0,test,pass,1890437184,baseline
+2025-06-26 07:04:16,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,53.31,59092,test,pass,1890437184,baseline
+2025-06-26 07:04:35,coverage run --append --source=. manage.py test --tag=functional,9.52,0,24.01,59496,test,pass,1890437184,baseline
+2025-06-26 09:15:39,docker-login,0.5,0,6.1,0,build,pass,1890700505,baseline
+2025-06-26 09:20:34,docker-build,292.05,0,28.44,45932,build,pass,1890700505,baseline
+2025-06-26 09:24:08,docker-push,205.37,0,61.25,38656,build,pass,1890700505,baseline
+2025-06-26 09:26:37,flake8 .,1.0,0,51.5,22580,lint,pass,1890700505,baseline
+2025-06-26 09:29:07,python manage.py collectstatic --noinput,0.5,0,35.6,0,test,pass,1890700505,baseline
+2025-06-26 09:29:12,python manage.py migrate --noinput,0.5,0,38.0,0,test,pass,1890700505,baseline
+2025-06-26 09:29:20,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,53.51,59252,test,pass,1890700505,baseline
+2025-06-26 09:29:40,coverage run --append --source=. manage.py test --tag=functional,10.52,0,22.15,60080,test,pass,1890700505,baseline
+2025-06-26 10:11:53,docker-login,0.5,0,9.0,0,build,pass,1890828514,baseline
+2025-06-26 10:17:31,docker-build,332.69,0,31.55,46092,build,pass,1890828514,baseline
+2025-06-26 10:21:36,docker-push,236.49,0,59.55,39040,build,pass,1890828514,baseline
+2025-06-26 10:24:09,flake8 .,1.0,0,52.9,22708,lint,pass,1890828514,baseline
+2025-06-26 10:24:10,flake8 .,1.0,0,53.4,22560,lint,pass,1890828514,baseline
+2025-06-26 10:26:35,python manage.py collectstatic --noinput,0.5,0,35.4,0,test,pass,1890828514,baseline
+2025-06-26 10:26:40,python manage.py migrate --noinput,0.5,0,40.2,0,test,pass,1890828514,baseline
+2025-06-26 10:26:48,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,54.43,59084,test,fail,1890828514,baseline
+2025-06-26 10:26:51,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,53.51,59280,test,fail,1890828514,baseline
+2025-06-26 11:06:12,docker-login,0.5,0,4.0,0,build,pass,1890930758,baseline
+2025-06-26 11:10:57,docker-build,1.5,0,45.37,42852,build,pass,1890930758,baseline
+2025-06-26 11:14:36,docker-push,1.0,0,8.1,35992,build,pass,1890930758,baseline
+2025-06-26 11:17:38,flake8 .,1.0,0,53.9,22572,lint,pass,1890930758,baseline
+2025-06-26 11:17:40,flake8 .,1.0,0,55.1,22624,lint,fail,1890930758,baseline
+2025-06-26 11:17:42,flake8 .,1.0,0,54.0,22724,lint,pass,1890930758,baseline
+2025-06-26 11:20:07,python manage.py collectstatic --noinput,0.5,0,29.3,0,test,pass,1890930758,baseline
+2025-06-26 11:20:13,python manage.py migrate --noinput,0.5,0,37.4,0,test,pass,1890930758,baseline
+2025-06-26 11:20:27,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,53.6,59280,test,fail,1890930758,baseline
+2025-06-26 11:20:37,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,53.63,59204,test,fail,1890930758,baseline
+2025-06-26 12:23:01,docker-login,0.5,0,5.0,0,build,pass,1891077891,ml
+2025-06-26 12:36:33,docker-login,0.5,0,4.0,0,build,pass,1891106068,ml
+2025-06-26 13:55:48,docker-login,0.5,0,4.0,0,build,pass,1891286641,ml
+2025-06-26 14:18:47,docker-login,1.0,0,2.05,36972,build,pass,1891346115,ml
+2025-06-26 14:18:48,docker-login,0.5,0,5.1,0,build,pass,1891346115,ml
+2025-06-26 14:23:54,docker-build,0.5,0,11.3,0,build,pass,1891346115,ml
+2025-06-26 14:27:42,docker-build,0.5,0,10.1,0,build,pass,1891346115,ml
+2025-06-26 14:31:46,docker-push,1.0,0,8.0,37188,build,pass,1891346115,ml
+2025-06-26 14:31:50,docker-push,1.0,0,10.3,37132,build,pass,1891346115,ml
+2025-06-26 14:34:36,flake8 .,1.0,0,51.6,22608,lint,pass,1891346115,ml
+2025-06-26 14:34:37,flake8 .,1.0,0,51.8,22584,lint,fail,1891346115,ml
+2025-06-26 14:34:40,flake8 .,1.0,0,52.9,22584,lint,pass,1891346115,ml
+2025-06-26 14:41:13,docker-login,0.5,0,4.0,0,build,pass,1891397062,ml
+2025-06-26 14:41:14,docker-login,0.5,0,4.0,0,build,pass,1891397062,ml
+2025-06-26 14:46:38,docker-build,0.5,0,14.0,0,build,pass,1891397062,ml
+2025-06-26 14:50:38,docker-build,0.5,0,10.2,0,build,pass,1891397062,ml
+2025-06-26 14:54:34,docker-push,1.0,0,6.55,35632,build,pass,1891397062,ml
+2025-06-26 14:54:39,docker-push,1.0,0,6.55,37728,build,pass,1891397062,ml
+2025-06-26 14:57:24,flake8 .,1.0,0,56.0,22660,lint,pass,1891397062,ml
+2025-06-26 14:57:26,flake8 .,1.0,0,52.5,22300,lint,fail,1891397062,ml
+2025-06-26 14:57:28,flake8 .,1.0,0,53.2,22676,lint,pass,1891397062,ml
+2025-06-26 14:59:53,python manage.py collectstatic --noinput,0.5,0,31.0,0,test,pass,1891397062,ml
+2025-06-26 14:59:55,python manage.py collectstatic --noinput,0.5,0,29.3,0,test,pass,1891397062,ml
+2025-06-26 15:00:00,python manage.py migrate --noinput,0.5,0,39.6,0,test,pass,1891397062,ml
+2025-06-26 15:00:02,python manage.py migrate --noinput,0.5,0,37.6,0,test,pass,1891397062,ml
+2025-06-26 15:00:16,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,53.2,59124,test,fail,1891397062,ml
+2025-06-26 15:00:25,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,52.0,59260,test,fail,1891397062,ml
+2025-06-27 07:00:29,docker-login,0.5,0,8.0,0,build,pass,1893290354,ml
+2025-06-27 07:05:24,docker-build,290.04,0,28.93,46456,build,pass,1893290354,ml
+2025-06-27 07:09:04,docker-push,205.38,0,61.14,39264,build,pass,1893290354,ml
+2025-06-27 07:13:56,python manage.py collectstatic --noinput,0.5,0,32.0,0,test,pass,1893290354,ml
+2025-06-27 07:14:01,python manage.py migrate --noinput,0.5,0,35.0,0,test,pass,1893290354,ml
+2025-06-27 07:14:08,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,50.86,59056,test,fail,1893290354,ml
+2025-06-27 07:30:02,docker-login,0.5,0,7.0,0,build,pass,1893336132,ml
+2025-06-27 07:34:49,docker-build,1.0,0,9.1,43760,build,pass,1893336132,ml
+2025-06-27 07:38:28,docker-push,1.0,0,7.0,36812,build,pass,1893336132,ml
+2025-06-27 07:41:10,flake8 .,1.0,0,54.25,22740,lint,pass,1893336132,ml
+2025-06-27 07:43:31,python manage.py collectstatic --noinput,0.5,0,25.3,0,test,pass,1893336132,ml
+2025-06-27 07:43:35,python manage.py migrate --noinput,0.5,0,33.0,0,test,pass,1893336132,ml
+2025-06-27 07:43:45,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,59.93,59072,test,fail,1893336132,ml
+2025-06-27 07:43:52,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,58.75,58896,test,fail,1893336132,ml
+2025-06-27 07:52:42,docker-login,0.5,0,5.1,0,build,pass,1893367071,ml
+2025-06-27 07:57:47,docker-build,1.0,0,11.7,42560,build,pass,1893367071,ml
+2025-06-27 08:01:31,docker-push,1.0,0,7.05,36628,build,pass,1893367071,ml
+2025-06-27 08:04:05,flake8 .,1.0,0,54.2,22612,lint,pass,1893367071,ml
+2025-06-27 08:06:27,python manage.py collectstatic --noinput,0.5,0,28.0,0,test,pass,1893367071,ml
+2025-06-27 08:06:32,python manage.py migrate --noinput,0.5,0,34.3,0,test,pass,1893367071,ml
+2025-06-27 08:06:43,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,52.07,59216,test,pass,1893367071,ml
+2025-06-27 08:07:10,coverage run --append --source=. manage.py test --tag=functional,9.02,0,24.15,60048,test,pass,1893367071,ml
+2025-06-27 08:32:40,docker-login,0.5,0,5.1,0,build,pass,1893432506,ml
+2025-06-27 08:37:43,docker-build,1.0,0,10.65,42580,build,pass,1893432506,ml
+2025-06-27 08:41:29,docker-push,1.0,0,8.55,36404,build,pass,1893432506,ml
+2025-06-27 08:44:15,flake8 .,1.0,0,52.5,22556,lint,pass,1893432506,ml
+2025-06-27 08:44:17,flake8 .,1.0,0,54.3,22560,lint,pass,1893432506,ml
+2025-06-27 08:46:40,python manage.py collectstatic --noinput,0.5,0,28.3,0,test,pass,1893432506,ml
+2025-06-27 08:46:45,python manage.py migrate --noinput,0.5,0,39.8,0,test,pass,1893432506,ml
+2025-06-27 08:46:56,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,53.04,59136,test,pass,1893432506,ml
+2025-06-27 08:47:24,coverage run --append --source=. manage.py test --tag=functional,9.02,0,26.07,59716,test,pass,1893432506,ml
+2025-07-04 10:34:31,docker login -u gitlab-ci-token -p glcbt-eyJraWQiOiIxVHRMOTJuWlJnVHNqSVVvWDJPWVZMVU9KMWJXbUdFYmwtZkFuS3NZVWhRIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXJzaW9uIjoiMC4xLjAiLCJvIjoiMSIsInUiOiJnYzlzbCIsInAiOiIxNThxdnUiLCJnIjoiMXJiNGNsIiwianRpIjoiODBkZDNkZTktNmQwMC00MjZjLWFmODktY2UyNjJjOTYwZDNmIiwiYXVkIjoiZ2l0bGFiLWF1dGh6LXRva2VuIiwic3ViIjoiZ2lkOi8vZ2l0bGFiL0NpOjpCdWlsZC8xMDU2Njc4NjY2NCIsImlzcyI6ImdpdGxhYi5jb20iLCJpYXQiOjE3NTE2MjUwOTEsIm5iZiI6MTc1MTYyNTA4NiwiZXhwIjoxNzUxNjI4OTkxfQ.gCpwbdkPXK_HB55IHszZsbCvZaPHACh4FCOZBPJEhORszx4xwHbcWhYhbMsGGGmpNztQFTdd8rCZ_59qs_4p170YHN4f1xmECNZPkBclbw69ubg8pSQX3Uq38x6L0NRopnxSTt8zK5I5KgXbVMaQU8Eia8UVOyj-iuz9ty0pdvLdv06MUzaCv6XRCHVt_MsR0LB06Wmg3uiPhggfbA0k0xDEV8p6RAzP7iaL34eUKmaZCcUI3_nqbBh55TLuLAMA424v5cns69pKHdQqwnC2jhXedqIcljG047MZcj1Pp3rWUZafVU6HcMzDDRD_gtHqqykVXTUiinXtuu7x_R-FNw registry.gitlab.com,0.5,0,5.0,0,build,pass,1906401418,ml
+2025-07-04 10:34:37,docker build -t registry.gitlab.com/uhthesis/bidshopping:dev .,0.5,1,5.1,0,build,fail,1906401418,ml
+2025-07-04 10:50:11,docker login -u gitlab-ci-token -p glcbt-eyJraWQiOiIxVHRMOTJuWlJnVHNqSVVvWDJPWVZMVU9KMWJXbUdFYmwtZkFuS3NZVWhRIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXJzaW9uIjoiMC4xLjAiLCJvIjoiMSIsInUiOiJnYzlzbCIsInAiOiIxNThxdnUiLCJnIjoiMXJiNGNsIiwianRpIjoiMTI2ZjAzNWEtNzI3Zi00MjAzLWJiNGItNDA5YzgwNzU0NTFkIiwiYXVkIjoiZ2l0bGFiLWF1dGh6LXRva2VuIiwic3ViIjoiZ2lkOi8vZ2l0bGFiL0NpOjpCdWlsZC8xMDU2Njk3NjE1MyIsImlzcyI6ImdpdGxhYi5jb20iLCJpYXQiOjE3NTE2MjYwMzAsIm5iZiI6MTc1MTYyNjAyNSwiZXhwIjoxNzUxNjI5OTMwfQ.BdJac0eecrtP-pkhj0b2OoGG87jKLmZl70Zrd1EpLJK_2WLNh_zMk7lTdXBiT9vRrGLYtD06JBOyTeOcKG2xZwxN2f6nP4KvdXygeXv0qVC4zED3ZY85-O2UcBSUF-jyHOQGnwp0M-9y7-VVSuIpfM6JN47Yq2tR73-tbTSENHHvZEwM7KhnPMTtsusEBsKrzsD88eLTnf2PAj2dFrSCpI3pUeOBOwHSyspRmcWgbdWnEsrvBOzEx0Ya_30uk-rdV2z9gVl_ildDob1wpXqS6U2NGmDaTyjb9z8aI8MOWpsu_tvics-3_YMlmBjogU61FstX10GnzAz_hMFDsLAAAg registry.gitlab.com,0.5,0,5.1,0,build,pass,1906440400,ml
+2025-07-04 10:50:16,docker build -t registry.gitlab.com/uhthesis/bidshopping:dev .,0.5,1,7.0,0,build,fail,1906440400,ml
+2025-07-04 10:58:27,docker login -u gitlab-ci-token -p glcbt-eyJraWQiOiIxVHRMOTJuWlJnVHNqSVVvWDJPWVZMVU9KMWJXbUdFYmwtZkFuS3NZVWhRIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXJzaW9uIjoiMC4xLjAiLCJvIjoiMSIsInUiOiJnYzlzbCIsInAiOiIxNThxdnUiLCJnIjoiMXJiNGNsIiwianRpIjoiMGJmMWZjNzEtYmU3OS00ZmZjLTkwZGUtMTVlMzVjNTBlYmI1IiwiYXVkIjoiZ2l0bGFiLWF1dGh6LXRva2VuIiwic3ViIjoiZ2lkOi8vZ2l0bGFiL0NpOjpCdWlsZC8xMDU2NzA2NTcwNCIsImlzcyI6ImdpdGxhYi5jb20iLCJpYXQiOjE3NTE2MjY1MjcsIm5iZiI6MTc1MTYyNjUyMiwiZXhwIjoxNzUxNjMwNDI3fQ.nxRJGk8wsnvwxmqeAPeuhAdxdSy8kbOjDQ2VctynBpXiRQ_Lpenyxb_gx_zyUykBJCcyLbS4i5egQTpVM6WmWO-tU76b6IuqLoTOOajywLu1qHHWv9WohAtCgOIoX2vuA7t_vOclJ1ko5SdJBJndNozEVJQ7U-t8moR42V9jtdWwJtUVOtiVlc8KNhXhGhNu1LCBj7hGoyLQP9KQSFMD-C94mbgzL-zee0ZqlfUGc7eQD2KB8Ut8kDR-B6Bif_bQGei__N1bJKSWYQnmx5fFbwA4Qp0Eg4iicIgGX_nQ5YuHuydl2Igx91QBCUCv5zvhnyljvOR00eYoovGSUAJZ-Q registry.gitlab.com,0.5,0,7.9,0,build,pass,1906458576,ml
+2025-07-04 10:58:33,docker build -t registry.gitlab.com/uhthesis/bidshopping:dev .,0.5,1,6.0,0,build,fail,1906458576,ml
+2025-07-04 12:32:31,docker login -u gitlab-ci-token -p glcbt-eyJraWQiOiIxVHRMOTJuWlJnVHNqSVVvWDJPWVZMVU9KMWJXbUdFYmwtZkFuS3NZVWhRIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXJzaW9uIjoiMC4xLjAiLCJvIjoiMSIsInUiOiJnYzlzbCIsInAiOiIxNThxdnUiLCJnIjoiMXJiNGNsIiwianRpIjoiMGQ4MWE5YjItYTQzZC00YWU0LTgyNDItZTJiYWZjZGI2NDEyIiwiYXVkIjoiZ2l0bGFiLWF1dGh6LXRva2VuIiwic3ViIjoiZ2lkOi8vZ2l0bGFiL0NpOjpCdWlsZC8xMDU2ODA3NzA1NiIsImlzcyI6ImdpdGxhYi5jb20iLCJpYXQiOjE3NTE2MzIxNTksIm5iZiI6MTc1MTYzMjE1NCwiZXhwIjoxNzUxNjM2MDU5fQ.CR5geiO4xGxMM0dz_-jN1My4bsdw6AIOGGB7BsohNjVTdaw1CtmRClgG8sXm8rveh9Js2YBNaVV9exW-nhVmlqXaYlTUAV2eHgOV2oApEDfgDEJZ7kGPy4PEm9KfE33G7ZvqnR5jre9rdvfjepE0Wn7ZMGwkZbsL83PVI25_61S17FMDY_Qjq1tWUkxhSQkrnMqb3ZjF4MUqiGFEnA16oG47kdVZp5l02yUC39XQ68_TVwzMjfMB4E38F2iB9rP1yzjnKbKbwWvyCaXBfsWRzGrxsysAz4YJjcSg8x008V2eLLGA28ZptKeD3KG5YwfSqoAJDxuMAAPGmXtsUs4gQg registry.gitlab.com,0.5,0,6.9,0,build,pass,1906616245,ml
+2025-07-04 12:32:37,docker build -t registry.gitlab.com/uhthesis/bidshopping:dev .,0.5,1,8.0,0,build,fail,1906616245,ml
+2025-07-04 13:06:06,docker-login,0.5,0,4.0,0,build,pass,1906677061,ml
+2025-07-04 13:12:35,docker-build,2.03,0,14.68,42392,build,pass,1906677061,ml
+2025-07-04 13:17:30,docker-push,1.0,0,8.1,38512,build,pass,1906677061,ml
+2025-07-04 13:44:45,docker-login,0.5,0,5.0,0,build,pass,1906759212,ml
+2025-07-04 13:51:59,docker-build,186.36,1,25.69,43472,build,fail,1906759212,ml
+2025-07-08 22:48:11,docker-login,0.5,0,6.0,0,build,pass,1914781799,ml
+2025-07-08 22:51:08,docker-build,32.06,1,34.45,49016,build,fail,1914781799,ml
+2025-07-08 23:13:09,docker-login,0.5,0,5.9,0,build,pass,1914808722,ml
+2025-07-08 23:15:34,docker-build,1.5,0,19.13,43456,build,pass,1914808722,ml
+2025-07-08 23:16:35,docker-push,0.5,0,16.0,0,build,pass,1914808722,ml
+2025-07-08 23:35:03,docker-login,0.5,0,6.0,0,build,pass,1914825298,ml
+2025-07-08 23:37:30,docker-build,1.5,0,18.67,40384,build,pass,1914825298,ml
+2025-07-08 23:38:32,docker-push,1.0,0,8.1,35840,build,pass,1914825298,ml
+2025-07-08 23:41:04,flake8 .,1.0,0,56.1,22048,lint,pass,1914825298,ml
+2025-07-08 23:43:32,python manage.py collectstatic --noinput,0.5,0,27.0,0,test,pass,1914825298,ml
+2025-07-08 23:43:36,python manage.py migrate --noinput,0.5,0,35.0,0,test,pass,1914825298,ml
+2025-07-09 00:18:16,docker-login,0.5,0,5.1,0,build,pass,1914864888,ml
+2025-07-09 00:20:59,docker-build,1.5,0,19.5,40888,build,pass,1914864888,ml
+2025-07-09 00:22:00,docker-push,1.0,0,7.0,35328,build,pass,1914864888,ml
+2025-07-09 00:24:50,flake8 .,1.0,0,58.5,22108,lint,pass,1914864888,ml
+2025-07-09 00:27:07,python manage.py collectstatic --noinput,0.5,0,29.7,0,test,pass,1914864888,ml
+2025-07-09 00:27:11,python manage.py migrate --noinput,0.5,0,36.6,0,test,pass,1914864888,ml
+2025-07-09 00:27:17,coverage run --source=. manage.py test --parallel --exclude-tag=functional,1.5,1,36.37,59116,test,fail,1914864888,ml
+2025-07-09 00:27:20,coverage run --source=. manage.py test --parallel --exclude-tag=functional,1.5,1,36.63,59032,test,fail,1914864888,ml
+2025-07-09 00:40:21,docker-login,0.5,0,5.0,0,build,pass,1914888204,ml
+2025-07-09 00:43:08,docker-build,29.06,0,35.86,45804,build,pass,1914888204,ml
+2025-07-09 00:44:06,docker-push,1.0,0,7.2,35892,build,pass,1914888204,ml
+2025-07-09 00:47:00,flake8 .,1.0,0,61.75,22140,lint,pass,1914888204,ml
+2025-07-09 00:49:21,python manage.py collectstatic --noinput,0.5,0,30.7,0,test,pass,1914888204,ml
+2025-07-09 00:49:25,python manage.py migrate --noinput,0.5,0,38.6,0,test,pass,1914888204,ml
+2025-07-09 00:49:35,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,60.83,60780,test,pass,1914888204,ml
+2025-07-09 00:49:54,coverage run --append --source=. manage.py test --tag=functional,2.51,1,22.8,59964,test,fail,1914888204,ml
+2025-07-09 00:49:59,coverage run --append --source=. manage.py test --tag=functional,2.0,1,27.4,60100,test,fail,1914888204,ml
+2025-07-09 19:14:45,docker-login,0.5,0,5.1,0,build,pass,1917362882,ml
+2025-07-09 19:17:17,docker-build,1.0,0,24.45,40872,build,pass,1917362882,ml
+2025-07-09 19:18:13,docker-push,1.0,0,7.15,37308,build,pass,1917362882,ml
+2025-07-09 19:20:56,flake8 .,1.0,0,57.8,22144,lint,pass,1917362882,ml
+2025-07-09 19:23:41,python manage.py collectstatic --noinput,0.5,0,28.7,0,test,pass,1917362882,ml
+2025-07-09 19:23:46,python manage.py migrate --noinput,0.5,0,35.6,0,test,pass,1917362882,ml
+2025-07-09 19:23:55,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,59.0,60744,test,pass,1917362882,ml
+2025-07-09 19:24:38,coverage run --append --source=. manage.py test --tag=functional,10.02,0,23.44,61548,test,pass,1917362882,ml
+2025-07-10 07:06:07,docker-login,0.5,0,4.0,0,build,pass,1918182484,ml
+2025-07-10 07:08:52,docker-build,1.5,0,18.7,41968,build,pass,1918182484,ml
+2025-07-10 07:09:54,docker-push,1.0,0,7.65,36448,build,pass,1918182484,ml
+2025-07-10 07:12:43,flake8 .,1.0,0,55.15,22124,lint,pass,1918182484,ml
+2025-07-10 07:15:28,python manage.py collectstatic --noinput,0.5,0,30.7,0,test,pass,1918182484,ml
+2025-07-10 07:15:33,python manage.py migrate --noinput,0.5,0,38.4,0,test,pass,1918182484,ml
+2025-07-10 07:15:44,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,52.01,61092,test,pass,1918182484,ml
+2025-07-10 07:16:29,coverage run --append --source=. manage.py test --tag=functional,9.52,0,24.44,61404,test,pass,1918182484,ml
+2025-07-10 08:53:06,docker-login,0.5,0,5.1,0,build,pass,1918361218,ml
+2025-07-10 08:56:09,docker-build,1.5,0,20.33,41228,build,pass,1918361218,ml
+2025-07-10 08:57:10,docker-push,1.0,0,7.65,36768,build,pass,1918361218,ml
+2025-07-10 09:00:03,flake8 .,1.0,0,57.6,22132,lint,pass,1918361218,ml
+2025-07-10 09:02:47,python manage.py collectstatic --noinput,0.5,0,29.7,0,test,pass,1918361218,ml
+2025-07-10 09:02:51,python manage.py migrate --noinput,0.5,0,37.3,0,test,pass,1918361218,ml
+2025-07-10 09:03:01,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,59.77,60788,test,pass,1918361218,ml
+2025-07-10 09:06:19,coverage run --append --source=. manage.py test --tag=functional,10.52,0,21.44,61620,test,pass,1918361218,ml
+2025-07-10 18:43:27,flake8 .,1.0,0,55.0,19348,lint,pass,1919465515,baseline
+2025-07-10 18:43:29,flake8 .,1.0,0,57.5,19408,lint,pass,1919465515,baseline
+2025-07-10 18:46:24,python manage.py test --tag=functional,8.02,0,23.38,56324,test,pass,1919465515,baseline
+2025-07-10 19:01:45,flake8 .,1.0,0,54.5,19348,lint,pass,1919485852,baseline
+2025-07-10 19:01:47,flake8 .,1.0,0,54.0,19392,lint,pass,1919485852,baseline
+2025-07-10 19:04:51,python manage.py test --tag=functional,8.02,0,28.45,56548,test,pass,1919485852,baseline
+2025-07-10 19:45:54,flake8 .,1.0,0,57.3,19296,lint,pass,1919542690,baseline
+2025-07-10 19:45:56,flake8 .,1.0,0,52.7,19288,lint,pass,1919542690,baseline
+2025-07-10 21:21:22,flake8 .,1.0,0,53.4,19408,lint,pass,1919670648,baseline
+2025-07-10 21:21:24,flake8 .,1.0,0,49.7,19360,lint,pass,1919670648,baseline
+2025-07-10 22:29:19,docker-login,0.5,0,6.0,0,build,pass,1919740342,ml
+2025-07-10 22:32:10,docker-build,1.5,0,22.0,42440,build,pass,1919740342,ml
+2025-07-10 22:33:14,docker-push,1.0,0,11.65,36344,build,pass,1919740342,ml
+2025-07-10 22:36:00,flake8 .,1.0,0,55.9,22140,lint,pass,1919740342,ml
+2025-07-10 22:38:45,python manage.py collectstatic --noinput,0.5,0,30.0,0,test,pass,1919740342,ml
+2025-07-10 22:38:49,python manage.py migrate --noinput,0.5,0,38.0,0,test,pass,1919740342,ml
+2025-07-10 22:38:59,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,59.52,60976,test,pass,1919740342,ml
+2025-07-10 22:42:41,coverage run --append --source=. manage.py test --tag=functional,10.52,0,24.2,61624,test,pass,1919740342,ml
+2025-07-11 07:17:45,flake8 .,1.0,0,58.5,22100,lint,pass,1920458276,ml
+2025-07-11 07:21:01,coverage run --append --source=. manage.py test --tag=functional,9.52,0,25.81,60956,test,pass,1920458276,ml
+2025-07-11 07:35:19,flake8 .,1.0,0,54.95,22104,lint,pass,1920488698,baseline
+2025-07-11 07:44:45,coverage run --append --source=. manage.py test --tag=functional,10.52,0,23.86,61744,test,pass,1920488698,baseline
+2025-07-11 07:51:32,flake8 .,1.0,0,56.3,22072,lint,pass,1920511979,ml
+2025-07-11 07:54:47,coverage run --append --source=. manage.py test --tag=functional,10.02,1,23.85,61136,test,fail,1920511979,ml
+2025-07-11 07:55:07,coverage run --append --source=. manage.py test --tag=functional,9.02,1,26.6,62052,test,fail,1920511979,ml
+2025-07-11 08:31:21,docker-login,0.5,0,5.1,0,build,pass,1920579962,ml
+2025-07-11 08:31:25,docker-build,0.5,1,1.0,0,build,fail,1920579962,ml
+2025-07-11 09:07:49,flake8 .,1.0,0,56.0,22132,lint,pass,1920643855,ml
+2025-07-11 09:11:35,coverage run --append --source=. manage.py test --tag=functional,10.02,0,26.76,61320,test,pass,1920643855,ml
+2025-07-11 10:23:20,flake8 .,1.0,0,60.65,22124,lint,pass,1920773917,baseline
+2025-07-11 10:27:11,coverage run --append --source=. manage.py test --tag=functional,10.02,0,24.32,61800,test,pass,1920773917,baseline
+2025-07-12 01:20:00,flake8 .,1.0,0,61.0,22148,lint,pass,1922861554,baseline
+2025-07-12 02:44:33,docker-login,0.5,0,5.9,0,build,pass,1922996734,ml
+2025-07-12 02:47:33,docker-build,1.5,0,19.83,40864,build,pass,1922996734,ml
+2025-07-12 02:48:36,docker-push,1.0,0,10.0,36584,build,pass,1922996734,ml
+2025-07-12 02:48:42,flake8 .,1.0,0,60.25,22028,lint,pass,1922996734,ml
+2025-07-12 02:48:48,python manage.py collectstatic --noinput,0.5,0,36.6,0,test,pass,1922996734,ml
+2025-07-12 02:48:53,python manage.py migrate --noinput,0.5,0,41.0,0,test,pass,1922996734,ml
+2025-07-12 02:49:04,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,54.57,60164,test,pass,1922996734,ml
+2025-07-12 10:27:52,docker-login,0.5,0,5.1,0,build,pass,1923260094,ml
+2025-07-12 10:30:48,docker-build,1.5,0,18.03,42480,build,pass,1923260094,ml
+2025-07-12 10:31:51,docker-push,1.0,0,10.2,36084,build,pass,1923260094,ml
+2025-07-12 10:31:57,flake8 .,1.0,0,59.8,22212,lint,pass,1923260094,ml
+2025-07-12 10:32:04,python manage.py collectstatic --noinput,0.5,0,32.0,0,test,pass,1923260094,ml
+2025-07-12 10:32:09,python manage.py migrate --noinput,0.5,0,41.6,0,test,pass,1923260094,ml
+2025-07-12 10:32:20,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,52.47,60564,test,pass,1923260094,ml
+2025-07-12 13:11:53,docker-login,0.5,0,0.0,0,build,pass,1923339196,ml
+2025-07-12 13:14:44,docker-build,1.5,0,20.4,43756,build,pass,1923339196,ml
+2025-07-12 13:15:47,docker-push,1.0,0,10.1,35700,build,pass,1923339196,ml
+2025-07-12 13:15:53,flake8 .,1.0,0,60.75,22228,lint,pass,1923339196,ml
+2025-07-12 13:16:00,python manage.py collectstatic --noinput,0.5,0,39.0,0,test,pass,1923339196,ml
+2025-07-12 13:16:05,python manage.py migrate --noinput,0.5,0,44.4,0,test,pass,1923339196,ml
+2025-07-12 13:16:17,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,55.04,60584,test,pass,1923339196,ml
+2025-07-13 05:15:45,docker-login,0.51,0,0.0,0,build,pass,1923859355,ml
+2025-07-13 05:15:49,docker-build,0.5,1,3.1,0,build,fail,1923859355,ml
+2025-07-13 05:24:18,docker-login,0.5,0,1.0,0,build,pass,1923865508,ml
+2025-07-13 05:27:05,docker-build,1.5,0,21.17,42488,build,pass,1923865508,ml
+2025-07-13 05:28:08,docker-push,1.0,0,8.15,36760,build,pass,1923865508,ml
+2025-07-13 05:30:53,flake8 .,1.0,0,54.75,22068,lint,pass,1923865508,ml
+2025-07-13 05:34:16,coverage run --append --source=. manage.py test --tag=functional,11.02,0,23.85,61588,test,pass,1923865508,ml
+2025-07-13 05:45:48,docker-login,0.52,0,0.0,0,build,pass,1923874932,ml
+2025-07-13 05:48:41,docker-build,1.5,0,18.43,41448,build,pass,1923874932,ml
+2025-07-13 05:49:42,docker-push,1.0,0,8.5,35700,build,pass,1923874932,ml
+2025-07-13 05:52:28,flake8 .,1.0,0,54.5,22060,lint,pass,1923874932,ml
+2025-07-13 05:55:40,coverage run --append --source=. manage.py test --tag=functional,2.0,-15,24.35,58812,test,fail,1923874932,ml
+2025-06-24 15:29:43,docker-login,0.5,0,7.0,0,build,pass,1886996200,
+2025-06-24 15:34:52,docker-build,305.09,0,28.37,47760,build,pass,1886996200,
+2025-06-24 15:38:37,docker-push,214.41,0,61.31,38456,build,pass,1886996200,
+2025-06-24 15:41:14,flake8 .,1.0,0,54.1,22636,lint,pass,1886996200,
+2025-06-24 15:57:43,docker-login,0.5,0,7.1,0,build,pass,1887046168,
+2025-06-24 16:02:25,docker-build,278.53,0,29.42,45500,build,pass,1887046168,
+2025-06-24 16:06:00,docker-push,207.88,0,60.01,38872,build,pass,1887046168,
+2025-06-24 16:08:36,flake8 .,1.0,0,52.2,22648,lint,pass,1887046168,
+2025-06-24 16:20:05,docker-login,0.5,0,12.1,0,build,pass,1887089637,baseline
+2025-06-24 16:25:43,docker-build,332.73,0,33.34,47188,build,pass,1887089637,baseline
+2025-06-24 16:29:44,docker-push,229.98,0,62.24,38824,build,pass,1887089637,baseline
+2025-06-24 16:32:34,flake8 .,1.0,0,61.75,22556,lint,pass,1887089637,baseline
+2025-06-26 06:48:46,docker-login,0.5,0,7.1,0,build,pass,1890434299,baseline
+2025-06-26 06:54:28,docker-build,338.2,0,31.52,46316,build,pass,1890434299,baseline
+2025-06-26 06:58:38,docker-push,239.48,0,62.09,39148,build,pass,1890434299,baseline
+2025-06-26 07:01:12,flake8 .,1.0,0,55.0,22500,lint,pass,1890434299,baseline
+2025-06-26 07:03:38,python manage.py collectstatic --noinput,0.5,0,34.0,0,test,pass,1890434299,baseline
+2025-06-26 07:03:43,python manage.py migrate --noinput,0.5,0,43.0,0,test,pass,1890434299,baseline
+2025-06-26 07:03:51,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,52.4,59576,test,pass,1890434299,baseline
+2025-06-26 07:04:10,coverage run --append --source=. manage.py test --tag=functional,9.52,0,23.89,59972,test,pass,1890434299,baseline
+2025-06-26 06:50:53,docker-login,0.5,0,6.1,0,build,pass,1890437184,baseline
+2025-06-26 06:55:36,docker-build,280.02,0,28.57,46376,build,pass,1890437184,baseline
+2025-06-26 06:59:04,docker-push,199.36,0,62.09,38644,build,pass,1890437184,baseline
+2025-06-26 07:01:39,flake8 .,1.0,0,54.0,22524,lint,pass,1890437184,baseline
+2025-06-26 07:04:04,python manage.py collectstatic --noinput,0.5,0,35.0,0,test,pass,1890437184,baseline
+2025-06-26 07:04:09,python manage.py migrate --noinput,0.5,0,39.0,0,test,pass,1890437184,baseline
+2025-06-26 07:04:16,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,53.31,59092,test,pass,1890437184,baseline
+2025-06-26 07:04:35,coverage run --append --source=. manage.py test --tag=functional,9.52,0,24.01,59496,test,pass,1890437184,baseline
+2025-06-26 09:15:39,docker-login,0.5,0,6.1,0,build,pass,1890700505,baseline
+2025-06-26 09:20:34,docker-build,292.05,0,28.44,45932,build,pass,1890700505,baseline
+2025-06-26 09:24:08,docker-push,205.37,0,61.25,38656,build,pass,1890700505,baseline
+2025-06-26 09:26:37,flake8 .,1.0,0,51.5,22580,lint,pass,1890700505,baseline
+2025-06-26 09:29:07,python manage.py collectstatic --noinput,0.5,0,35.6,0,test,pass,1890700505,baseline
+2025-06-26 09:29:12,python manage.py migrate --noinput,0.5,0,38.0,0,test,pass,1890700505,baseline
+2025-06-26 09:29:20,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,53.51,59252,test,pass,1890700505,baseline
+2025-06-26 09:29:40,coverage run --append --source=. manage.py test --tag=functional,10.52,0,22.15,60080,test,pass,1890700505,baseline
+2025-06-26 10:11:53,docker-login,0.5,0,9.0,0,build,pass,1890828514,baseline
+2025-06-26 10:17:31,docker-build,332.69,0,31.55,46092,build,pass,1890828514,baseline
+2025-06-26 10:21:36,docker-push,236.49,0,59.55,39040,build,pass,1890828514,baseline
+2025-06-26 10:24:09,flake8 .,1.0,0,52.9,22708,lint,pass,1890828514,baseline
+2025-06-26 10:24:10,flake8 .,1.0,0,53.4,22560,lint,pass,1890828514,baseline
+2025-06-26 10:26:35,python manage.py collectstatic --noinput,0.5,0,35.4,0,test,pass,1890828514,baseline
+2025-06-26 10:26:40,python manage.py migrate --noinput,0.5,0,40.2,0,test,pass,1890828514,baseline
+2025-06-26 10:26:48,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,54.43,59084,test,fail,1890828514,baseline
+2025-06-26 10:26:51,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,53.51,59280,test,fail,1890828514,baseline
+2025-06-26 11:06:12,docker-login,0.5,0,4.0,0,build,pass,1890930758,baseline
+2025-06-26 11:10:57,docker-build,1.5,0,45.37,42852,build,pass,1890930758,baseline
+2025-06-26 11:14:36,docker-push,1.0,0,8.1,35992,build,pass,1890930758,baseline
+2025-06-26 11:17:38,flake8 .,1.0,0,53.9,22572,lint,pass,1890930758,baseline
+2025-06-26 11:17:40,flake8 .,1.0,0,55.1,22624,lint,fail,1890930758,baseline
+2025-06-26 11:17:42,flake8 .,1.0,0,54.0,22724,lint,pass,1890930758,baseline
+2025-06-26 11:20:07,python manage.py collectstatic --noinput,0.5,0,29.3,0,test,pass,1890930758,baseline
+2025-06-26 11:20:13,python manage.py migrate --noinput,0.5,0,37.4,0,test,pass,1890930758,baseline
+2025-06-26 11:20:27,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,53.6,59280,test,fail,1890930758,baseline
+2025-06-26 11:20:37,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,53.63,59204,test,fail,1890930758,baseline
+2025-06-26 12:23:01,docker-login,0.5,0,5.0,0,build,pass,1891077891,ml
+2025-06-26 12:36:33,docker-login,0.5,0,4.0,0,build,pass,1891106068,ml
+2025-06-26 13:55:48,docker-login,0.5,0,4.0,0,build,pass,1891286641,ml
+2025-06-26 14:18:47,docker-login,1.0,0,2.05,36972,build,pass,1891346115,ml
+2025-06-26 14:18:48,docker-login,0.5,0,5.1,0,build,pass,1891346115,ml
+2025-06-26 14:23:54,docker-build,0.5,0,11.3,0,build,pass,1891346115,ml
+2025-06-26 14:27:42,docker-build,0.5,0,10.1,0,build,pass,1891346115,ml
+2025-06-26 14:31:46,docker-push,1.0,0,8.0,37188,build,pass,1891346115,ml
+2025-06-26 14:31:50,docker-push,1.0,0,10.3,37132,build,pass,1891346115,ml
+2025-06-26 14:34:36,flake8 .,1.0,0,51.6,22608,lint,pass,1891346115,ml
+2025-06-26 14:34:37,flake8 .,1.0,0,51.8,22584,lint,fail,1891346115,ml
+2025-06-26 14:34:40,flake8 .,1.0,0,52.9,22584,lint,pass,1891346115,ml
+2025-06-26 14:41:13,docker-login,0.5,0,4.0,0,build,pass,1891397062,ml
+2025-06-26 14:41:14,docker-login,0.5,0,4.0,0,build,pass,1891397062,ml
+2025-06-26 14:46:38,docker-build,0.5,0,14.0,0,build,pass,1891397062,ml
+2025-06-26 14:50:38,docker-build,0.5,0,10.2,0,build,pass,1891397062,ml
+2025-06-26 14:54:34,docker-push,1.0,0,6.55,35632,build,pass,1891397062,ml
+2025-06-26 14:54:39,docker-push,1.0,0,6.55,37728,build,pass,1891397062,ml
+2025-06-26 14:57:24,flake8 .,1.0,0,56.0,22660,lint,pass,1891397062,ml
+2025-06-26 14:57:26,flake8 .,1.0,0,52.5,22300,lint,fail,1891397062,ml
+2025-06-26 14:57:28,flake8 .,1.0,0,53.2,22676,lint,pass,1891397062,ml
+2025-06-26 14:59:53,python manage.py collectstatic --noinput,0.5,0,31.0,0,test,pass,1891397062,ml
+2025-06-26 14:59:55,python manage.py collectstatic --noinput,0.5,0,29.3,0,test,pass,1891397062,ml
+2025-06-26 15:00:00,python manage.py migrate --noinput,0.5,0,39.6,0,test,pass,1891397062,ml
+2025-06-26 15:00:02,python manage.py migrate --noinput,0.5,0,37.6,0,test,pass,1891397062,ml
+2025-06-26 15:00:16,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,53.2,59124,test,fail,1891397062,ml
+2025-06-26 15:00:25,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,52.0,59260,test,fail,1891397062,ml
+2025-06-27 07:00:29,docker-login,0.5,0,8.0,0,build,pass,1893290354,ml
+2025-06-27 07:05:24,docker-build,290.04,0,28.93,46456,build,pass,1893290354,ml
+2025-06-27 07:09:04,docker-push,205.38,0,61.14,39264,build,pass,1893290354,ml
+2025-06-27 07:13:56,python manage.py collectstatic --noinput,0.5,0,32.0,0,test,pass,1893290354,ml
+2025-06-27 07:14:01,python manage.py migrate --noinput,0.5,0,35.0,0,test,pass,1893290354,ml
+2025-06-27 07:14:08,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,50.86,59056,test,fail,1893290354,ml
+2025-06-27 07:30:02,docker-login,0.5,0,7.0,0,build,pass,1893336132,ml
+2025-06-27 07:34:49,docker-build,1.0,0,9.1,43760,build,pass,1893336132,ml
+2025-06-27 07:38:28,docker-push,1.0,0,7.0,36812,build,pass,1893336132,ml
+2025-06-27 07:41:10,flake8 .,1.0,0,54.25,22740,lint,pass,1893336132,ml
+2025-06-27 07:43:31,python manage.py collectstatic --noinput,0.5,0,25.3,0,test,pass,1893336132,ml
+2025-06-27 07:43:35,python manage.py migrate --noinput,0.5,0,33.0,0,test,pass,1893336132,ml
+2025-06-27 07:43:45,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,59.93,59072,test,fail,1893336132,ml
+2025-06-27 07:43:52,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,58.75,58896,test,fail,1893336132,ml
+2025-06-27 07:52:42,docker-login,0.5,0,5.1,0,build,pass,1893367071,ml
+2025-06-27 07:57:47,docker-build,1.0,0,11.7,42560,build,pass,1893367071,ml
+2025-06-27 08:01:31,docker-push,1.0,0,7.05,36628,build,pass,1893367071,ml
+2025-06-27 08:04:05,flake8 .,1.0,0,54.2,22612,lint,pass,1893367071,ml
+2025-06-27 08:06:27,python manage.py collectstatic --noinput,0.5,0,28.0,0,test,pass,1893367071,ml
+2025-06-27 08:06:32,python manage.py migrate --noinput,0.5,0,34.3,0,test,pass,1893367071,ml
+2025-06-27 08:06:43,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,52.07,59216,test,pass,1893367071,ml
+2025-06-27 08:07:10,coverage run --append --source=. manage.py test --tag=functional,9.02,0,24.15,60048,test,pass,1893367071,ml
+2025-06-27 08:32:40,docker-login,0.5,0,5.1,0,build,pass,1893432506,ml
+2025-06-27 08:37:43,docker-build,1.0,0,10.65,42580,build,pass,1893432506,ml
+2025-06-27 08:41:29,docker-push,1.0,0,8.55,36404,build,pass,1893432506,ml
+2025-06-27 08:44:15,flake8 .,1.0,0,52.5,22556,lint,pass,1893432506,ml
+2025-06-27 08:44:17,flake8 .,1.0,0,54.3,22560,lint,pass,1893432506,ml
+2025-06-27 08:46:40,python manage.py collectstatic --noinput,0.5,0,28.3,0,test,pass,1893432506,ml
+2025-06-27 08:46:45,python manage.py migrate --noinput,0.5,0,39.8,0,test,pass,1893432506,ml
+2025-06-27 08:46:56,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,53.04,59136,test,pass,1893432506,ml
+2025-06-27 08:47:24,coverage run --append --source=. manage.py test --tag=functional,9.02,0,26.07,59716,test,pass,1893432506,ml
+2025-07-04 10:34:31,docker login -u gitlab-ci-token -p glcbt-eyJraWQiOiIxVHRMOTJuWlJnVHNqSVVvWDJPWVZMVU9KMWJXbUdFYmwtZkFuS3NZVWhRIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXJzaW9uIjoiMC4xLjAiLCJvIjoiMSIsInUiOiJnYzlzbCIsInAiOiIxNThxdnUiLCJnIjoiMXJiNGNsIiwianRpIjoiODBkZDNkZTktNmQwMC00MjZjLWFmODktY2UyNjJjOTYwZDNmIiwiYXVkIjoiZ2l0bGFiLWF1dGh6LXRva2VuIiwic3ViIjoiZ2lkOi8vZ2l0bGFiL0NpOjpCdWlsZC8xMDU2Njc4NjY2NCIsImlzcyI6ImdpdGxhYi5jb20iLCJpYXQiOjE3NTE2MjUwOTEsIm5iZiI6MTc1MTYyNTA4NiwiZXhwIjoxNzUxNjI4OTkxfQ.gCpwbdkPXK_HB55IHszZsbCvZaPHACh4FCOZBPJEhORszx4xwHbcWhYhbMsGGGmpNztQFTdd8rCZ_59qs_4p170YHN4f1xmECNZPkBclbw69ubg8pSQX3Uq38x6L0NRopnxSTt8zK5I5KgXbVMaQU8Eia8UVOyj-iuz9ty0pdvLdv06MUzaCv6XRCHVt_MsR0LB06Wmg3uiPhggfbA0k0xDEV8p6RAzP7iaL34eUKmaZCcUI3_nqbBh55TLuLAMA424v5cns69pKHdQqwnC2jhXedqIcljG047MZcj1Pp3rWUZafVU6HcMzDDRD_gtHqqykVXTUiinXtuu7x_R-FNw registry.gitlab.com,0.5,0,5.0,0,build,pass,1906401418,ml
+2025-07-04 10:34:37,docker build -t registry.gitlab.com/uhthesis/bidshopping:dev .,0.5,1,5.1,0,build,fail,1906401418,ml
+2025-07-04 10:50:11,docker login -u gitlab-ci-token -p glcbt-eyJraWQiOiIxVHRMOTJuWlJnVHNqSVVvWDJPWVZMVU9KMWJXbUdFYmwtZkFuS3NZVWhRIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXJzaW9uIjoiMC4xLjAiLCJvIjoiMSIsInUiOiJnYzlzbCIsInAiOiIxNThxdnUiLCJnIjoiMXJiNGNsIiwianRpIjoiMTI2ZjAzNWEtNzI3Zi00MjAzLWJiNGItNDA5YzgwNzU0NTFkIiwiYXVkIjoiZ2l0bGFiLWF1dGh6LXRva2VuIiwic3ViIjoiZ2lkOi8vZ2l0bGFiL0NpOjpCdWlsZC8xMDU2Njk3NjE1MyIsImlzcyI6ImdpdGxhYi5jb20iLCJpYXQiOjE3NTE2MjYwMzAsIm5iZiI6MTc1MTYyNjAyNSwiZXhwIjoxNzUxNjI5OTMwfQ.BdJac0eecrtP-pkhj0b2OoGG87jKLmZl70Zrd1EpLJK_2WLNh_zMk7lTdXBiT9vRrGLYtD06JBOyTeOcKG2xZwxN2f6nP4KvdXygeXv0qVC4zED3ZY85-O2UcBSUF-jyHOQGnwp0M-9y7-VVSuIpfM6JN47Yq2tR73-tbTSENHHvZEwM7KhnPMTtsusEBsKrzsD88eLTnf2PAj2dFrSCpI3pUeOBOwHSyspRmcWgbdWnEsrvBOzEx0Ya_30uk-rdV2z9gVl_ildDob1wpXqS6U2NGmDaTyjb9z8aI8MOWpsu_tvics-3_YMlmBjogU61FstX10GnzAz_hMFDsLAAAg registry.gitlab.com,0.5,0,5.1,0,build,pass,1906440400,ml
+2025-07-04 10:50:16,docker build -t registry.gitlab.com/uhthesis/bidshopping:dev .,0.5,1,7.0,0,build,fail,1906440400,ml
+2025-07-04 10:58:27,docker login -u gitlab-ci-token -p glcbt-eyJraWQiOiIxVHRMOTJuWlJnVHNqSVVvWDJPWVZMVU9KMWJXbUdFYmwtZkFuS3NZVWhRIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXJzaW9uIjoiMC4xLjAiLCJvIjoiMSIsInUiOiJnYzlzbCIsInAiOiIxNThxdnUiLCJnIjoiMXJiNGNsIiwianRpIjoiMGJmMWZjNzEtYmU3OS00ZmZjLTkwZGUtMTVlMzVjNTBlYmI1IiwiYXVkIjoiZ2l0bGFiLWF1dGh6LXRva2VuIiwic3ViIjoiZ2lkOi8vZ2l0bGFiL0NpOjpCdWlsZC8xMDU2NzA2NTcwNCIsImlzcyI6ImdpdGxhYi5jb20iLCJpYXQiOjE3NTE2MjY1MjcsIm5iZiI6MTc1MTYyNjUyMiwiZXhwIjoxNzUxNjMwNDI3fQ.nxRJGk8wsnvwxmqeAPeuhAdxdSy8kbOjDQ2VctynBpXiRQ_Lpenyxb_gx_zyUykBJCcyLbS4i5egQTpVM6WmWO-tU76b6IuqLoTOOajywLu1qHHWv9WohAtCgOIoX2vuA7t_vOclJ1ko5SdJBJndNozEVJQ7U-t8moR42V9jtdWwJtUVOtiVlc8KNhXhGhNu1LCBj7hGoyLQP9KQSFMD-C94mbgzL-zee0ZqlfUGc7eQD2KB8Ut8kDR-B6Bif_bQGei__N1bJKSWYQnmx5fFbwA4Qp0Eg4iicIgGX_nQ5YuHuydl2Igx91QBCUCv5zvhnyljvOR00eYoovGSUAJZ-Q registry.gitlab.com,0.5,0,7.9,0,build,pass,1906458576,ml
+2025-07-04 10:58:33,docker build -t registry.gitlab.com/uhthesis/bidshopping:dev .,0.5,1,6.0,0,build,fail,1906458576,ml
+2025-07-04 12:32:31,docker login -u gitlab-ci-token -p glcbt-eyJraWQiOiIxVHRMOTJuWlJnVHNqSVVvWDJPWVZMVU9KMWJXbUdFYmwtZkFuS3NZVWhRIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXJzaW9uIjoiMC4xLjAiLCJvIjoiMSIsInUiOiJnYzlzbCIsInAiOiIxNThxdnUiLCJnIjoiMXJiNGNsIiwianRpIjoiMGQ4MWE5YjItYTQzZC00YWU0LTgyNDItZTJiYWZjZGI2NDEyIiwiYXVkIjoiZ2l0bGFiLWF1dGh6LXRva2VuIiwic3ViIjoiZ2lkOi8vZ2l0bGFiL0NpOjpCdWlsZC8xMDU2ODA3NzA1NiIsImlzcyI6ImdpdGxhYi5jb20iLCJpYXQiOjE3NTE2MzIxNTksIm5iZiI6MTc1MTYzMjE1NCwiZXhwIjoxNzUxNjM2MDU5fQ.CR5geiO4xGxMM0dz_-jN1My4bsdw6AIOGGB7BsohNjVTdaw1CtmRClgG8sXm8rveh9Js2YBNaVV9exW-nhVmlqXaYlTUAV2eHgOV2oApEDfgDEJZ7kGPy4PEm9KfE33G7ZvqnR5jre9rdvfjepE0Wn7ZMGwkZbsL83PVI25_61S17FMDY_Qjq1tWUkxhSQkrnMqb3ZjF4MUqiGFEnA16oG47kdVZp5l02yUC39XQ68_TVwzMjfMB4E38F2iB9rP1yzjnKbKbwWvyCaXBfsWRzGrxsysAz4YJjcSg8x008V2eLLGA28ZptKeD3KG5YwfSqoAJDxuMAAPGmXtsUs4gQg registry.gitlab.com,0.5,0,6.9,0,build,pass,1906616245,ml
+2025-07-04 12:32:37,docker build -t registry.gitlab.com/uhthesis/bidshopping:dev .,0.5,1,8.0,0,build,fail,1906616245,ml
+2025-07-04 13:06:06,docker-login,0.5,0,4.0,0,build,pass,1906677061,ml
+2025-07-04 13:12:35,docker-build,2.03,0,14.68,42392,build,pass,1906677061,ml
+2025-07-04 13:17:30,docker-push,1.0,0,8.1,38512,build,pass,1906677061,ml
+2025-07-04 13:44:45,docker-login,0.5,0,5.0,0,build,pass,1906759212,ml
+2025-07-04 13:51:59,docker-build,186.36,1,25.69,43472,build,fail,1906759212,ml
+2025-07-08 22:48:11,docker-login,0.5,0,6.0,0,build,pass,1914781799,ml
+2025-07-08 22:51:08,docker-build,32.06,1,34.45,49016,build,fail,1914781799,ml
+2025-07-08 23:13:09,docker-login,0.5,0,5.9,0,build,pass,1914808722,ml
+2025-07-08 23:15:34,docker-build,1.5,0,19.13,43456,build,pass,1914808722,ml
+2025-07-08 23:16:35,docker-push,0.5,0,16.0,0,build,pass,1914808722,ml
+2025-07-08 23:35:03,docker-login,0.5,0,6.0,0,build,pass,1914825298,ml
+2025-07-08 23:37:30,docker-build,1.5,0,18.67,40384,build,pass,1914825298,ml
+2025-07-08 23:38:32,docker-push,1.0,0,8.1,35840,build,pass,1914825298,ml
+2025-07-08 23:41:04,flake8 .,1.0,0,56.1,22048,lint,pass,1914825298,ml
+2025-07-08 23:43:32,python manage.py collectstatic --noinput,0.5,0,27.0,0,test,pass,1914825298,ml
+2025-07-08 23:43:36,python manage.py migrate --noinput,0.5,0,35.0,0,test,pass,1914825298,ml
+2025-07-09 00:18:16,docker-login,0.5,0,5.1,0,build,pass,1914864888,ml
+2025-07-09 00:20:59,docker-build,1.5,0,19.5,40888,build,pass,1914864888,ml
+2025-07-09 00:22:00,docker-push,1.0,0,7.0,35328,build,pass,1914864888,ml
+2025-07-09 00:24:50,flake8 .,1.0,0,58.5,22108,lint,pass,1914864888,ml
+2025-07-09 00:27:07,python manage.py collectstatic --noinput,0.5,0,29.7,0,test,pass,1914864888,ml
+2025-07-09 00:27:11,python manage.py migrate --noinput,0.5,0,36.6,0,test,pass,1914864888,ml
+2025-07-09 00:27:17,coverage run --source=. manage.py test --parallel --exclude-tag=functional,1.5,1,36.37,59116,test,fail,1914864888,ml
+2025-07-09 00:27:20,coverage run --source=. manage.py test --parallel --exclude-tag=functional,1.5,1,36.63,59032,test,fail,1914864888,ml
+2025-07-09 00:40:21,docker-login,0.5,0,5.0,0,build,pass,1914888204,ml
+2025-07-09 00:43:08,docker-build,29.06,0,35.86,45804,build,pass,1914888204,ml
+2025-07-09 00:44:06,docker-push,1.0,0,7.2,35892,build,pass,1914888204,ml
+2025-07-09 00:47:00,flake8 .,1.0,0,61.75,22140,lint,pass,1914888204,ml
+2025-07-09 00:49:21,python manage.py collectstatic --noinput,0.5,0,30.7,0,test,pass,1914888204,ml
+2025-07-09 00:49:25,python manage.py migrate --noinput,0.5,0,38.6,0,test,pass,1914888204,ml
+2025-07-09 00:49:35,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,60.83,60780,test,pass,1914888204,ml
+2025-07-09 00:49:54,coverage run --append --source=. manage.py test --tag=functional,2.51,1,22.8,59964,test,fail,1914888204,ml
+2025-07-09 00:49:59,coverage run --append --source=. manage.py test --tag=functional,2.0,1,27.4,60100,test,fail,1914888204,ml
+2025-07-09 19:14:45,docker-login,0.5,0,5.1,0,build,pass,1917362882,ml
+2025-07-09 19:17:17,docker-build,1.0,0,24.45,40872,build,pass,1917362882,ml
+2025-07-09 19:18:13,docker-push,1.0,0,7.15,37308,build,pass,1917362882,ml
+2025-07-09 19:20:56,flake8 .,1.0,0,57.8,22144,lint,pass,1917362882,ml
+2025-07-09 19:23:41,python manage.py collectstatic --noinput,0.5,0,28.7,0,test,pass,1917362882,ml
+2025-07-09 19:23:46,python manage.py migrate --noinput,0.5,0,35.6,0,test,pass,1917362882,ml
+2025-07-09 19:23:55,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,59.0,60744,test,pass,1917362882,ml
+2025-07-09 19:24:38,coverage run --append --source=. manage.py test --tag=functional,10.02,0,23.44,61548,test,pass,1917362882,ml
+2025-07-10 07:06:07,docker-login,0.5,0,4.0,0,build,pass,1918182484,ml
+2025-07-10 07:08:52,docker-build,1.5,0,18.7,41968,build,pass,1918182484,ml
+2025-07-10 07:09:54,docker-push,1.0,0,7.65,36448,build,pass,1918182484,ml
+2025-07-10 07:12:43,flake8 .,1.0,0,55.15,22124,lint,pass,1918182484,ml
+2025-07-10 07:15:28,python manage.py collectstatic --noinput,0.5,0,30.7,0,test,pass,1918182484,ml
+2025-07-10 07:15:33,python manage.py migrate --noinput,0.5,0,38.4,0,test,pass,1918182484,ml
+2025-07-10 07:15:44,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,52.01,61092,test,pass,1918182484,ml
+2025-07-10 07:16:29,coverage run --append --source=. manage.py test --tag=functional,9.52,0,24.44,61404,test,pass,1918182484,ml
+2025-07-10 08:53:06,docker-login,0.5,0,5.1,0,build,pass,1918361218,ml
+2025-07-10 08:56:09,docker-build,1.5,0,20.33,41228,build,pass,1918361218,ml
+2025-07-10 08:57:10,docker-push,1.0,0,7.65,36768,build,pass,1918361218,ml
+2025-07-10 09:00:03,flake8 .,1.0,0,57.6,22132,lint,pass,1918361218,ml
+2025-07-10 09:02:47,python manage.py collectstatic --noinput,0.5,0,29.7,0,test,pass,1918361218,ml
+2025-07-10 09:02:51,python manage.py migrate --noinput,0.5,0,37.3,0,test,pass,1918361218,ml
+2025-07-10 09:03:01,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,59.77,60788,test,pass,1918361218,ml
+2025-07-10 09:06:19,coverage run --append --source=. manage.py test --tag=functional,10.52,0,21.44,61620,test,pass,1918361218,ml
+2025-07-10 18:43:27,flake8 .,1.0,0,55.0,19348,lint,pass,1919465515,baseline
+2025-07-10 18:43:29,flake8 .,1.0,0,57.5,19408,lint,pass,1919465515,baseline
+2025-07-10 18:46:24,python manage.py test --tag=functional,8.02,0,23.38,56324,test,pass,1919465515,baseline
+2025-07-10 19:01:45,flake8 .,1.0,0,54.5,19348,lint,pass,1919485852,baseline
+2025-07-10 19:01:47,flake8 .,1.0,0,54.0,19392,lint,pass,1919485852,baseline
+2025-07-10 19:04:51,python manage.py test --tag=functional,8.02,0,28.45,56548,test,pass,1919485852,baseline
+2025-07-10 19:45:54,flake8 .,1.0,0,57.3,19296,lint,pass,1919542690,baseline
+2025-07-10 19:45:56,flake8 .,1.0,0,52.7,19288,lint,pass,1919542690,baseline
+2025-07-10 21:21:22,flake8 .,1.0,0,53.4,19408,lint,pass,1919670648,baseline
+2025-07-10 21:21:24,flake8 .,1.0,0,49.7,19360,lint,pass,1919670648,baseline
+2025-07-10 22:29:19,docker-login,0.5,0,6.0,0,build,pass,1919740342,ml
+2025-07-10 22:32:10,docker-build,1.5,0,22.0,42440,build,pass,1919740342,ml
+2025-07-10 22:33:14,docker-push,1.0,0,11.65,36344,build,pass,1919740342,ml
+2025-07-10 22:36:00,flake8 .,1.0,0,55.9,22140,lint,pass,1919740342,ml
+2025-07-10 22:38:45,python manage.py collectstatic --noinput,0.5,0,30.0,0,test,pass,1919740342,ml
+2025-07-10 22:38:49,python manage.py migrate --noinput,0.5,0,38.0,0,test,pass,1919740342,ml
+2025-07-10 22:38:59,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,0,59.52,60976,test,pass,1919740342,ml
+2025-07-10 22:42:41,coverage run --append --source=. manage.py test --tag=functional,10.52,0,24.2,61624,test,pass,1919740342,ml
+2025-07-11 07:17:45,flake8 .,1.0,0,58.5,22100,lint,pass,1920458276,ml
+2025-07-11 07:21:01,coverage run --append --source=. manage.py test --tag=functional,9.52,0,25.81,60956,test,pass,1920458276,ml
+2025-07-11 07:35:19,flake8 .,1.0,0,54.95,22104,lint,pass,1920488698,baseline
+2025-07-11 07:44:45,coverage run --append --source=. manage.py test --tag=functional,10.52,0,23.86,61744,test,pass,1920488698,baseline
+2025-07-11 07:51:32,flake8 .,1.0,0,56.3,22072,lint,pass,1920511979,ml
+2025-07-11 07:54:47,coverage run --append --source=. manage.py test --tag=functional,10.02,1,23.85,61136,test,fail,1920511979,ml
+2025-07-11 07:55:07,coverage run --append --source=. manage.py test --tag=functional,9.02,1,26.6,62052,test,fail,1920511979,ml
+2025-07-11 08:31:21,docker-login,0.5,0,5.1,0,build,pass,1920579962,ml
+2025-07-11 08:31:25,docker-build,0.5,1,1.0,0,build,fail,1920579962,ml
+2025-07-11 09:07:49,flake8 .,1.0,0,56.0,22132,lint,pass,1920643855,ml
+2025-07-11 09:11:35,coverage run --append --source=. manage.py test --tag=functional,10.02,0,26.76,61320,test,pass,1920643855,ml
+2025-07-11 10:23:20,flake8 .,1.0,0,60.65,22124,lint,pass,1920773917,baseline
+2025-07-11 10:27:11,coverage run --append --source=. manage.py test --tag=functional,10.02,0,24.32,61800,test,pass,1920773917,baseline
+2025-07-12 01:20:00,flake8 .,1.0,0,61.0,22148,lint,pass,1922861554,baseline
+2025-07-12 02:44:33,docker-login,0.5,0,5.9,0,build,pass,1922996734,ml
+2025-07-12 02:47:33,docker-build,1.5,0,19.83,40864,build,pass,1922996734,ml
+2025-07-12 02:48:36,docker-push,1.0,0,10.0,36584,build,pass,1922996734,ml
+2025-07-12 02:48:42,flake8 .,1.0,0,60.25,22028,lint,pass,1922996734,ml
+2025-07-12 02:48:48,python manage.py collectstatic --noinput,0.5,0,36.6,0,test,pass,1922996734,ml
+2025-07-12 02:48:53,python manage.py migrate --noinput,0.5,0,41.0,0,test,pass,1922996734,ml
+2025-07-12 02:49:04,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,54.57,60164,test,pass,1922996734,ml
+2025-07-12 10:27:52,docker-login,0.5,0,5.1,0,build,pass,1923260094,ml
+2025-07-12 10:30:48,docker-build,1.5,0,18.03,42480,build,pass,1923260094,ml
+2025-07-12 10:31:51,docker-push,1.0,0,10.2,36084,build,pass,1923260094,ml
+2025-07-12 10:31:57,flake8 .,1.0,0,59.8,22212,lint,pass,1923260094,ml
+2025-07-12 10:32:04,python manage.py collectstatic --noinput,0.5,0,32.0,0,test,pass,1923260094,ml
+2025-07-12 10:32:09,python manage.py migrate --noinput,0.5,0,41.6,0,test,pass,1923260094,ml
+2025-07-12 10:32:20,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,52.47,60564,test,pass,1923260094,ml
+2025-07-12 13:11:53,docker-login,0.5,0,0.0,0,build,pass,1923339196,ml
+2025-07-12 13:14:44,docker-build,1.5,0,20.4,43756,build,pass,1923339196,ml
+2025-07-12 13:15:47,docker-push,1.0,0,10.1,35700,build,pass,1923339196,ml
+2025-07-12 13:15:53,flake8 .,1.0,0,60.75,22228,lint,pass,1923339196,ml
+2025-07-12 13:16:00,python manage.py collectstatic --noinput,0.5,0,39.0,0,test,pass,1923339196,ml
+2025-07-12 13:16:05,python manage.py migrate --noinput,0.5,0,44.4,0,test,pass,1923339196,ml
+2025-07-12 13:16:17,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0,55.04,60584,test,pass,1923339196,ml
+2025-07-13 05:15:45,docker-login,0.51,0,0.0,0,build,pass,1923859355,ml
+2025-07-13 05:15:49,docker-build,0.5,1,3.1,0,build,fail,1923859355,ml
+2025-07-13 05:24:18,docker-login,0.5,0,1.0,0,build,pass,1923865508,ml
+2025-07-13 05:27:05,docker-build,1.5,0,21.17,42488,build,pass,1923865508,ml
+2025-07-13 05:28:08,docker-push,1.0,0,8.15,36760,build,pass,1923865508,ml
+2025-07-13 05:30:53,flake8 .,1.0,0,54.75,22068,lint,pass,1923865508,ml
+2025-07-13 05:34:16,coverage run --append --source=. manage.py test --tag=functional,11.02,0,23.85,61588,test,pass,1923865508,ml
+2025-07-13 05:45:48,docker-login,0.52,0,0.0,0,build,pass,1923874932,ml
+2025-07-13 05:48:41,docker-build,1.5,0,18.43,41448,build,pass,1923874932,ml
+2025-07-13 05:49:42,docker-push,1.0,0,8.5,35700,build,pass,1923874932,ml
+2025-07-13 05:52:28,flake8 .,1.0,0,54.5,22060,lint,pass,1923874932,ml
+2025-07-13 05:55:40,coverage run --append --source=. manage.py test --tag=functional,2.0,-15,24.35,58812,test,fail,1923874932,ml
+2025-07-13 06:54:21,coverage run --append --source=. manage.py test --tag=functional,10.02,0,26.98,61080,test,pass,1923909242,baseline
+2025-07-13 07:12:42,coverage run --append --source=. manage.py test --tag=functional,10.02,0,24.44,61548,test,pass,1923921480,baseline
+2025-07-13 07:17:25,coverage run --append --source=. manage.py test --tag=functional,10.52,0,23.99,61776,test,pass,1923923292,baseline
+2025-07-13 07:17:59,coverage run --append --source=. manage.py test --tag=functional,10.52,0,23.0,61456,test,pass,1923923369,baseline
+2025-07-13 07:18:20,coverage run --append --source=. manage.py test --tag=functional,10.02,0,24.7,61628,test,pass,1923923438,baseline
+2025-07-13 07:20:03,coverage run --append --source=. manage.py test --tag=functional,10.52,0,25.05,61616,test,pass,1923925294,baseline
+2025-07-13 07:30:20,flake8 .,1.0,0,55.65,22116,lint,pass,1923930282,baseline
+2025-07-13 07:30:56,flake8 .,1.0,0,56.3,22144,lint,pass,1923930361,baseline
+2025-07-13 07:31:15,flake8 .,1.0,0,57.1,22068,lint,pass,1923930403,baseline
+2025-07-13 07:31:50,flake8 .,1.0,0,57.7,22116,lint,pass,1923930505,baseline
+2025-07-13 07:32:48,flake8 .,1.0,0,55.7,22144,lint,pass,1923930896,baseline
+2025-07-13 07:33:53,flake8 .,1.0,0,55.75,22052,lint,pass,1923932534,baseline
+2025-07-13 07:33:55,flake8 .,1.0,0,57.8,22040,lint,pass,1923932608,baseline
+2025-07-13 07:34:04,flake8 .,1.0,0,54.25,22056,lint,pass,1923932695,baseline
+2025-07-13 07:34:33,flake8 .,1.01,0,57.8,22128,lint,pass,1923932778,baseline
+2025-07-13 07:34:50,flake8 .,1.0,0,59.0,22076,lint,pass,1923932829,baseline
+2025-07-13 07:46:12,python manage.py collectstatic --noinput,0.5,0,29.7,0,test,pass,1923936488,baseline
+2025-07-13 07:46:16,python manage.py migrate --noinput,0.5,0,35.4,0,test,pass,1923936488,baseline
+2025-07-13 07:46:26,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,59.52,60732,test,fail,1923936488,baseline
+2025-07-13 07:46:32,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,59.58,60972,test,fail,1923936488,baseline
+2025-07-13 07:47:33,python manage.py collectstatic --noinput,0.5,0,26.0,0,test,pass,1923936740,baseline
+2025-07-13 07:47:38,python manage.py migrate --noinput,0.5,0,33.0,0,test,pass,1923936740,baseline
+2025-07-13 07:47:47,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.0,1,58.28,60860,test,fail,1923936740,baseline
+2025-07-13 07:47:53,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.0,1,57.4,60876,test,fail,1923936740,baseline
+2025-07-13 07:49:29,python manage.py collectstatic --noinput,0.5,0,28.7,0,test,pass,1923938038,baseline
+2025-07-13 07:49:33,python manage.py migrate --noinput,0.5,0,34.7,0,test,pass,1923938038,baseline
+2025-07-13 07:49:43,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,58.7,61028,test,fail,1923938038,baseline
+2025-07-13 07:49:49,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,59.17,60924,test,fail,1923938038,baseline
+2025-07-13 07:50:44,python manage.py collectstatic --noinput,0.5,0,28.0,0,test,pass,1923938349,baseline
+2025-07-13 07:50:49,python manage.py migrate --noinput,0.5,0,37.0,0,test,pass,1923938349,baseline
+2025-07-13 07:50:58,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,59.33,61056,test,fail,1923938349,baseline
+2025-07-13 07:51:04,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,61.08,60932,test,fail,1923938349,baseline
+2025-07-13 07:51:04,python manage.py collectstatic --noinput,0.5,0,25.3,0,test,pass,1923938417,baseline
+2025-07-13 07:51:08,python manage.py migrate --noinput,0.5,0,33.0,0,test,pass,1923938417,baseline
+2025-07-13 07:51:18,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.0,1,57.22,60936,test,fail,1923938417,baseline
+2025-07-13 07:51:24,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.0,1,57.78,60880,test,fail,1923938417,baseline
+2025-07-13 07:51:09,python manage.py collectstatic --noinput,0.5,0,27.5,0,test,pass,1923938423,baseline
+2025-07-13 07:51:13,python manage.py migrate --noinput,0.5,0,36.4,0,test,pass,1923938423,baseline
+2025-07-13 07:51:23,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,59.83,60912,test,fail,1923938423,baseline
+2025-07-13 07:51:29,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,60.67,60888,test,fail,1923938423,baseline
+2025-07-13 07:53:19,flake8 .,1.0,1,56.5,22148,lint,fail,1923939492,baseline
+2025-07-13 07:53:21,flake8 .,1.0,1,56.0,22132,lint,fail,1923939492,baseline
+2025-07-13 07:53:26,flake8 .,1.0,1,57.8,22096,lint,fail,1923939515,baseline
+2025-07-13 07:53:27,flake8 .,1.0,1,55.0,22080,lint,fail,1923939515,baseline
+2025-07-13 07:54:17,flake8 .,1.0,1,55.9,22064,lint,fail,1923939694,baseline
+2025-07-13 07:54:18,flake8 .,1.0,1,57.0,22188,lint,fail,1923939694,baseline
+2025-07-13 07:58:18,coverage run --append --source=. manage.py test --tag=functional,10.02,1,23.83,61552,test,fail,1923940549,ml
+2025-07-13 07:58:37,coverage run --append --source=. manage.py test --tag=functional,8.52,1,28.14,61552,test,fail,1923940549,ml
+2025-07-13 07:59:07,coverage run --append --source=. manage.py test --tag=functional,10.02,1,24.55,61760,test,fail,1923940975,ml
+2025-07-13 07:59:26,coverage run --append --source=. manage.py test --tag=functional,9.02,1,27.44,61608,test,fail,1923940975,ml
+2025-07-13 08:01:17,python manage.py collectstatic --noinput,0.5,0,26.7,0,test,pass,1923941485,baseline
+2025-07-13 08:01:22,python manage.py migrate --noinput,0.5,0,32.3,0,test,pass,1923941485,baseline
+2025-07-13 08:01:31,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,58.52,60892,test,fail,1923941485,baseline
+2025-07-13 08:01:37,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,58.2,60916,test,fail,1923941485,baseline
+2025-07-13 08:01:26,python manage.py collectstatic --noinput,0.5,0,26.3,0,test,pass,1923941496,baseline
+2025-07-13 08:01:30,python manage.py migrate --noinput,0.5,0,34.7,0,test,pass,1923941496,baseline
+2025-07-13 08:01:39,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,59.02,60916,test,fail,1923941496,baseline
+2025-07-13 08:01:45,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.0,1,58.28,60924,test,fail,1923941496,baseline
+2025-07-13 08:01:33,python manage.py collectstatic --noinput,0.5,0,27.0,0,test,pass,1923941526,baseline
+2025-07-13 08:01:38,python manage.py migrate --noinput,0.5,0,33.7,0,test,pass,1923941526,baseline
+2025-07-13 08:01:47,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,57.92,60932,test,fail,1923941526,baseline
+2025-07-13 08:01:53,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.0,1,58.92,60812,test,fail,1923941526,baseline
+2025-07-13 08:03:45,python manage.py collectstatic --noinput,0.5,0,27.7,0,test,pass,1923942498,baseline
+2025-07-13 08:03:49,python manage.py migrate --noinput,0.5,0,32.7,0,test,pass,1923942498,baseline
+2025-07-13 08:03:59,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,58.68,60800,test,fail,1923942498,baseline
+2025-07-13 08:04:04,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,58.23,60768,test,fail,1923942498,baseline
+2025-07-13 08:08:44,coverage run --append --source=. manage.py test --tag=functional,10.02,0,23.96,61596,test,pass,1923950153,baseline
+2025-07-13 12:23:14,python manage.py collectstatic --noinput,0.5,0,31.0,0,test,pass,1924073713,ml
+2025-07-13 12:23:18,python manage.py migrate --noinput,0.5,0,37.6,0,test,pass,1924073713,ml
+2025-07-13 12:23:29,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1,60.52,61068,test,fail,1924073713,ml
+2025-07-13 12:23:36,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,1,52.64,61100,test,fail,1924073713,ml
+2025-07-13 12:25:07,coverage run --append --source=. manage.py test --tag=functional,10.02,0,25.05,61548,test,pass,1924074002,ml
+2025-07-13 12:31:51,coverage run --append --source=. manage.py test --tag=functional,1.0,1,35.85,51276,test,fail,1924075966,ml
+2025-07-13 12:31:53,coverage run --append --source=. manage.py test --tag=functional,1.0,1,34.25,52396,test,fail,1924075966,ml
+2025-07-13 12:36:21,coverage run --append --source=. manage.py test --tag=functional,10.02,0,24.38,61540,test,pass,1924078823,ml
+2025-07-13 12:48:03,coverage run --append --source=. manage.py test --tag=functional,11.02,1,26.92,61400,test,fail,1924082738,ml
+2025-07-13 12:48:24,coverage run --append --source=. manage.py test --tag=functional,9.02,1,32.32,61572,test,fail,1924082738,ml
+2025-07-31 14:23:09,docker-login,0.0,0.0,0.0,0,build,pass,1959508140,baseline
+2025-07-31 14:23:09,docker-login,0.5,0.0,0.0,0,build,pass,1959508140,baseline
+2025-07-31 15:25:25,docker-login,0.5,0.0,0.0,0,build,pass,1959637283,baseline
+2025-07-31 15:27:19,docker-build,1.51,0.0,8.4,38904,build,pass,1959637283,baseline
+2025-07-31 15:27:40,docker-push,1.0,0.0,11.5,36536,build,pass,1959637283,baseline
+2025-07-31 15:27:46,flake8 .,1.0,0.0,57.4,22460,lint,pass,1959637283,baseline
+2025-07-31 15:27:48,flake8 .,1.0,0.0,55.5,22292,lint,pass,1959637283,baseline
+2025-07-31 15:27:55,python manage.py collectstatic --noinput,0.5,0.0,37.6,0,test,pass,1959637283,baseline
+2025-07-31 15:28:01,python manage.py migrate --noinput,0.5,0.0,49.0,0,test,pass,1959637283,baseline
+2025-07-31 15:28:12,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0.0,55.24,60740,test,pass,1959637283,baseline
+2025-07-31 16:00:09,docker-login,0.5,0.0,2.0,0,build,pass,1959708756,baseline
+2025-07-31 16:01:54,docker-build,2.0,1.0,23.68,41808,build,fail,1959708756,baseline
+2025-07-31 16:01:56,docker-build,1.5,1.0,29.37,38380,build,fail,1959708756,baseline
+2025-08-01 06:51:14,docker-login,0.5,0.0,0.0,0,build,pass,1960757859,baseline
+2025-08-01 06:53:05,docker-build,1.5,0.0,10.47,40932,build,pass,1960757859,baseline
+2025-08-01 06:53:25,docker-push,1.0,0.0,9.55,36976,build,pass,1960757859,baseline
+2025-08-01 06:53:31,flake8 .,1.0,1.0,51.5,22132,lint,fail,1960757859,baseline
+2025-08-01 06:53:32,flake8 .,1.0,1.0,51.6,22272,lint,fail,1960757859,baseline
+2025-08-01 08:28:06,docker-login,0.5,0.0,0.0,0,build,pass,1960903141,baseline
+2025-08-01 08:29:56,docker-build,1.5,0.0,6.77,42948,build,pass,1960903141,baseline
+2025-08-01 08:30:16,docker-push,1.0,0.0,10.5,35324,build,pass,1960903141,baseline
+2025-08-01 08:30:22,flake8 .,1.0,1.0,57.5,22236,lint,fail,1960903141,baseline
+2025-08-01 08:30:23,flake8 .,1.0,1.0,53.5,22308,lint,fail,1960903141,baseline
+2025-08-01 08:49:23,docker-login,0.5,0.0,2.0,0,build,pass,1960935667,baseline
+2025-08-01 08:51:08,docker-build,1.0,0.0,9.6,40588,build,pass,1960935667,baseline
+2025-08-01 08:51:23,docker-push,1.0,0.0,9.65,34372,build,pass,1960935667,baseline
+2025-08-01 08:51:28,flake8 .,1.0,1.0,52.5,22204,lint,fail,1960935667,baseline
+2025-08-01 08:51:30,flake8 .,1.0,1.0,52.6,22236,lint,fail,1960935667,baseline
+2025-08-01 09:06:55,docker-login,0.5,0.0,2.0,0,build,pass,1960965411,baseline
+2025-08-01 09:08:45,docker-build,1.5,0.0,7.4,40536,build,pass,1960965411,baseline
+2025-08-01 09:09:05,docker-push,1.0,0.0,8.2,35152,build,pass,1960965411,baseline
+2025-08-01 09:09:10,flake8 .,1.0,0.0,56.05,22220,lint,pass,1960965411,baseline
+2025-08-01 09:09:17,python manage.py collectstatic --noinput,0.5,0.0,33.3,0,test,pass,1960965411,baseline
+2025-08-01 09:09:22,python manage.py migrate --noinput,0.5,0.0,49.0,0,test,pass,1960965411,baseline
+2025-08-01 09:09:33,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.51,0.0,52.69,60828,test,pass,1960965411,baseline
+2025-08-01 09:14:37,docker-login,0.5,0.0,2.0,0,build,pass,1960981183,baseline
+2025-08-01 09:16:27,docker-build,1.5,0.0,7.7,40460,build,pass,1960981183,baseline
+2025-08-01 09:16:46,docker-push,1.0,0.0,11.3,34876,build,pass,1960981183,baseline
+2025-08-01 09:16:51,flake8 .,1.0,0.0,54.6,22244,lint,pass,1960981183,baseline
+2025-08-01 09:16:58,python manage.py collectstatic --noinput,0.5,0.0,31.0,0,test,pass,1960981183,baseline
+2025-08-01 09:17:03,python manage.py migrate --noinput,0.5,0.0,39.4,0,test,pass,1960981183,baseline
+2025-08-01 09:17:13,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1.0,60.32,60932,test,fail,1960981183,baseline
+2025-08-01 09:17:19,coverage run --source=. manage.py test --parallel --exclude-tag=functional,3.01,1.0,60.25,60616,test,fail,1960981183,baseline

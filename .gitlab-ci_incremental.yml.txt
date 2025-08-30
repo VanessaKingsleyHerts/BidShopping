@@ -86,7 +86,7 @@ update_logs:
     # 1) Copy this pipeline's log into data/raw/
     - mkdir -p data/raw
     - cp logs/ci_logs.csv data/raw/${CI_PIPELINE_ID}.csv
-    # 2) Merge it into data/all_logs.csv
+    # 2) Merge it into logs/all_logs.csv
     - python scripts/merge_current.py
     # 3) Push back to GitHub via your existing push_to_github.py
     - echo ">>>> Pushing updated all_logs.csv to GitHub"
