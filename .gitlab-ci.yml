@@ -16,10 +16,14 @@ variables:
 
 workflow:
   rules:
-    - if: '$CI_PIPELINE_IID % 10 == 0'
-      variables:
-        SHADOW_BUILD: "true"
     - when: always
+
+default:
+  before_script:
+    - |
+      if [ $((CI_PIPELINE_IID % 10)) -eq 0 ]; then
+        export SHADOW_BUILD=true
+      fi
 
 stages:
   - setup
