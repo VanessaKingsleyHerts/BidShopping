@@ -114,7 +114,8 @@ def log_healing_outcome(tag, action, result):
     write_header = not os.path.exists(path)
     with open(path, "a", newline="") as f:
         w = csv.writer(f)
-        if write_header: w.writerow(header)
+        if write_header:
+            w.writerow(header)
         w.writerow(row)
 
 def recent_success_rate(tag, action="retry", window=20):
@@ -149,7 +150,7 @@ def run_and_heal(command, tag, label=None):
     first_override = "fail" if injecting else None
     init_code = run_logged(command, tag, label, override_status=first_override)
 
-    # If we injected and the real command passed, make the wrapper see a failure to trigger retry
+    # If injected and the real command passed, make the wrapper see a failure to trigger retry
     if injecting and init_code == 0:
         print("[Injected Failure] Forcing artificial lint failure for baseline experiment")
         init_code = 1
@@ -162,7 +163,7 @@ def run_and_heal(command, tag, label=None):
                 print(f"[Adaptive] Retry disabled for {tag} (success rate {sr:.0%})")
                 return init_code
             print(f"[Baseline] {tag} failed — retrying once (success rate {sr:.0%})")
-            retry_label = (label or tag) + "-retry"   # helps you see both rows in CSV
+            retry_label = (label or tag) + "-retry"   # helps see both rows in CSV
             rc = run_logged(command, tag, retry_label)
             log_healing_outcome(tag, "retry", rc)
             return rc

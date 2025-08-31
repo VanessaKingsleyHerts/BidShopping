@@ -1,0 +1,39 @@
+digraph StatisticalEvaluation {
+	rankdir=TB size="10,16"
+	node [fillcolor=white fontsize=14 shape=box style="rounded,filled"]
+	edge [fontsize=12]
+	start [label="Start: Collected Logs
+(all_logs.csv, healing_outcomes.csv)" fillcolor=aliceblue shape=folder]
+	metrics [label="Extract Metrics:
+- Failure rate
+- MTTR
+- CPU avg
+- Mem max" fillcolor=cornsilk]
+	start -> metrics
+	assumptions [label="Check Assumptions:
+- Normality (Shapiro-Wilk)
+- Variance equality (Levene)" fillcolor=lightyellow]
+	metrics -> assumptions
+	failrate [label="Failure Rate
+χ² test
++ Wilson CI" fillcolor=lightblue]
+	mttr [label="MTTR
+Welch t-test
++ Cohen’s d, 95% CI" fillcolor=lightblue]
+	cpu [label="CPU Usage
+ANOVA
++ η² effect size" fillcolor=lightblue]
+	mem [label="Memory Usage
+ANOVA
++ η² effect size" fillcolor=lightblue]
+	assumptions -> failrate
+	assumptions -> mttr
+	assumptions -> cpu
+	assumptions -> mem
+	report [label="Report Results:
+Boxplots, CIs, Tables" fillcolor=palegreen]
+	failrate -> report
+	mttr -> report
+	cpu -> report
+	mem -> report
+}

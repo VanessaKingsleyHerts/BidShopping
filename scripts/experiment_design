@@ -1,0 +1,61 @@
+digraph ExperimentDesign {
+	rankdir=LR size="16,10"
+	node [fillcolor=white fontsize=16 shape=box style="rounded,filled"]
+	edge [fontsize=14]
+	commits [label="Commit Stream
+(same codebase)" fillcolor=aliceblue shape=folder]
+	assign [label="A/B Assignment
+Commit hash parity
+(even → Baseline, odd → ML)" fillcolor=lightyellow]
+	controls [label="Controls held constant:
+• Same runners & infra
+• Same code/config
+• INJECT_FAIL=true" fillcolor=honeydew]
+	commits -> assign
+	assign -> controls
+	baseline_arm [label="Baseline Arm
+(HEAL_MODE=baseline)" fillcolor=lightblue]
+	baseline_policy [label="Policy: Static retry once" fillcolor=mistyrose]
+	controls -> baseline_arm
+	baseline_arm -> baseline_policy
+	ml_arm [label="ML Arm
+(HEAL_MODE=ml)" fillcolor=lightblue]
+	ml_policy [label="Policy:
+RF retry gating
+LSTM early abort
+TEST_SELECTION optional" fillcolor=lavender]
+	controls -> ml_arm
+	ml_arm -> ml_policy
+	logger [label="ci_logger.py → logs/ci_logs.csv" fillcolor=lightyellow]
+	merge [label="merge_incremental.py" fillcolor=lightyellow]
+	all_logs [label="data/all_logs.csv" fillcolor=honeydew]
+	outcomes [label="compute_healing_outcomes.py
+→ healing_outcomes.csv" fillcolor=lightyellow]
+	baseline_policy -> logger
+	ml_policy -> logger
+	logger -> merge
+	merge -> all_logs
+	all_logs -> outcomes
+	metrics [label="Primary Metrics:
+• Failure rate
+• MTTR
+• CPU%
+• Mem max" fillcolor=cornsilk]
+	tests [label="Statistical Tests:
+• χ² (rates)
+• Welch t-test (MTTR)
+• ANOVA (CPU/Mem)
++ Effect sizes + CI" fillcolor=cornsilk]
+	figs [label="Outputs:
+Boxplots, CIs,
+Tables, RL curves" fillcolor=lightcyan]
+	outcomes -> metrics
+	metrics -> tests
+	tests -> figs
+	push [label="push_to_github.py" fillcolor=lightyellow]
+	repo [label="GitHub repo
+(versioned datasets)" fillcolor=lightgreen]
+	all_logs -> push
+	outcomes -> push
+	push -> repo
+}

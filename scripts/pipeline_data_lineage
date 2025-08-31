@@ -1,0 +1,72 @@
+digraph PipelineDataLineage {
+	rankdir=TB size="10,16"
+	node [fillcolor=white fontsize=16 shape=box style="rounded,filled"]
+	edge [fontsize=14]
+	subgraph cluster_ci {
+		color=lightgrey label="CI Jobs (GitLab)"
+		ci_logger [label="ci_logger.py
+(per-job telemetry)" fillcolor=lightyellow]
+		job_logs [label="logs/ci_logs.csv
+(per job)" fillcolor=lightblue]
+		raw_copy [label="Copy to data/raw/
+$CI_PIPELINE_ID.csv" fillcolor=lightblue]
+		ci_logger -> job_logs
+		job_logs -> raw_copy
+	}
+	subgraph cluster_merge {
+		color=lightgrey label="Post-merge & Aggregation"
+		merge_inc [label="merge_incremental.py" fillcolor=lightyellow]
+		all_logs [label="data/all_logs.csv
+(merged history)" fillcolor=honeydew]
+		compute_outcomes [label="compute_healing_outcomes.py" fillcolor=lightyellow]
+		heal_outcomes [label="data/healing_outcomes.csv
+(actions roll-up)" fillcolor=honeydew]
+		raw_copy -> merge_inc
+		merge_inc -> all_logs
+		all_logs -> compute_outcomes
+		compute_outcomes -> heal_outcomes
+	}
+	subgraph cluster_select {
+		color=lightgrey label="Intelligent Test Selection"
+		test_sel_mode [label="TEST_SELECTION
+(suite | budget)" fillcolor=mistyrose]
+		sel_csv [label="data/intelligent_test_selection.csv" fillcolor=honeydew]
+		test_sel_mode -> sel_csv
+	}
+	subgraph cluster_models {
+		color=lightgrey label="Models & Policy"
+		rf_model [label="RF (job-level)" fillcolor=lavender]
+		lstm_model [label="LSTM (pipeline-level)" fillcolor=lavender]
+		policy [label="predict_and_heal.py
+(healing decision policy)" fillcolor=lightyellow]
+		rf_model -> policy
+		lstm_model -> policy
+	}
+	subgraph cluster_analysis {
+		color=lightgrey label="Analysis & Reporting"
+		exp_nb [label="experiment_analysis.ipynb
+(stats, figures)" fillcolor=cornsilk]
+		rl_nb [label="rl_adaptive_healing.ipynb
+(RL learning curves)" fillcolor=cornsilk]
+		figs [label="figures/
+(plots & tables)" fillcolor=lightcyan]
+		all_logs -> exp_nb
+		heal_outcomes -> exp_nb
+		sel_csv -> exp_nb
+		all_logs -> rl_nb
+		exp_nb -> figs
+		rl_nb -> figs
+	}
+	subgraph cluster_publish {
+		color=lightgrey label=Publishing
+		push [label="push_to_github.py" fillcolor=lightyellow]
+		github [label="GitHub repo
+(versioned data)" fillcolor=lightgreen]
+		all_logs -> push
+		heal_outcomes -> push
+		push -> github
+	}
+	gitlab [label="GitLab Pipeline Runs
+(HEAL_MODE, INJECT_FAIL, etc.)" fillcolor=aliceblue shape=folder]
+	gitlab -> ci_logger
+}

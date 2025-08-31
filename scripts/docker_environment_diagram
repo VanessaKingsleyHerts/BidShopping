@@ -1,0 +1,18 @@
+digraph DockerEnvironment {
+	rankdir=LR size="6,4"
+	node [fontname=Helvetica shape=box style="rounded,filled"]
+	DockerCI [label="Dockerfile.ci
+(ML dependencies: TensorFlow, scikit-learn, xgboost, psutil)" color=lightblue]
+	CIBase [label="ci-base Image
+(Pushed to GitLab Registry)" color=lightyellow]
+	Runner [label="GitLab Runners
+(CI Jobs)" color=palegreen]
+	DockerApp [label="Dockerfile
+(Application runtime)" color=lightpink]
+	AppImage [label="Runtime Image
+(for deployment)" color=lightyellow]
+	DockerCI -> CIBase [label="docker build -f Dockerfile.ci"]
+	CIBase -> Runner [label="used by"]
+	DockerApp -> AppImage [label="docker build -f Dockerfile"]
+	AppImage -> Runner [label="optional deploy" style=dashed]
+}

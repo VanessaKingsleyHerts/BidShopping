@@ -1,0 +1,37 @@
+digraph SystemArchitecture {
+	rankdir=TB size="8,5"
+	node [color=lightgrey fontname=Helvetica shape=box style="rounded,filled"]
+	CI [label="GitLab CI/CD
+(.gitlab-ci.yml)"]
+	HE [label="Healing Engine
+(predict_and_heal.py)"]
+	RF [label="Random Forest
+(stage-level retry)"]
+	LSTM [label="LSTM
+(pipeline-level abort)"]
+	LOG [label="Logger
+(ci_logger.py)"]
+	RAW [label="Raw Logs
+(logs/ci_logs.csv)"]
+	MERGE [label="Merged Logs
+(all_logs.csv)"]
+	OUTCOME [label="Healing Outcomes
+(healing_outcomes.csv)"]
+	MERGER [label="merge_incremental.py /
+merge_full.py"]
+	PUSH [label="push_to_github.py"]
+	ANALYSIS [label="Experiment Analysis
+(Jupyter Notebooks)"]
+	CI -> HE [label="wrap jobs"]
+	HE -> LOG [label="log decisions"]
+	HE -> RF [label="predict retry" style=dashed]
+	HE -> LSTM [label="predict abort" style=dashed]
+	LOG -> RAW
+	RAW -> MERGER
+	MERGER -> MERGE
+	MERGE -> OUTCOME
+	MERGE -> PUSH [label="push versioned logs"]
+	OUTCOME -> PUSH
+	MERGE -> ANALYSIS
+	OUTCOME -> ANALYSIS
+}

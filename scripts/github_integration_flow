@@ -1,0 +1,19 @@
+digraph GitHubIntegration {
+	rankdir=LR size="8,3"
+	node [fontname=Helvetica shape=box style="rounded,filled"]
+	Pipeline [label="Pipeline Finishes
+(CI jobs complete)" color=palegreen]
+	Logs [label="Raw Logs
+(logs/ci_logs.csv)" color=lightblue]
+	Merge [label="Merged Logs
+(all_logs.csv)" color=lightyellow]
+	Push [label="push_to_github.py
+(schema check + commit)" color=lightpink]
+	GitHub [label="GitHub Repository
+(versioned logs)" color=lightgrey]
+	Pipeline -> Logs [label="ci_logger.py"]
+	Logs -> Merge [label="merge_incremental.py /
+merge_full.py"]
+	Merge -> Push
+	Push -> GitHub [label="GitHub API"]
+}

@@ -1,0 +1,35 @@
+digraph HealingStateMachine {
+	rankdir=TB size="6,8"
+	node [color=lightgrey fontname=Helvetica shape=box style="rounded,filled"]
+	Start [label="Run Job"]
+	Success [label="Success → Log & Proceed" color=palegreen]
+	Fail [label="Failure Detected?" color=lightblue shape=diamond]
+	Baseline [label="Baseline Mode
+(HEAL_MODE=baseline)" color=lightyellow]
+	BaselineRetry [label="Retry Once" color=lightyellow]
+	BaselineLog [label="Log Result" color=palegreen]
+	ML [label="ML Mode
+(HEAL_MODE=ml)" color=lightyellow]
+	RF [label="Random Forest
+(stage-level retry)" color=lightpink]
+	LSTM [label="LSTM
+(pipeline-level abort)" color=lightpink]
+	Abort [label="Abort Pipeline
+(early exit)" color=orangered]
+	Retry [label="Retry Once" color=lightyellow]
+	Proceed [label="Proceed to Next Stage" color=palegreen]
+	Start -> Fail [label="job outcome"]
+	Fail -> Success [label="No (pass)"]
+	Fail -> Baseline [label="Yes + Baseline"]
+	Baseline -> BaselineRetry
+	BaselineRetry -> BaselineLog
+	Fail -> ML [label="Yes + ML"]
+	ML -> RF [label="Stage=lint/test"]
+	RF -> Retry [label="Predict retry"]
+	RF -> Proceed [label="Predict no retry"]
+	ML -> LSTM [label="Stage=lint only"]
+	LSTM -> Abort [label="Predict fail"]
+	LSTM -> Proceed [label="Predict pass"]
+	Retry -> Proceed
+	BaselineLog -> Proceed
+}
